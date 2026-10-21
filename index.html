@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Spotify Clone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-black font-sans text-white">
+    <!-- Header -->
+    <header
+      class="flex justify-between items-center bg-black px-6 py-4 border-gray-800 border-b"
+    >
+      <div class="font-bold text-green-500 text-2xl">Spotify</div>
+      <nav class="space-x-4">
+        <a
+          href="/register.html"
+          id="registerBtn"
+          class="hover:bg-green-500 px-4 py-2 border border-white hover:border-green-500 rounded-full"
+        >
+          Sign up
+        </a>
+          <a
+          href="/home.html"
+          id="registerBtn"
+          class="hover:bg-green-500 px-4 py-2 border border-white hover:border-green-500 rounded-full"
+        >
+          home
+        </a>
+
+        <a
+          href="/login.html"
+          id="loginBtn"
+          class="hover:bg-green-500 px-4 py-2 border border-white hover:border-green-500 rounded-full"
+        >
+          Log in
+        </a>
+
+        <button
+          id="logoutBtn"
+          class="hidden hover:bg-green-500 px-4 py-2 border border-white hover:border-green-500 rounded-full"
+        >
+          Logout
+        </button>
+      </nav>
+    </header>
+
+    <h1 class="mb-4 font-bold text-4xl">Welcome to Spotify Clone</h1>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

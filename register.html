@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Spotify Clone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    />
+  </head>
+  <body class="bg-black font-sans text-white">
+    <!-- Header -->
+    <header
+      class="flex justify-between items-center bg-black px-6 py-4 border-gray-800 border-b"
+    >
+      <div class="font-bold text-green-500 text-2xl">Spotify</div>
+      <nav class="space-x-4">
+        <a
+          href="/register.html"
+          id="registerBtn"
+          class="hover:bg-green-500 px-4 py-2 border border-white hover:border-green-500 rounded-full"
+        >
+          Sign up
+        </a>
+        <a
+          href="/login.html"
+          id="loginBtn"
+          class="hover:bg-green-500 px-4 py-2 border border-white hover:border-green-500 rounded-full"
+        >
+          Log in
+        </a>
+        <button
+          id="logoutBtn"
+          class="hidden hover:bg-green-500 px-4 py-2 border border-white hover:border-green-500 rounded-full"
+        >
+          Logout
+        </button>
+      </nav>
+    </header>
+
+    <!-- Main content -->
+    <main class="flex flex-col justify-center items-center py-16 text-center">
+      <h1 class="mb-4 font-bold text-4xl">Welcome to Spotify Clone</h1>
+      <p class="mb-8 text-gray-400">
+        Listen to your favorite music anytime, anywhere.
+      </p>
+
+      <!-- Register Form -->
+      <form
+        id="registerForm"
+        class="bg-gray-900 shadow-lg mb-6 p-6 rounded-lg w-80"
+      >
+        <input
+          name="email"
+          type="email"
+          placeholder="Email"
+          required
+          class="bg-gray-800 mb-3 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500 w-full text-white"
+        />
+
+        <!-- Ô password + icon mắt -->
+        <div class="relative mb-3">
+          <input
+            id="registerPassword"
+            name="password"
+            type="password"
+            placeholder="Password"
+            required
+            class="bg-gray-800 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500 w-full text-white"
+          />
+          <button
+            type="button"
+            id="togglePassword"
+            class="top-2 right-3 absolute text-gray-400 hover:text-green-500"
+          >
+            <i class="fa-solid fa-eye"></i>
+          </button>
+        </div>
+
+        <button
+          type="submit"
+          class="bg-green-500 hover:bg-green-600 py-2 rounded-full w-full text-white"
+        >
+          Register
+        </button>
+      </form>
+    </main>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
