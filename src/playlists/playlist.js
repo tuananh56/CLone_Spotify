@@ -15,20 +15,20 @@ async function loadPlaylistDetail(id) {
 
     // Render thông tin chính
     document.querySelector("#detailImage").src =
-      playlist.images?.[0]?.url || "/src/assets/placeholder.png";
-    document.querySelector("#detailName").textContent = playlist.name;
+      playlist.image_url || "/src/assets/playlist.png";
+    document.querySelector("#detailName").textContent = playlist.title;
     document.querySelector("#detailDesc").textContent =
-      playlist.description || "";
+      playlist.additional_info?.description || "";
 
     // Nếu là playlist của mình → hiện nút Delete
-    const currentUser = JSON.parse(localStorage.getItem("user"))?.email;
-    if (playlist.owner?.display_name === currentUser) {
+    const currentUser = JSON.parse(localStorage.getItem("user"))?.name;
+    if (playlist.additional_info?.creator_name === currentUser) {
       document.querySelector("#deleteBtn").classList.remove("hidden");
     }
 
     // Render danh sách bài hát
     const trackList = document.querySelector("#trackList");
-    const tracks = playlist.tracks?.items || []; // fallback nếu không có tracks
+    const tracks = Array.isArray(playlist.tracks) ? playlist.tracks : [];
 
     if (tracks.length === 0) {
       trackList.innerHTML = `
@@ -41,13 +41,21 @@ async function loadPlaylistDetail(id) {
           (t) => `
       <div class="flex items-center justify-between p-2 hover:bg-neutral-800 rounded">
         <div>
-          <p class="text-white">${t.track.name}</p>
-          <p class="text-gray-400 text-sm">${t.track.artists.map((a) => a.name).join(", ")}</p>
+          <p class="text-white">${t.name}</p>
+          <p class="text-gray-400 text-sm">${t.artists.map((a) => a.name).join(", ")}</p>
         </div>
-        <span class="text-xs text-gray-400">${formatDuration(t.track.duration_ms)}</span>
+        <span class="text-xs text-gray-400">${formatDuration(t.duration_ms)}</span>
       </div>`,
         )
         .join("");
+    }
+
+    // Khởi tạo nút Save/Remove theo trạng thái thực tế
+    const toggleLibraryBtn = document.querySelector("#toggleLibraryBtn");
+    if (playlist.is_following) {
+      toggleLibraryBtn.textContent = "Remove from Your Library";
+    } else {
+      toggleLibraryBtn.textContent = "Save to Your Library";
     }
 
     // Gắn sự kiện cho nút
@@ -72,7 +80,6 @@ function initButtons(playlistId, isOwner) {
 
   if (playBtn) {
     playBtn.addEventListener("click", () => {
-      // TODO: tích hợp player để phát nhạc
       console.log("Play/Pause playlist");
     });
   }
@@ -80,7 +87,7 @@ function initButtons(playlistId, isOwner) {
   if (toggleLibraryBtn) {
     toggleLibraryBtn.addEventListener("click", async () => {
       if (toggleLibraryBtn.textContent.includes("Save")) {
-        await api.put(`/api/playlists/${playlistId}/followers`);
+        await api.post(`/api/playlists/${playlistId}/followers`);
         toggleLibraryBtn.textContent = "Remove from Your Library";
       } else {
         await api.delete(`/api/playlists/${playlistId}/followers`);
@@ -95,4 +102,52 @@ function initButtons(playlistId, isOwner) {
       window.location.href = "/home.html";
     });
   }
+}
+
+// === Tìm kiếm và thêm bài hát ===
+const searchInput = document.querySelector("input[type='text']");
+searchInput.addEventListener("input", async (e) => {
+  const query = e.target.value.trim();
+  if (!query) return;
+
+  const res = await api.get(
+    `/api/search?q=${encodeURIComponent(query)}&type=track`,
+  );
+  const results = res.data.tracks.items;
+  renderSearchResults(results);
+});
+
+function renderSearchResults(tracks) {
+  const searchSection = document.querySelector(".pt-6");
+  const resultContainer = document.createElement("div");
+  resultContainer.className = "mt-4 space-y-2";
+
+  resultContainer.innerHTML = tracks
+    .map(
+      (t) => `
+      <div class="flex items-center justify-between p-2 hover:bg-neutral-800 rounded">
+        <div>
+          <p class="text-white">${t.name}</p>
+          <p class="text-gray-400 text-sm">${t.artists.map((a) => a.name).join(", ")}</p>
+        </div>
+        <button class="bg-green-600 hover:bg-green-500 px-3 py-1 rounded text-sm font-semibold"
+                data-track-id="${t.id}">
+          Thêm
+        </button>
+      </div>`,
+    )
+    .join("");
+
+  const oldResults = searchSection.querySelector("div.mt-4");
+  if (oldResults) oldResults.remove();
+  searchSection.appendChild(resultContainer);
+
+  resultContainer.querySelectorAll("button[data-track-id]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const trackId = btn.dataset.trackId;
+      await api.post(`/api/playlists/${playlistId}/tracks`, { trackId });
+      btn.textContent = "Đã thêm";
+      btn.disabled = true;
+    });
+  });
 }

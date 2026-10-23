@@ -64,7 +64,10 @@ export function initHeader() {
       .map((item) => {
         const displayName = item.name || item.title || "Không rõ tên";
         const imageSrc =
-          item.image || item.thumbnail || "/src/assets/placeholder.png";
+          item.image_url ||
+          item.image ||
+          item.thumbnail ||
+          "/src/assets/placeholder.png";
         const subLabel =
           item.type === "track"
             ? item.artists?.[0]?.name

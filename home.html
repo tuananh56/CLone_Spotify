@@ -132,6 +132,7 @@
 
         <!-- Khối tạo playlist đầu tiên -->
         <div
+          id="firstPlaylistBlock"
           class="bg-neutral-800 hover:bg-neutral-700 mb-3 p-4 rounded-lg transition-all duration-200"
         >
           <p class="mb-1 font-bold">Tạo danh sách phát đầu tiên của bạn</p>
@@ -142,6 +143,7 @@
 
         <!-- Khối podcast -->
         <div
+          id="podcastBlock"
           class="bg-neutral-800 hover:bg-neutral-700 mb-3 p-4 rounded-lg transition-all duration-200"
         >
           <p class="mb-1 font-bold">Hãy cùng tìm và theo dõi một số podcast</p>
@@ -258,36 +260,64 @@
             <i class="fa-chevron-right fa-solid"></i>
           </button>
         </section>
-
-        <!-- All playlists -->
-        <section class="relative mb-8">
-          <div class="flex justify-between items-center mb-3">
-            <h3 class="font-bold text-lg">All playlists</h3>
-            <button
-              class="font-semibold text-gray-300 hover:text-green-500 text-sm transition-colors"
-            >
-              Hiển thị tất cả
-            </button>
-          </div>
-          <button
-            class="top-1/2 left-0 z-10 absolute bg-neutral-800 hover:bg-neutral-700 p-2 rounded-full -translate-y-1/2"
-            onclick="scrollSection('allPlaylists', -1)"
-          >
-            <i class="fa-chevron-left fa-solid"></i>
-          </button>
-          <div
-            id="allPlaylists"
-            class="[&::-webkit-scrollbar]:hidden flex gap-4 px-8 [-ms-overflow-style:none] overflow-x-auto scroll-smooth [scrollbar-width:none]"
-          ></div>
-          <button
-            class="top-1/2 right-0 z-10 absolute bg-neutral-800 hover:bg-neutral-700 p-2 rounded-full -translate-y-1/2"
-            onclick="scrollSection('allPlaylists', 1)"
-          >
-            <i class="fa-chevron-right fa-solid"></i>
-          </button>
-        </section>
       </main>
     </div>
+
+    <div
+      id="player"
+      class="flex justify-between items-center bg-neutral-900 p-4"
+    >
+      <!-- Thông tin bài hát -->
+      <div class="flex items-center space-x-3">
+        <img
+          id="trackImage"
+          src="/src/assets/placeholder.png"
+          class="rounded w-12 h-12"
+        />
+        <div>
+          <p id="trackTitle" class="text-white text-sm">Tên bài hát</p>
+          <p id="trackArtist" class="text-gray-400 text-xs">Tên ca sĩ</p>
+        </div>
+      </div>
+
+      <!-- Điều khiển chính -->
+      <div class="flex flex-col items-center space-y-2">
+        <div class="flex items-center space-x-4">
+          <button id="btnPrev"><i class="fa-solid fa-backward"></i></button>
+          <button id="btnPlay"><i class="fa-solid fa-play"></i></button>
+          <button id="btnNext"><i class="fa-solid fa-forward"></i></button>
+        </div>
+        <div class="flex items-center space-x-2 w-96">
+          <span id="currentTime" class="text-gray-400 text-xs">0:00</span>
+          <input
+            id="progressBar"
+            type="range"
+            min="0"
+            max="100"
+            value="0"
+            class="w-full"
+          />
+          <span id="totalTime" class="text-gray-400 text-xs">0:00</span>
+        </div>
+      </div>
+
+      <!-- Điều khiển phụ -->
+      <div class="flex items-center space-x-3">
+        <button id="btnRepeat"><i class="fa-solid fa-repeat"></i></button>
+        <button id="btnShuffle"><i class="fa-solid fa-shuffle"></i></button>
+        <input
+          id="volumeControl"
+          type="range"
+          min="0"
+          max="1"
+          step="0.01"
+          value="1"
+        />
+      </div>
+    </div>
+
+    <audio id="audio"></audio>
+    <script type="module" src="/src/player.js"></script>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

@@ -1,4 +1,4 @@
-import { updateHeaderUI } from "../layout/header.js";
+import { updateHeaderUI } from "../component/header.js";
 import { api } from "../app/router.js";
 import Swal from "sweetalert2";
 

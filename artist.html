@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nghệ sĩ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+
+  <body class="bg-neutral-900 min-h-screen text-white">
+    <!-- Header -->
+    <header id="header"></header>
+
+    <!-- Sidebar -->
+    <aside id="sidebar"></aside>
+
+    <!-- Main Content -->
+    <main class="ml-64 p-6">
+      <!-- Thông tin nghệ sĩ -->
+      <section id="artistHeader" class="mb-10"></section>
+
+      <!-- Danh sách bài hát -->
+      <h2 class="mb-4 font-bold text-xl">Bài hát nổi bật</h2>
+      <section id="artistTracks" class="space-y-2"></section>
+
+      <!-- Album nổi bật (tuỳ chọn mở rộng) -->
+      <h2 class="mt-10 mb-4 font-bold text-xl">Album nổi bật</h2>
+      <section id="artistAlbums" class="flex flex-wrap gap-4"></section>
+    </main>
+
+    <!-- Library -->
+    <div id="library"></div>
+
+    <!-- Script -->
+    <script type="module" src="/src/playlists/artist.js"></script>
+  </body>
+</html>
