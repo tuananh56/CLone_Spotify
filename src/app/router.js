@@ -1,28 +1,99 @@
-import axios from "axios";
-import Swal from "sweetalert2";
+const routes = {
+  home: "/home.html",
+  track: "/track.html",
+  playlist: "/playlist.html",
+};
 
-export const BASE_URL = "https://spotify.f8team.dev";
+let currentPage = null;
+let navigationId = 0;
 
-export const api = axios.create({
-  baseURL: BASE_URL,
-  headers: { "Content-Type": "application/json" },
+function getPageFromPath(pathname) {
+  if (pathname.endsWith("/track.html")) return "track";
+  if (pathname.endsWith("/playlist.html")) return "playlist";
+  return "home";
+}
+
+function getParamsFromUrl() {
+  return Object.fromEntries(new URLSearchParams(window.location.search));
+}
+
+function buildUrl(page, params = {}) {
+  const url = new URL(routes[page], window.location.origin);
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== null) {
+      url.searchParams.set(key, value);
+    }
+  });
+
+  return url;
+}
+
+export async function navigate(page, params = {}) {
+  if (!routes[page]) {
+    console.error(`Không tìm thấy trang: ${page}`);
+    return;
+  }
+
+  const url = buildUrl(page, params);
+
+  history.pushState({ page, params }, "", url);
+
+  await renderPage(page, params);
+}
+
+async function renderPage(page, params = {}) {
+  const path = routes[page];
+
+  if (!path) return;
+
+  const requestId = ++navigationId;
+
+  try {
+    const response = await fetch(path);
+
+    if (!response.ok) {
+      throw new Error(`Không tải được trang: ${path}`);
+    }
+
+    const html = await response.text();
+    const doc = new DOMParser().parseFromString(html, "text/html");
+
+    const newContent = doc.querySelector("#page-content");
+    const currentContent = document.querySelector("#page-content");
+
+    if (!newContent || !currentContent) {
+      console.error(
+        "Không tìm thấy #page-content trong trang hiện tại hoặc trang đích.",
+      );
+      return;
+    }
+
+    // Bỏ qua phản hồi cũ nếu người dùng đã chuyển trang tiếp.
+    if (requestId !== navigationId) return;
+
+    currentContent.replaceWith(newContent.cloneNode(true));
+
+    currentPage = page;
+
+    document.dispatchEvent(
+      new CustomEvent("pagechanged", {
+        detail: { page, params },
+      }),
+    );
+  } catch (error) {
+    console.error("Lỗi chuyển trang:", error);
+  }
+}
+
+window.addEventListener("popstate", async (event) => {
+  const page = event.state?.page || getPageFromPath(location.pathname);
+
+  const params = event.state?.params || getParamsFromUrl();
+
+  await renderPage(page, params);
 });
 
-// Tự động gắn token vào header nếu có
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
-
-// Bắt lỗi chung
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    const message = error.response?.data?.message || "Có lỗi xảy ra!";
-    Swal.fire({ icon: "error", title: "Oops...", text: message });
-    return Promise.reject(error);
-  }
-);
+export function getCurrentPage() {
+  return currentPage;
+}

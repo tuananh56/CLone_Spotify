@@ -1,4 +1,4 @@
-import { api } from "../app/router.js";
+import { api } from "../app/api.js";
 
 const params = new URLSearchParams(window.location.search);
 const albumId = params.get("id");

@@ -6,11 +6,98 @@
     <title>Playlist</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link
-      href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.0/dist/tailwind.min.css"
       rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     />
   </head>
   <body class="bg-neutral-900 min-h-screen text-white">
+    <header
+      class="top-0 z-50 sticky flex justify-between items-center bg-neutral-900 shadow-md px-6 py-3"
+    >
+      <!-- Logo + Search -->
+      <div class="flex items-center space-x-4">
+        <!-- Logo Spotify -->
+        <i class="text-green-500 text-2xl fa-brands fa-spotify"></i>
+
+        <!-- Nút Home -->
+        <button
+          type="button"
+          onclick="window.location.href = '/home.html'"
+          aria-label="Trang chủ"
+          class="bg-neutral-800 hover:bg-green-500 p-3 rounded-full text-white transition-colors"
+        >
+          <i class="fa-solid fa-house"></i>
+        </button>
+
+        <div class="relative ml-6">
+          <!-- Ô search -->
+          <div
+            class="group flex items-center bg-neutral-800 px-4 py-2 rounded-full hover:ring-2 hover:ring-green-500 w-96 transition-all duration-200"
+          >
+            <i
+              class="mr-2 text-neutral-400 group-hover:text-green-500 fa-solid fa-magnifying-glass"
+            ></i>
+            <input
+              id="searchInput"
+              type="text"
+              placeholder="Bạn muốn phát nội dung gì?"
+              class="bg-transparent focus:outline-none w-full text-neutral-200 text-sm"
+            />
+          </div>
+
+          <!-- Khung kết quả -->
+          <div
+            id="searchResults"
+            class="hidden top-full absolute bg-neutral-950 shadow-lg mt-2 rounded-lg w-96 max-h-96 overflow-y-auto"
+          ></div>
+        </div>
+      </div>
+
+      <!-- Menu bên phải -->
+      <div
+        class="flex items-center space-x-6 font-semibold text-gray-400 text-sm"
+      >
+        <a href="#" class="hover:text-white transition-colors duration-200"
+          >Premium</a
+        >
+        <a href="#" class="hover:text-white transition-colors duration-200"
+          >Hỗ trợ</a
+        >
+        <a href="#" class="hover:text-white transition-colors duration-200"
+          >Tải xuống</a
+        >
+        <a href="#" class="hover:text-white transition-colors duration-200"
+          >Cài đặt ứng dụng</a
+        >
+        <a href="#" class="hover:text-white transition-colors duration-200"
+          >Đăng ký</a
+        >
+        <button
+          id="loginBtn"
+          type="button"
+          class="bg-white hover:bg-gray-200 px-4 py-1 rounded-full text-black hover:scale-105 transition duration-200 transform"
+        >
+          Đăng nhập
+        </button>
+        <button
+          id="signupBtn"
+          type="button"
+          class="hover:text-white hover:scale-105 transition duration-200 transform"
+        >
+          Đăng ký
+        </button>
+        <div
+          id="userAvatar"
+          class="hidden relative flex justify-center items-center bg-purple-400 rounded-full w-8 h-8 font-bold text-black"
+        >
+          <span id="avatarLetter"></span>
+          <div
+            class="top-0 right-0 absolute bg-green-500 rounded-full w-2 h-2"
+          ></div>
+        </div>
+      </div>
+    </header>
+
     <main class="p-6 overflow-y-auto">
       <!-- Header Playlist -->
       <section class="flex items-center space-x-6 mb-10">
@@ -60,14 +147,42 @@
         <h2 class="mb-3 font-bold text-xl">
           Hãy cùng tìm nội dung cho danh sách phát của bạn
         </h2>
+
         <input
+          id="playlistTrackSearch"
           type="text"
           placeholder="Tìm bài hát và tập podcast"
           class="bg-neutral-800 px-4 py-3 rounded focus:outline-none w-full text-white"
         />
+
+        <div id="trackSearchResults" class="space-y-2 mt-4"></div>
       </section>
     </main>
-
+    <div id="player-container"></div>
     <script type="module" src="/src/playlists/playlist.js"></script>
+    <script type="module">
+      import { initPlayer } from "/src/player.js";
+      import { initHeader, updateHeaderUI } from "/src/component/header.js";
+
+      async function initPlaylistPage() {
+        initHeader();
+        updateHeaderUI();
+
+        try {
+          const res = await fetch("/player.html");
+          if (!res.ok) throw new Error("Không tải được player.html");
+
+          document.querySelector("#player-container").innerHTML =
+            await res.text();
+
+          initPlayer();
+          document.dispatchEvent(new Event("playerloaded"));
+        } catch (error) {
+          console.error("Lỗi khởi tạo Playlist:", error);
+        }
+      }
+
+      initPlaylistPage();
+    </script>
   </body>
 </html>

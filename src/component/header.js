@@ -1,5 +1,5 @@
 import { handleLogout } from "../auth/logout.js";
-import { api } from "../app/router.js";
+import { api } from "../app/api.js";
 
 function debounce(fn, delay) {
   let timeout;

@@ -21,9 +21,14 @@
         <i class="text-green-500 text-2xl fa-brands fa-spotify"></i>
 
         <!-- Nút Home -->
-        <i
-          class="bg-neutral-800 hover:bg-green-500 p-3 rounded-full text-white transition-colors duration-200 fa-solid fa-house"
-        ></i>
+        <button
+          type="button"
+          onclick="window.goHome()"
+          aria-label="Trang chủ"
+          class="bg-neutral-800 hover:bg-green-500 p-3 rounded-full text-white transition-colors"
+        >
+          <i class="fa-solid fa-house"></i>
+        </button>
 
         <div class="relative ml-6">
           <!-- Ô search -->
@@ -93,9 +98,8 @@
         </div>
       </div>
     </header>
-
     <!-- Nội dung chính chia ngang -->
-    <div class="flex space-x-4 mt-3">
+    <div id="page-content" class="flex space-x-4 mt-3">
       <!-- Sidebar -->
       <aside
         class="flex flex-col bg-neutral-900 p-4 border border-gray-700 rounded-xl w-64 h-[calc(100vh-64px)] overflow-y-auto"
@@ -260,64 +264,37 @@
             <i class="fa-chevron-right fa-solid"></i>
           </button>
         </section>
+
       </main>
     </div>
-
-    <div
-      id="player"
-      class="flex justify-between items-center bg-neutral-900 p-4"
-    >
-      <!-- Thông tin bài hát -->
-      <div class="flex items-center space-x-3">
-        <img
-          id="trackImage"
-          src="/src/assets/placeholder.png"
-          class="rounded w-12 h-12"
-        />
-        <div>
-          <p id="trackTitle" class="text-white text-sm">Tên bài hát</p>
-          <p id="trackArtist" class="text-gray-400 text-xs">Tên ca sĩ</p>
-        </div>
-      </div>
-
-      <!-- Điều khiển chính -->
-      <div class="flex flex-col items-center space-y-2">
-        <div class="flex items-center space-x-4">
-          <button id="btnPrev"><i class="fa-solid fa-backward"></i></button>
-          <button id="btnPlay"><i class="fa-solid fa-play"></i></button>
-          <button id="btnNext"><i class="fa-solid fa-forward"></i></button>
-        </div>
-        <div class="flex items-center space-x-2 w-96">
-          <span id="currentTime" class="text-gray-400 text-xs">0:00</span>
-          <input
-            id="progressBar"
-            type="range"
-            min="0"
-            max="100"
-            value="0"
-            class="w-full"
-          />
-          <span id="totalTime" class="text-gray-400 text-xs">0:00</span>
-        </div>
-      </div>
-
-      <!-- Điều khiển phụ -->
-      <div class="flex items-center space-x-3">
-        <button id="btnRepeat"><i class="fa-solid fa-repeat"></i></button>
-        <button id="btnShuffle"><i class="fa-solid fa-shuffle"></i></button>
-        <input
-          id="volumeControl"
-          type="range"
-          min="0"
-          max="1"
-          step="0.01"
-          value="1"
-        />
-      </div>
-    </div>
-
-    <audio id="audio"></audio>
-    <script type="module" src="/src/player.js"></script>
+    <div id="player-container"></div>
+    <script type="module" src="/src/app/router.js"></script>
     <script type="module" src="/src/main.js"></script>
+
+    <script type="module">
+      import { initPlayer } from "/src/player.js";
+
+      async function loadPlayer() {
+        try {
+          const res = await fetch("/player.html");
+
+          if (!res.ok) {
+            throw new Error("Không tải được player.html");
+          }
+
+          const html = await res.text();
+
+          document.getElementById("player-container").innerHTML = html;
+
+          initPlayer();
+
+          document.dispatchEvent(new Event("playerloaded"));
+        } catch (error) {
+          console.error("Lỗi tải player:", error);
+        }
+      }
+
+      loadPlayer();
+    </script>
   </body>
 </html>

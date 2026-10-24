@@ -1,4 +1,4 @@
-import { api } from "../app/router.js";
+import { api } from "../app/api.js";
 import { initHeader, updateHeaderUI } from "../layout/header.js";
 import { initSidebar } from "../layout/sidebar.js";
 import { initLibrary } from "../layout/library.js";

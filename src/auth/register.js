@@ -1,5 +1,5 @@
 import { updateHeaderUI } from "../component/header.js";
-import { api } from "../app/router.js";
+import { api } from "../app/api.js";
 import Swal from "sweetalert2";
 export async function handleRegister(email, password) {
   const isValidPassword =
