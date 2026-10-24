@@ -245,9 +245,12 @@ function initApp() {
   updateHeaderUI();
   initForms();
 
-  // Chỉ tải dữ liệu trang chủ khi đang ở trang chủ.
   if (document.querySelector("#trendingTracks")) {
     initHomePage();
+  }
+
+  if (document.querySelector("#trackList")) {
+    initPlaylistPage();
   }
 }
 if (document.readyState === "loading") {
@@ -258,10 +261,20 @@ if (document.readyState === "loading") {
   initApp();
 }
 
-document.addEventListener("pagechanged", (event) => {
+document.addEventListener("pagechanged", async (event) => {
   const { page, params } = event.detail || {};
+
   const id =
     params?.id || new URLSearchParams(window.location.search).get("id");
+
+  console.log("[pagechanged] Nhận sự kiện:", {
+    page,
+    params,
+    id,
+    url: window.location.href,
+    trackListExists: !!document.querySelector("#trackList"),
+    playlistNameExists: !!document.querySelector("#detailName"),
+  });
 
   switch (page) {
     case "home":
@@ -271,19 +284,25 @@ document.addEventListener("pagechanged", (event) => {
       break;
 
     case "track":
-      if (id) initTrackPage(id);
+      if (id) await initTrackPage(id);
       break;
 
     case "artist":
-      if (id) initArtistPage(id);
+      if (id) await initArtistPage(id);
       break;
 
     case "album":
-      if (id) initAlbumPage(id);
+      if (id) await initAlbumPage(id);
       break;
 
     case "playlist":
-      if (id) initPlaylistPage(id);
+      if (id) {
+        console.log("[main.js] Bắt đầu initPlaylistPage:", id);
+        await initPlaylistPage(id);
+        console.log("[main.js] Hoàn tất initPlaylistPage:", id);
+      } else {
+        console.error("Router không truyền ID playlist:", event.detail);
+      }
       break;
   }
 });

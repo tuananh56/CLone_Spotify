@@ -12,14 +12,35 @@ const fallbackImage = "/src/assets/playlist.png";
 // =========================
 
 export async function initPlaylistPage(id) {
-  if (!id) {
-    console.error("Không tìm thấy ID playlist");
+  const params = new URLSearchParams(window.location.search);
+
+  const resolvedId =
+    id ||
+    params.get("id") ||
+    document.querySelector("[data-playlist-id]")?.dataset.playlistId;
+
+  console.log("[Playlist:init] Bắt đầu khởi tạo", {
+    receivedId: id,
+    urlId: params.get("id"),
+    dataPlaylistId:
+      document.querySelector("[data-playlist-id]")?.dataset.playlistId,
+    resolvedId,
+    url: window.location.href,
+    trackListExists: !!document.querySelector("#trackList"),
+  });
+
+  if (!resolvedId) {
+    console.error("[Playlist:init] Không tìm thấy ID playlist");
     return;
   }
 
-  activePlaylistId = String(id);
+  activePlaylistId = String(resolvedId);
   currentPlaylist = null;
   searchRequestId++;
+
+  document.body.dataset.playlistId = activePlaylistId;
+
+  console.log("[Playlist:init] Đã gán activePlaylistId:", activePlaylistId);
 
   await loadPlaylistDetail(activePlaylistId);
 }
@@ -29,11 +50,22 @@ export async function initPlaylistPage(id) {
 // =========================
 
 async function loadPlaylistDetail(id) {
+  console.group("[Playlist:load] Tải chi tiết playlist");
+
+  console.log("Playlist ID:", id);
+  console.log("activePlaylistId:", activePlaylistId);
+  console.log("URL hiện tại:", window.location.href);
+  console.log("#trackList tồn tại:", !!document.querySelector("#trackList"));
+
   try {
     const res = await api.get(`/api/playlists/${encodeURIComponent(id)}`);
 
     const playlist = res.data;
     currentPlaylist = playlist;
+
+    console.log("[API detail] HTTP status:", res.status);
+    console.log("[API detail] Dữ liệu trả về:", playlist);
+    console.log("[API detail] Các key:", Object.keys(playlist || {}));
 
     const image = document.querySelector("#detailImage");
     const name = document.querySelector("#detailName");
@@ -73,10 +105,16 @@ async function loadPlaylistDetail(id) {
       deleteBtn.classList.toggle("hidden", !isOwner);
     }
 
-    // Lấy danh sách bài hát trong playlist
+    // Kiểm tra danh sách bài hát trong API chi tiết
     let rawTracks = getPlaylistTracks(playlist);
 
+    console.log("[API detail] Tracks lấy được:", rawTracks);
+    console.log("[API detail] Số bài hát:", rawTracks.length);
+
+    // Nếu API chi tiết không có bài hát, gọi API /tracks
     if (rawTracks.length === 0) {
+      console.warn("[Playlist:load] Tracks rỗng, gọi API /tracks");
+
       try {
         const tracksRes = await api.get(
           `/api/playlists/${encodeURIComponent(id)}/tracks`,
@@ -84,26 +122,62 @@ async function loadPlaylistDetail(id) {
 
         const data = tracksRes.data;
 
+        console.log("[API tracks] HTTP status:", tracksRes.status);
+        console.log("[API tracks] Dữ liệu trả về:", data);
+        console.log(
+          "[API tracks] Kiểu dữ liệu:",
+          Array.isArray(data) ? "Array" : typeof data,
+        );
+
         rawTracks = Array.isArray(data)
           ? data
-          : (data.tracks ??
-            data.items ??
-            data.results?.tracks ??
-            data.results ??
+          : (data?.tracks ??
+            data?.items ??
+            data?.results?.tracks ??
+            data?.results ??
+            data?.data?.tracks ??
+            data?.data?.items ??
             []);
+
+        console.log("[API tracks] Danh sách đã trích xuất:", rawTracks);
+        console.log("[API tracks] Số bài hát:", rawTracks.length);
       } catch (trackErr) {
-        console.error(
-          "Không lấy được danh sách bài hát:",
-          trackErr.response?.status,
-          trackErr.response?.data || trackErr.message,
-        );
+        console.error("[API tracks] Không tải được danh sách:", {
+          status: trackErr.response?.status,
+          data: trackErr.response?.data,
+          message: trackErr.message,
+        });
       }
     }
 
     window.playlist = rawTracks.map(normalizeTrack);
+
+    console.log("[Playlist:load] Danh sách sau normalize:", window.playlist);
+    console.log(
+      "[Playlist:load] Số bài hát sau normalize:",
+      window.playlist.length,
+    );
+    console.table(
+      window.playlist.map((track) => ({
+        id: track.id,
+        title: track.title,
+        artist: track.artist,
+        audio_url: track.audio_url,
+        duration: track.duration,
+      })),
+    );
+
     renderTrackList(window.playlist);
 
-    // Cập nhật nút lưu thư viện
+    console.log(
+      "[Playlist:render] HTML trackList:",
+      document.querySelector("#trackList")?.innerHTML,
+    );
+    console.log(
+      "[Playlist:render] Số dòng bài hát:",
+      document.querySelectorAll("#trackList .track-row").length,
+    );
+
     const toggleLibraryBtn = document.querySelector("#toggleLibraryBtn");
 
     if (toggleLibraryBtn) {
@@ -113,9 +187,17 @@ async function loadPlaylistDetail(id) {
     }
 
     initButtons(id, isOwner);
+
+    console.log("[Playlist:load] Hoàn tất tải playlist");
   } catch (err) {
-    console.error("Lỗi load playlist:", err);
-    console.error("Backend response:", err.response?.data);
+    console.error("[Playlist:load] Lỗi tải playlist:", {
+      status: err.response?.status,
+      data: err.response?.data,
+      message: err.message,
+      stack: err.stack,
+    });
+  } finally {
+    console.groupEnd();
   }
 }
 
@@ -139,21 +221,25 @@ function getPlaylistTracks(playlist) {
 }
 
 function normalizeTrack(track) {
+  const source = track.track || track;
+
   return {
-    id: track.track_id || track.id || "",
-    title: track.track_title || track.title || track.name || "Không rõ tên",
-    artist: track.artist_name || track.subtitle || track.artist || "",
-    album: track.album_title || track.album?.name || "",
+    id: source.track_id || source.id || source._id || source.trackId || "",
+    title: source.track_title || source.title || source.name || "Không rõ tên",
+    artist: source.artist_name || source.subtitle || source.artist || "",
+    album: source.album_title || source.album?.name || "",
     duration: Number(
-      track.track_duration ?? track.duration ?? track.duration_ms / 1000 ?? 0,
+      source.track_duration ??
+        source.duration ??
+        (source.duration_ms != null ? source.duration_ms / 1000 : 0),
     ),
     image_url:
-      track.track_image_url ||
-      track.image_url ||
-      track.album_cover_image_url ||
+      source.track_image_url ||
+      source.image_url ||
+      source.album_cover_image_url ||
       fallbackImage,
     audio_url:
-      track.track_audio_url || track.audio_url || track.preview_url || "",
+      source.track_audio_url || source.audio_url || source.preview_url || "",
   };
 }
 
@@ -164,14 +250,14 @@ function normalizeTrack(track) {
 function renderTrackList(tracks) {
   const trackList = document.querySelector("#trackList");
 
-  if (!trackList) return;
+  console.log("[renderTrackList] Bắt đầu", {
+    tracks,
+    count: tracks?.length,
+    trackListExists: !!trackList,
+  });
 
-  if (!tracks.length) {
-    trackList.innerHTML = `
-      <p class="text-gray-400 text-sm italic">
-        Playlist này chưa có bài hát nào.
-      </p>
-    `;
+  if (!trackList) {
+    console.error("[renderTrackList] Không tìm thấy #trackList trong DOM");
     return;
   }
 
@@ -357,6 +443,11 @@ function getSearchTracks(data) {
 }
 
 function renderSearchResults(tracks) {
+  const playlistId =
+    activePlaylistId ||
+    document.body.dataset.playlistId ||
+    new URLSearchParams(window.location.search).get("id");
+
   const container = document.querySelector("#trackSearchResults");
 
   if (!container) return;
@@ -375,8 +466,16 @@ function renderSearchResults(tracks) {
       const normalized = normalizeTrack(track);
 
       const trackId =
-        track.id || track.track_id || track._id || track.trackId || "";
-
+        track.track_id ||
+        track.id ||
+        track._id ||
+        track.trackId ||
+        track.track?.id ||
+        track.track?.track_id ||
+        normalized.id ||
+        "";
+      console.log("Search track:", track);
+      console.log("Resolved trackId:", trackId);
       return `
         <div
           class="flex items-center justify-between gap-3 rounded p-2 hover:bg-neutral-800"
@@ -416,8 +515,12 @@ function renderSearchResults(tracks) {
     button.addEventListener("click", async () => {
       const trackId = button.dataset.trackId;
 
-      if (!activePlaylistId  || !trackId) {
-        console.error("Thiếu playlistId hoặc trackId");
+      if (!playlistId || !trackId) {
+        console.error("Thiếu ID khi thêm bài hát:", {
+          playlistId,
+          activePlaylistId,
+          trackId,
+        });
         return;
       }
 
@@ -426,7 +529,7 @@ function renderSearchResults(tracks) {
 
       try {
         await api.post(
-          `/api/playlists/${encodeURIComponent(activePlaylistId)}/tracks`,
+          `/api/playlists/${encodeURIComponent(playlistId)}/tracks`,
           {
             track_id: trackId,
           },
@@ -434,7 +537,7 @@ function renderSearchResults(tracks) {
 
         button.textContent = "Đã thêm";
 
-        await loadPlaylistDetail(activePlaylistId);
+        await loadPlaylistDetail(playlistId);
       } catch (err) {
         console.error("HTTP status:", err.response?.status);
         console.error("Backend response:", err.response?.data);
@@ -479,3 +582,8 @@ function escapeHTML(value) {
     return entities[char];
   });
 }
+document.addEventListener("DOMContentLoaded", async () => {
+  if (document.querySelector("#trackList")) {
+    await initPlaylistPage();
+  }
+});
