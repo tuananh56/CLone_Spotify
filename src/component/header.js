@@ -147,7 +147,7 @@ export function updateHeaderUI() {
 
     const firstLetter = parsedUser.email?.charAt(0).toUpperCase() || "A";
     avatarLetter.textContent = firstLetter;
-    avatar.style.backgroundColor = `hsl(${Math.floor(Math.random() * 360)}, 70%, 60%)`;
+    // avatar.style.backgroundColor = `hsl(${Math.floor(Math.random() * 360)}, 70%, 60%)`;
 
     avatar.classList.remove("hidden");
     emailDisplay.textContent = parsedUser.email;

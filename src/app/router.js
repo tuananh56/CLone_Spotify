@@ -2,14 +2,20 @@ const routes = {
   home: "/home.html",
   track: "/track.html",
   playlist: "/playlist.html",
+  artist: "/artist.html",
+  album: "/album.html",
 };
 
 let currentPage = null;
 let navigationId = 0;
 
 function getPageFromPath(pathname) {
-  if (pathname.endsWith("/track.html")) return "track";
-  if (pathname.endsWith("/playlist.html")) return "playlist";
+  for (const [page, path] of Object.entries(routes)) {
+    if (pathname.endsWith(path)) {
+      return page;
+    }
+  }
+
   return "home";
 }
 
@@ -22,7 +28,7 @@ function buildUrl(page, params = {}) {
 
   Object.entries(params).forEach(([key, value]) => {
     if (value !== undefined && value !== null) {
-      url.searchParams.set(key, value);
+      url.searchParams.set(key, String(value));
     }
   });
 
@@ -36,16 +42,17 @@ export async function navigate(page, params = {}) {
   }
 
   const url = buildUrl(page, params);
+  const success = await renderPage(page, params);
 
-  history.pushState({ page, params }, "", url);
-
-  await renderPage(page, params);
+  if (success) {
+    history.pushState({ page, params }, "", url);
+  }
 }
 
 async function renderPage(page, params = {}) {
   const path = routes[page];
 
-  if (!path) return;
+  if (!path) return false;
 
   const requestId = ++navigationId;
 
@@ -63,14 +70,13 @@ async function renderPage(page, params = {}) {
     const currentContent = document.querySelector("#page-content");
 
     if (!newContent || !currentContent) {
-      console.error(
+      throw new Error(
         "Không tìm thấy #page-content trong trang hiện tại hoặc trang đích.",
       );
-      return;
     }
 
-    // Bỏ qua phản hồi cũ nếu người dùng đã chuyển trang tiếp.
-    if (requestId !== navigationId) return;
+    // Bỏ qua phản hồi cũ.
+    if (requestId !== navigationId) return false;
 
     currentContent.replaceWith(newContent.cloneNode(true));
 
@@ -81,8 +87,14 @@ async function renderPage(page, params = {}) {
         detail: { page, params },
       }),
     );
+
+    return true;
   } catch (error) {
-    console.error("Lỗi chuyển trang:", error);
+    if (requestId === navigationId) {
+      console.error("Lỗi chuyển trang:", error);
+    }
+
+    return false;
   }
 }
 

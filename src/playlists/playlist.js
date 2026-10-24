@@ -1,10 +1,8 @@
 import { api } from "../app/api.js";
 import { playTrack } from "../player.js";
 
-const params = new URLSearchParams(window.location.search);
-const playlistId = params.get("id");
-
 let currentPlaylist = null;
+let activePlaylistId = null;
 let searchRequestId = 0;
 
 const fallbackImage = "/src/assets/playlist.png";
@@ -13,10 +11,17 @@ const fallbackImage = "/src/assets/playlist.png";
 // Khởi tạo trang Playlist
 // =========================
 
-if (playlistId) {
-  loadPlaylistDetail(playlistId);
-} else {
-  console.error("Không tìm thấy ID playlist trong URL");
+export async function initPlaylistPage(id) {
+  if (!id) {
+    console.error("Không tìm thấy ID playlist");
+    return;
+  }
+
+  activePlaylistId = String(id);
+  currentPlaylist = null;
+  searchRequestId++;
+
+  await loadPlaylistDetail(activePlaylistId);
 }
 
 // =========================
@@ -411,7 +416,7 @@ function renderSearchResults(tracks) {
     button.addEventListener("click", async () => {
       const trackId = button.dataset.trackId;
 
-      if (!playlistId || !trackId) {
+      if (!activePlaylistId  || !trackId) {
         console.error("Thiếu playlistId hoặc trackId");
         return;
       }
@@ -421,7 +426,7 @@ function renderSearchResults(tracks) {
 
       try {
         await api.post(
-          `/api/playlists/${encodeURIComponent(playlistId)}/tracks`,
+          `/api/playlists/${encodeURIComponent(activePlaylistId)}/tracks`,
           {
             track_id: trackId,
           },
@@ -429,7 +434,7 @@ function renderSearchResults(tracks) {
 
         button.textContent = "Đã thêm";
 
-        await loadPlaylistDetail(playlistId);
+        await loadPlaylistDetail(activePlaylistId);
       } catch (err) {
         console.error("HTTP status:", err.response?.status);
         console.error("Backend response:", err.response?.data);

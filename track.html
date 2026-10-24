@@ -2,46 +2,105 @@
 <html lang="vi">
   <head>
     <meta charset="UTF-8" />
-    <title>Track</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#121212" />
+
+    <title>Track | Music</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
+
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     />
   </head>
-  <body class="bg-neutral-900 min-h-screen text-white">
-    <div id="page-content">
-      <main class="p-6">
-        <!-- Header Track -->
-        <section class="flex items-center space-x-6 mb-10">
-          <img
-            id="trackImageHeader"
-            src="/src/assets/playlist.png"
-            alt="Track cover"
-            class="bg-neutral-800 rounded-lg w-40 h-40 object-cover"
-          />
-          <div>
-            <h1 id="trackTitleHeader" class="mb-2 font-bold text-3xl">
-              Tên bài hát
-            </h1>
-            <p id="trackArtistHeader" class="mb-2 text-gray-300">Nghệ sĩ</p>
-            <p id="trackAlbum" class="text-gray-400 text-sm">Album</p>
-            <p id="trackDuration" class="text-gray-400 text-sm">Thời lượng</p>
 
-            <div class="flex space-x-3 mt-4">
-              <button
-                id="btnPlayTrack"
-                class="bg-green-500 hover:bg-green-400 px-5 py-2 rounded-full font-semibold text-black"
-              >
-                Phát
-              </button>
+  <body class="bg-black min-h-screen text-white antialiased">
+    <div id="page-content" class="p-2 pb-28 min-h-screen">
+      <main
+        class="bg-gradient-to-b from-neutral-700 via-neutral-800 to-[#121212] rounded-lg min-h-[calc(100vh-16px)] overflow-hidden"
+      >
+        <div class="mx-auto p-5 md:p-8 max-w-[1500px]">
+          <!-- Track Hero -->
+          <section
+            class="flex sm:flex-row flex-col items-start sm:items-end gap-6 sm:gap-8 mb-8"
+          >
+            <!-- Cover -->
+            <div
+              class="w-full sm:w-[200px] md:w-[240px] max-w-[240px] shrink-0"
+            >
+              <img
+                id="trackImageHeader"
+                src="/src/assets/playlist.png"
+                alt="Track cover"
+                class="bg-neutral-800 shadow-2xl shadow-black/40 rounded-md w-full object-cover aspect-square"
+              />
             </div>
-          </div>
-        </section>
-        <div id="player-container"></div>
+
+            <!-- Track Information -->
+            <div class="flex-1 min-w-0">
+              <p
+                class="mb-3 font-bold text-neutral-300 text-xs uppercase tracking-wider"
+              >
+                Bài hát
+              </p>
+
+              <h1
+                id="trackTitleHeader"
+                class="mb-4 font-extrabold text-3xl sm:text-4xl md:text-5xl lg:text-6xl break-words leading-tight tracking-tight"
+              >
+                Tên bài hát
+              </h1>
+
+              <p
+                id="trackArtistHeader"
+                class="mb-3 font-semibold text-white text-base break-words"
+              >
+                Nghệ sĩ
+              </p>
+
+              <div
+                class="flex flex-wrap items-center gap-x-2 gap-y-1 text-neutral-300 text-sm"
+              >
+                <span id="trackAlbum">Album</span>
+
+                <span aria-hidden="true" class="text-neutral-500">•</span>
+
+                <span id="trackDuration">Thời lượng</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- Actions -->
+          <section class="flex items-center gap-6 mb-10">
+            <button
+              id="btnPlayTrack"
+              type="button"
+              aria-label="Phát bài hát"
+              class="flex justify-center items-center bg-green-500 hover:bg-green-400 rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-4 w-14 h-14 text-black text-xl hover:scale-105 transition shrink-0"
+            >
+              <i class="fa-solid fa-play"></i>
+            </button>
+
+            <div class="flex flex-col">
+              <span class="font-semibold text-white text-sm">
+                Phát bài hát
+              </span>
+              <span class="mt-1 text-neutral-400 text-xs">
+                Nghe ngay bài hát này
+              </span>
+            </div>
+          </section>
+
+          <!-- Player -->
+          <section class="pt-6 border-white/10 border-t">
+            <div id="player-container" class="min-w-0">
+              <!-- player.html được tải vào đây -->
+            </div>
+          </section>
+        </div>
       </main>
     </div>
-    <script type="module" src="/src/player.js"></script>
 
     <script type="module">
       import { initPlayer } from "/src/player.js";
@@ -60,9 +119,11 @@
           document.getElementById("player-container").innerHTML = html;
 
           initPlayer();
+
           document.dispatchEvent(new Event("playerloaded"));
 
           const params = new URLSearchParams(window.location.search);
+
           await initTrackPage(params.get("id"));
         } catch (error) {
           console.error("Lỗi khởi tạo trang Track:", error);

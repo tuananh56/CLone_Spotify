@@ -1,4 +1,8 @@
 import { initTrackPage } from "./playlists/track.js";
+import { initArtistPage } from "./playlists/artist.js";
+import { initAlbumPage } from "./playlists/album.js";
+import { initPlaylistPage } from "./playlists/playlist.js";
+
 import { navigate } from "./app/router.js";
 import { initLibrary, initSidebarPlaylists } from "./component/library.js";
 import { initSidebar } from "./component/sidebar.js";
@@ -89,12 +93,8 @@ function renderSection(containerId, items = [], type) {
 
       let clickAction = "";
 
-      if (type === "track" && safeId) {
-        clickAction = `onclick="window.openTrack('${escapeJS(safeId)}')"`;
-      } else {
-        const detailUrl = `/${type}.html?id=${encodeURIComponent(safeId)}`;
-
-        clickAction = `onclick="window.location.href='${escapeJS(detailUrl)}'"`;
+      if (safeId) {
+        clickAction = `onclick="window.openDetail('${type}', '${escapeJS(safeId)}')"`;
       }
 
       return `
@@ -234,8 +234,6 @@ function initForms() {
 let homePageInitialized = false;
 
 function initHomePage() {
-  // Những hàm này có thể cần khởi tạo lại khi DOM của trang chủ được render lại.
-  // Nếu chúng tạo listener toàn cục, cần bảo đảm bên trong có cơ chế chống trùng.
   initSidebar();
   initLibrary();
   initSidebarPlaylists();
@@ -247,11 +245,11 @@ function initApp() {
   updateHeaderUI();
   initForms();
 
-  initHomePage();
-  homePageInitialized = true;
+  // Chỉ tải dữ liệu trang chủ khi đang ở trang chủ.
+  if (document.querySelector("#trendingTracks")) {
+    initHomePage();
+  }
 }
-
-// Khởi tạo lần đầu.
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initApp, {
     once: true,
@@ -262,24 +260,43 @@ if (document.readyState === "loading") {
 
 document.addEventListener("pagechanged", (event) => {
   const { page, params } = event.detail || {};
+  const id =
+    params?.id || new URLSearchParams(window.location.search).get("id");
 
-  if (page === "home") {
-    initSidebar();
-    initSidebarPlaylists();
-    loadMainView();
-  }
+  switch (page) {
+    case "home":
+      initSidebar();
+      initSidebarPlaylists();
+      loadMainView();
+      break;
 
-  if (page === "track") {
-    const id =
-      params?.id || new URLSearchParams(window.location.search).get("id");
+    case "track":
+      if (id) initTrackPage(id);
+      break;
 
-    initTrackPage(id);
-  }
+    case "artist":
+      if (id) initArtistPage(id);
+      break;
 
-  if (page === "playlist") {
-    const id =
-      params?.id || new URLSearchParams(window.location.search).get("id");
+    case "album":
+      if (id) initAlbumPage(id);
+      break;
 
-    initPlaylistPage(id);
+    case "playlist":
+      if (id) initPlaylistPage(id);
+      break;
   }
 });
+
+window.openDetail = function (type, id) {
+  if (!id) return;
+
+  const allowedTypes = ["track", "artist", "album", "playlist"];
+
+  if (!allowedTypes.includes(type)) {
+    console.error("Loại trang không hợp lệ:", type);
+    return;
+  }
+
+  navigate(type, { id: String(id) });
+};

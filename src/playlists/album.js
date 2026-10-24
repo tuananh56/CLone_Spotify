@@ -1,10 +1,13 @@
 import { api } from "../app/api.js";
+import { playTrack } from "../player.js";
 
-const params = new URLSearchParams(window.location.search);
-const albumId = params.get("id");
+export async function initAlbumPage(id) {
+  if (!id) {
+    console.error("Không tìm thấy ID album");
+    return;
+  }
 
-if (albumId) {
-  loadAlbumDetail(albumId);
+  await loadAlbumDetail(id);
 }
 
 // === Load chi tiết Album ===
@@ -44,7 +47,7 @@ async function loadAlbumDetail(id) {
 
           return `
       <div class="flex items-center justify-between p-2 hover:bg-neutral-800 rounded cursor-pointer"
-           onclick="window.location.href='/track.html?id=${t.id}'">
+           onclick="window.openTrack('${t.id}')"
         <div>
           <p class="text-white">${trackTitle}</p>
           <p class="text-gray-400 text-sm">${artistNames}</p>
@@ -78,6 +81,7 @@ function initButtons(albumId) {
     playBtn.addEventListener("click", async () => {
       try {
         const resTracks = await api.get(`/api/albums/${albumId}/tracks`);
+
         const tracks = Array.isArray(resTracks.data.tracks)
           ? resTracks.data.tracks
           : [];
@@ -87,25 +91,11 @@ function initButtons(albumId) {
           return;
         }
 
-        // Lấy URL nhạc thật từ track đầu tiên
-        const firstTrack = tracks[0];
-        const audioUrl = firstTrack.audio_url; // backend cần trả về trường này
+        // Dùng danh sách bài hát của album cho player chung
+        window.playlist = tracks;
 
-        if (!audioUrl) {
-          console.error("Track không có audio_url");
-          return;
-        }
-
-        let player = document.querySelector("#player");
-        if (!player) {
-          player = document.createElement("audio");
-          player.id = "player";
-          document.body.appendChild(player);
-        }
-
-        player.src = audioUrl;
-        await player.play();
-        console.log("Đang phát bài đầu tiên:", firstTrack.title);
+        // Phát bài đầu tiên bằng player.js
+        playTrack(0);
       } catch (err) {
         console.error("Lỗi phát bài hát:", err);
         alert("Không thể phát bài hát này.");
@@ -115,12 +105,16 @@ function initButtons(albumId) {
 
   if (toggleLibraryBtn) {
     toggleLibraryBtn.addEventListener("click", async () => {
-      if (toggleLibraryBtn.textContent.includes("Lưu")) {
-        await api.put(`/api/albums/${albumId}/followers`);
-        toggleLibraryBtn.textContent = "Xóa khỏi thư viện";
-      } else {
-        await api.delete(`/api/albums/${albumId}/followers`);
-        toggleLibraryBtn.textContent = "Lưu vào thư viện";
+      try {
+        if (toggleLibraryBtn.textContent.includes("Lưu")) {
+          await api.put(`/api/albums/${albumId}/followers`);
+          toggleLibraryBtn.textContent = "Xóa khỏi thư viện";
+        } else {
+          await api.delete(`/api/albums/${albumId}/followers`);
+          toggleLibraryBtn.textContent = "Lưu vào thư viện";
+        }
+      } catch (err) {
+        console.error("Lỗi cập nhật thư viện:", err);
       }
     });
   }
