@@ -1,3 +1,4 @@
+import { initPlayer } from "./player.js";
 import { initTrackPage } from "./playlists/track.js";
 import { initArtistPage } from "./playlists/artist.js";
 import { initAlbumPage } from "./playlists/album.js";
@@ -120,6 +121,42 @@ function renderSection(containerId, items = [], type) {
       `;
     })
     .join("");
+}
+
+// ==================== PERSISTENT PLAYER ====================
+
+let playerInitialized = false;
+
+async function initPersistentPlayer() {
+  const playerContainer = document.querySelector("#player-container");
+
+  if (!playerContainer) {
+    console.error("Không tìm thấy #player-container");
+    return;
+  }
+
+  // Không khởi tạo lại nếu player đã tồn tại.
+  if (playerInitialized || playerContainer.querySelector("audio")) {
+    playerInitialized = true;
+    return;
+  }
+
+  try {
+    const response = await fetch("/player.html");
+
+    if (!response.ok) {
+      throw new Error("Không tải được player.html");
+    }
+
+    playerContainer.innerHTML = await response.text();
+
+    initPlayer();
+    playerInitialized = true;
+
+    document.dispatchEvent(new Event("playerloaded"));
+  } catch (error) {
+    console.error("Lỗi khởi tạo player:", error);
+  }
 }
 
 // ==================== ESCAPE HELPERS ====================

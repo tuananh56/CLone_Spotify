@@ -42,14 +42,16 @@ export async function navigate(page, params = {}) {
   }
 
   const url = buildUrl(page, params);
-  const success = await renderPage(page, params);
+
+  // Cập nhật URL trước khi khởi tạo trang mới.
+  const success = await renderPage(page, params, url);
 
   if (success) {
     history.pushState({ page, params }, "", url);
   }
 }
 
-async function renderPage(page, params = {}) {
+async function renderPage(page, params = {}, targetUrl = null) {
   const path = routes[page];
 
   if (!path) return false;
@@ -75,16 +77,22 @@ async function renderPage(page, params = {}) {
       );
     }
 
-    // Bỏ qua phản hồi cũ.
+    // Bỏ qua phản hồi cũ nếu người dùng đã chuyển trang khác.
     if (requestId !== navigationId) return false;
 
+    // Chỉ thay nội dung trang, giữ nguyên player và audio.
     currentContent.replaceWith(newContent.cloneNode(true));
 
     currentPage = page;
 
+    // Thông báo cho main.js khởi tạo nội dung tương ứng.
     document.dispatchEvent(
       new CustomEvent("pagechanged", {
-        detail: { page, params },
+        detail: {
+          page,
+          params,
+          url: targetUrl?.href ?? window.location.href,
+        },
       }),
     );
 
@@ -99,7 +107,7 @@ async function renderPage(page, params = {}) {
 }
 
 window.addEventListener("popstate", async (event) => {
-  const page = event.state?.page || getPageFromPath(location.pathname);
+  const page = event.state?.page || getPageFromPath(window.location.pathname);
 
   const params = event.state?.params || getParamsFromUrl();
 

@@ -1,92 +1,205 @@
 <!doctype html>
-<html lang="en">
+<html lang="vi">
   <head>
     <meta charset="UTF-8" />
-    <title>Spotify Clone</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#121212" />
+    <title>Đăng ký | Spotify Clone</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     />
   </head>
-  <body class="bg-black font-sans text-white">
+
+  <body class="bg-[#121212] min-h-screen font-sans text-white">
     <!-- Header -->
     <header
-      class="flex justify-between items-center bg-black px-6 py-4 border-gray-800 border-b"
+      class="flex justify-between items-center px-6 sm:px-12 py-5 border-[#292929] border-b"
     >
-      <div class="font-bold text-green-500 text-2xl">Spotify</div>
-      <nav class="space-x-4">
-        <a
-          href="/register.html"
-          id="registerBtn"
-          class="hover:bg-green-500 px-4 py-2 border border-white hover:border-green-500 rounded-full"
-        >
-          Sign up
-        </a>
+      <a href="/home.html" class="flex items-center gap-2">
+        <i class="text-[#1ed760] text-4xl fa-brands fa-spotify"></i>
+        <span class="font-bold text-2xl tracking-tight">Spotify</span>
+      </a>
+
+      <div class="flex items-center gap-3 sm:gap-5">
+        <span class="hidden sm:inline text-gray-400 text-sm">
+          Đã có tài khoản?
+        </span>
         <a
           href="/login.html"
           id="loginBtn"
-          class="hover:bg-green-500 px-4 py-2 border border-white hover:border-green-500 rounded-full"
+          class="px-5 py-2.5 border border-gray-500 hover:border-white rounded-full font-bold text-sm hover:scale-105 transition"
         >
-          Log in
+          Đăng nhập
         </a>
+
         <button
           id="logoutBtn"
-          class="hidden hover:bg-green-500 px-4 py-2 border border-white hover:border-green-500 rounded-full"
+          type="button"
+          class="hidden px-5 py-2.5 border border-gray-500 hover:border-white rounded-full font-bold text-sm"
         >
-          Logout
+          Đăng xuất
         </button>
-      </nav>
+      </div>
     </header>
 
-    <!-- Main content -->
-    <main class="flex flex-col justify-center items-center py-16 text-center">
-      <h1 class="mb-4 font-bold text-4xl">Welcome to Spotify Clone</h1>
-      <p class="mb-8 text-gray-400">
-        Listen to your favorite music anytime, anywhere.
-      </p>
+    <!-- Main -->
+    <main class="flex justify-center px-4 py-10 sm:py-14">
+      <section class="px-5 sm:px-10 w-full max-w-[450px]">
+        <!-- Heading -->
+        <div class="mb-8 text-center">
+          <i class="text-[#1ed760] text-5xl fa-brands fa-spotify"></i>
 
-      <!-- Register Form -->
-      <form
-        id="registerForm"
-        class="bg-gray-900 shadow-lg mb-6 p-6 rounded-lg w-80"
-      >
-        <input
-          name="email"
-          type="email"
-          placeholder="Email"
-          required
-          class="bg-gray-800 mb-3 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500 w-full text-white"
-        />
+          <h1 class="mt-4 font-bold text-3xl sm:text-4xl tracking-tight">
+            Đăng ký Spotify
+          </h1>
 
-        <!-- Ô password + icon mắt -->
-        <div class="relative mb-3">
-          <input
-            id="registerPassword"
-            name="password"
-            type="password"
-            placeholder="Password"
-            required
-            class="bg-gray-800 px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500 w-full text-white"
-          />
+          <p class="mt-3 text-gray-400 text-sm leading-6">
+            Tạo tài khoản để bắt đầu nghe nhạc yêu thích của bạn.
+          </p>
+        </div>
+
+        <!-- Register Form -->
+        <form id="registerForm" class="space-y-5">
+          <!-- Email -->
+          <div>
+            <label for="registerEmail" class="block mb-2 font-bold text-sm">
+              Email
+            </label>
+
+            <div
+              class="flex items-center gap-3 bg-[#121212] px-4 border border-[#727272] hover:border-white rounded-md focus-within:outline focus-within:outline-2 focus-within:outline-white transition"
+            >
+              <i class="text-gray-400 fa-regular fa-envelope"></i>
+
+              <input
+                id="registerEmail"
+                name="email"
+                type="email"
+                placeholder="Nhập email của bạn"
+                autocomplete="email"
+                required
+                class="bg-transparent py-3 outline-none w-full text-white placeholder:text-gray-400 text-sm"
+              />
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div>
+            <label for="registerPassword" class="block mb-2 font-bold text-sm">
+              Mật khẩu
+            </label>
+
+            <div
+              class="flex items-center gap-3 bg-[#121212] px-4 border border-[#727272] hover:border-white rounded-md focus-within:outline focus-within:outline-2 focus-within:outline-white transition"
+            >
+              <i class="text-gray-400 fa-solid fa-lock"></i>
+
+              <input
+                id="registerPassword"
+                name="password"
+                type="password"
+                placeholder="Tạo mật khẩu"
+                autocomplete="new-password"
+                required
+                class="bg-transparent py-3 outline-none w-full text-white placeholder:text-gray-400 text-sm"
+              />
+
+              <button
+                type="button"
+                id="togglePassword"
+                aria-label="Hiện mật khẩu"
+                class="text-gray-400 hover:text-white transition shrink-0"
+              >
+                <i class="fa-regular fa-eye"></i>
+              </button>
+            </div>
+
+            <p class="mt-2 text-gray-400 text-xs leading-5">
+              Sử dụng mật khẩu đủ mạnh để bảo vệ tài khoản của bạn.
+            </p>
+          </div>
+
+          <!-- Submit -->
+          <button
+            type="submit"
+            class="bg-[#1ed760] hover:bg-[#3be477] py-3.5 rounded-full w-full font-bold text-black hover:scale-[1.02] active:scale-[0.99] transition"
+          >
+            Đăng ký
+          </button>
+        </form>
+
+        <!-- Divider -->
+        <div class="flex items-center gap-4 my-8">
+          <div class="flex-1 bg-[#292929] h-px"></div>
+          <span class="text-gray-400 text-xs">HOẶC</span>
+          <div class="flex-1 bg-[#292929] h-px"></div>
+        </div>
+
+        <!-- Social buttons -->
+        <div class="space-y-3">
           <button
             type="button"
-            id="togglePassword"
-            class="top-2 right-3 absolute text-gray-400 hover:text-green-500"
+            class="flex justify-center items-center gap-3 px-4 py-3 border border-[#727272] hover:border-white rounded-full w-full transition"
           >
-            <i class="fa-solid fa-eye"></i>
+            <i class="text-lg fa-brands fa-google"></i>
+            <span class="font-bold text-sm">Đăng ký với Google</span>
+          </button>
+
+          <button
+            type="button"
+            class="flex justify-center items-center gap-3 px-4 py-3 border border-[#727272] hover:border-white rounded-full w-full transition"
+          >
+            <i class="text-xl fa-brands fa-apple"></i>
+            <span class="font-bold text-sm">Đăng ký với Apple</span>
           </button>
         </div>
 
-        <button
-          type="submit"
-          class="bg-green-500 hover:bg-green-600 py-2 rounded-full w-full text-white"
-        >
-          Register
-        </button>
-      </form>
+        <!-- Login link -->
+        <div class="mt-8 pt-7 border-[#292929] border-t text-center">
+          <p class="text-gray-400 text-sm">
+            Đã có tài khoản?
+            <a
+              href="/login.html"
+              class="ml-1 font-bold text-white hover:text-[#1ed760] underline underline-offset-4 transition"
+            >
+              Đăng nhập
+            </a>
+          </p>
+        </div>
+
+        <!-- Terms -->
+        <p class="mt-6 text-gray-500 text-xs text-center leading-5">
+          Khi đăng ký, bạn đồng ý với
+          <a href="#" class="hover:text-white underline">
+            Điều khoản dịch vụ
+          </a>
+          và
+          <a href="#" class="hover:text-white underline">
+            Chính sách quyền riêng tư
+          </a>
+          của Spotify Clone.
+        </p>
+      </section>
     </main>
 
+    <!-- Footer -->
+    <footer
+      class="px-6 py-6 border-[#292929] border-t text-gray-500 text-xs text-center"
+    >
+      <div class="flex flex-wrap justify-center gap-x-5 gap-y-3">
+        <a href="#" class="hover:text-white">Pháp lý</a>
+        <a href="#" class="hover:text-white">Quyền riêng tư</a>
+        <a href="#" class="hover:text-white">Cookies</a>
+        <a href="#" class="hover:text-white">Trợ năng</a>
+      </div>
+
+      <p class="mt-4">© 2026 Spotify Clone</p>
+    </footer>
+
+    <!-- Register logic -->
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
