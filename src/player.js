@@ -57,7 +57,10 @@ export function initPlayer() {
 
     const percent = (audio.currentTime / audio.duration) * 100;
 
-    if (progressBar) progressBar.value = percent;
+    if (progressBar) {
+      progressBar.value = percent;
+      progressBar.style.background = `linear-gradient(to right, #1ed760 ${percent}%, #535353 ${percent}%)`;
+    }
     if (currentTimeEl) {
       currentTimeEl.textContent = formatTime(audio.currentTime);
     }

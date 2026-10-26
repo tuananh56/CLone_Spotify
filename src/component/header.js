@@ -1,3 +1,4 @@
+import { navigate } from "../app/router.js";
 import { handleLogout } from "../auth/logout.js";
 import { api } from "../app/api.js";
 
@@ -15,6 +16,9 @@ export function initHeader() {
 
   // Nếu không có searchInput (trang không có header đầy đủ) → bỏ qua
   if (!searchInput || !searchResults) return;
+
+  if (searchInput.dataset.initialized === "true") return;
+  searchInput.dataset.initialized = "true";
 
   // Nhập từ khóa → gọi Universal Search (debounce)
   searchInput.addEventListener(
@@ -99,14 +103,23 @@ export function initHeader() {
   }
 
   // Click kết quả → chuyển trang chi tiết
+  // Click kết quả → chuyển trang bằng SPA router
   searchResults.addEventListener("click", (e) => {
     const item = e.target.closest(".search-item");
     if (!item) return;
+
     const type = item.dataset.type;
     const id = item.dataset.id;
-    window.location.href = `/${type}.html?id=${id}`;
-  });
 
+    if (!id) return;
+
+    const allowedTypes = ["track", "artist", "album", "playlist"];
+
+    if (!allowedTypes.includes(type)) return;
+
+    navigate(type, { id });
+    searchResults.classList.add("hidden");
+  });
   // Ctrl + Shift + L → focus ô tìm kiếm
   document.addEventListener("keydown", (event) => {
     if (event.ctrlKey && event.shiftKey && event.code === "KeyL") {

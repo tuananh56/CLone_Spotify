@@ -16,6 +16,79 @@
   </head>
 
   <body class="bg-black min-h-screen text-white antialiased">
+    <header
+      class="top-0 z-50 sticky flex justify-between items-center bg-neutral-900 shadow-md px-6 py-3"
+    >
+      <div class="flex items-center space-x-4">
+        <i class="text-green-500 text-2xl fa-brands fa-spotify"></i>
+        <button
+          id="btnGoHome"
+          type="button"
+          aria-label="Trang chủ"
+          class="flex justify-center items-center bg-[#242424] hover:bg-[#333333] rounded-full w-12 h-12 transition"
+        >
+          <i class="text-lg fa-solid fa-house"></i>
+        </button>
+
+        <div class="relative ml-6">
+          <div
+            class="group flex items-center bg-neutral-800 px-4 py-2 rounded-full hover:ring-2 hover:ring-green-500 w-96 transition-all duration-200"
+          >
+            <i
+              class="mr-2 text-neutral-400 group-hover:text-green-500 fa-solid fa-magnifying-glass"
+            ></i>
+
+            <input
+              id="searchInput"
+              type="text"
+              placeholder="Bạn muốn phát nội dung gì?"
+              class="bg-transparent focus:outline-none w-full text-neutral-200 text-sm"
+            />
+          </div>
+
+          <div
+            id="searchResults"
+            class="hidden top-full z-50 absolute bg-neutral-950 shadow-lg mt-2 rounded-lg w-96 max-h-96 overflow-y-auto"
+          ></div>
+        </div>
+      </div>
+
+      <div
+        class="flex items-center space-x-6 font-semibold text-gray-400 text-sm"
+      >
+        <a href="#" class="hover:text-white transition">Premium</a>
+        <a href="#" class="hover:text-white transition">Hỗ trợ</a>
+        <a href="#" class="hover:text-white transition">Tải xuống</a>
+        <a href="#" class="hover:text-white transition">Cài đặt ứng dụng</a>
+
+        <button
+          id="loginBtn"
+          type="button"
+          class="bg-white hover:bg-gray-200 px-4 py-1 rounded-full text-black"
+        >
+          Đăng nhập
+        </button>
+
+        <button
+          id="signupBtn"
+          type="button"
+          class="hover:text-white transition"
+        >
+          Đăng ký
+        </button>
+
+        <div
+          id="userAvatar"
+          class="hidden relative flex justify-center items-center bg-purple-400 rounded-full w-8 h-8 font-bold text-black"
+        >
+          <span id="avatarLetter"></span>
+          <div
+            class="top-0 right-0 absolute bg-green-500 rounded-full w-2 h-2"
+          ></div>
+        </div>
+      </div>
+    </header>
+
     <div id="page-content" class="p-2 pb-28 min-h-screen">
       <main
         class="bg-gradient-to-b from-neutral-700 via-neutral-800 to-[#121212] rounded-lg min-h-[calc(100vh-16px)] overflow-hidden"
@@ -94,36 +167,44 @@
 
           <!-- Player -->
           <section class="pt-6 border-white/10 border-t">
-            <div id="player-container" class="min-w-0">
+           
               <!-- player.html được tải vào đây -->
             </div>
           </section>
         </div>
       </main>
     </div>
+     <div id="player-container" class="min-w-0"></div>
 
     <script type="module">
+      import { initHeader, updateHeaderUI } from "/src/component/header.js";
       import { initPlayer } from "/src/player.js";
       import { initTrackPage } from "/src/playlists/track.js";
+      import { navigate } from "/src/app/router.js";
+
+      document.getElementById("btnGoHome")?.addEventListener("click", () => {
+        navigate("home");
+      });
 
       async function loadPlayer() {
         try {
+          initHeader();
+          updateHeaderUI();
+
+          const container = document.getElementById("player-container");
+
           const res = await fetch("/player.html");
 
           if (!res.ok) {
             throw new Error("Không tải được player.html");
           }
 
-          const html = await res.text();
-
-          document.getElementById("player-container").innerHTML = html;
+          container.innerHTML = await res.text();
 
           initPlayer();
-
           document.dispatchEvent(new Event("playerloaded"));
 
           const params = new URLSearchParams(window.location.search);
-
           await initTrackPage(params.get("id"));
         } catch (error) {
           console.error("Lỗi khởi tạo trang Track:", error);
