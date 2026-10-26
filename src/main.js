@@ -1,3 +1,5 @@
+import { initFooter } from "./component/footer.js";
+import { initSidebarToggle } from "./component/sidebar-toggle.js";
 import { initPlayer } from "./player.js";
 import { initTrackPage } from "./playlists/track.js";
 import { initArtistPage } from "./playlists/artist.js";
@@ -281,9 +283,19 @@ function initApp() {
   initHeader();
   updateHeaderUI();
   initForms();
+  initSidebarToggle();
+  initFooter();
 
+  // Khởi tạo Sidebar và danh sách playlist trên mọi trang có Sidebar
+  if (document.querySelector("#sidebarList")) {
+    initSidebar();
+    initLibrary();
+    initSidebarPlaylists();
+  }
+
+  // Chỉ tải nội dung trang chủ khi có các section tương ứng
   if (document.querySelector("#trendingTracks")) {
-    initHomePage();
+    loadMainView();
   }
 
   if (document.querySelector("#trackList")) {
@@ -356,3 +368,8 @@ window.openDetail = function (type, id) {
 
   navigate(type, { id: String(id) });
 };
+const openSearchPageBtn = document.getElementById("openSearchPageBtn");
+
+openSearchPageBtn?.addEventListener("click", () => {
+  window.location.href = "/search.html";
+});

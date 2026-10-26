@@ -19,7 +19,14 @@
       <!-- Logo + Search -->
       <div class="flex items-center space-x-4">
         <!-- Logo Spotify -->
-        <i class="text-green-500 text-2xl fa-brands fa-spotify"></i>
+        <button
+          type="button"
+          onclick="window.goHome()"
+          aria-label="Về trang chủ"
+          class="text-green-500 text-2xl hover:scale-105 transition-transform"
+        >
+          <i class="fa-brands fa-spotify"></i>
+        </button>
 
         <!-- Nút Home -->
         <button
@@ -33,18 +40,47 @@
 
         <div class="relative ml-6">
           <!-- Ô search -->
+
           <div
             class="group flex items-center bg-neutral-800 px-4 py-2 rounded-full hover:ring-2 hover:ring-green-500 w-96 transition-all duration-200"
           >
             <i
               class="mr-2 text-neutral-400 group-hover:text-green-500 fa-solid fa-magnifying-glass"
             ></i>
+
             <input
               id="searchInput"
               type="text"
               placeholder="Bạn muốn phát nội dung gì?"
               class="bg-transparent focus:outline-none w-full text-neutral-200 text-sm"
             />
+
+            <div
+              class="flex items-center gap-1 ml-2 text-neutral-400 text-xs shrink-0"
+            >
+              <span class="px-1.5 py-1 border border-neutral-600 rounded"
+                >Ctrl</span
+              >
+              <span>+</span>
+              <span class="px-1.5 py-1 border border-neutral-600 rounded"
+                >Shift</span
+              >
+              <span>+</span>
+              <span class="px-1.5 py-1 border border-neutral-600 rounded"
+                >L</span
+              >
+            </div>
+            <!-- Thanh phân cách dọc -->
+            <div class="ml-3 border-neutral-400 border-l-2 h-4"></div>
+            <button
+              id="openSearchPageBtn"
+              type="button"
+              aria-label="Mở trang tìm kiếm"
+              title="Tìm kiếm"
+              class="ml-3 text-neutral-400 hover:text-white transition shrink-0"
+            >
+              <i class="fa-solid fa-box-archive"></i>
+            </button>
           </div>
 
           <!-- Khung kết quả -->
@@ -56,24 +92,51 @@
       </div>
 
       <!-- Menu bên phải -->
+
       <div
         class="flex items-center space-x-6 font-semibold text-gray-400 text-sm"
       >
-        <a href="#" class="hover:text-white transition-colors duration-200"
-          >Premium</a
+        <a
+          id="premiumLink"
+          href="#"
+          class="inline-block bg-white hover:bg-gray-200 px-4 py-2 rounded-2xl font-semibold text-black hover:scale-105 transition-all duration-200 transform"
         >
-        <a href="#" class="hover:text-white transition-colors duration-200"
-          >Hỗ trợ</a
+          Khám phá Premium
+        </a>
+
+        <a
+          id="supportLink"
+          href="#"
+          class="hover:text-white transition-colors duration-200"
         >
-        <a href="#" class="hover:text-white transition-colors duration-200"
-          >Tải xuống</a
+          Hỗ trợ
+        </a>
+
+        <a
+          id="downloadLink"
+          href="#"
+          class="hover:text-white transition-colors duration-200"
         >
-        <a href="#" class="hover:text-white transition-colors duration-200"
-          >Cài đặt ứng dụng</a
+          Tải xuống
+        </a>
+
+        <a
+          id="appInstallLink"
+          href="#"
+          class="inline-flex items-center gap-2 hover:text-white transition-colors duration-200"
         >
-        <a href="#" class="hover:text-white transition-colors duration-200"
-          >Đăng ký</a
+          <i class="leading-none fa-regular fa-circle-down"></i>
+          <span>Cài đặt ứng dụng</span>
+        </a>
+
+        <a
+          id="signupLink"
+          href="#"
+          class="hover:text-white transition-colors duration-200"
         >
+          Đăng ký
+        </a>
+
         <button
           id="loginBtn"
           type="button"
@@ -81,6 +144,7 @@
         >
           Đăng nhập
         </button>
+
         <button
           id="signupBtn"
           type="button"
@@ -88,9 +152,11 @@
         >
           Đăng ký
         </button>
+
         <div
           id="userAvatar"
-          class="hidden relative flex justify-center items-center bg-purple-400 rounded-full w-8 h-8 font-bold text-black"
+          class="hidden relative flex justify-center items-center bg-purple-400 rounded-full w-8 h-8 font-bold text-black cursor-pointer"
+          title="Nhấn để đăng xuất"
         >
           <span id="avatarLetter"></span>
           <div
@@ -100,28 +166,45 @@
       </div>
     </header>
     <!-- Nội dung chính chia ngang -->
-    <div id="page-content" class="flex space-x-4 mt-3">
+    <div id="page-content" class="flex gap-4 mt-3">
       <!-- Sidebar -->
       <aside
+        id="sidebar"
         class="flex flex-col bg-neutral-900 p-4 border border-gray-700 rounded-xl w-64 h-[calc(100vh-64px)] overflow-y-auto"
       >
         <div class="flex justify-between items-center mb-4">
-          <h2 class="font-bold text-lg">Thư viện</h2>
+          <div class="flex items-center space-x-2">
+            <button
+              id="toggleSidebarBtn"
+              type="button"
+              aria-label="Thu gọn sidebar"
+              aria-expanded="true"
+              class="flex justify-center items-center hover:bg-neutral-700 rounded-full w-8 h-8 text-gray-400 hover:text-white transition-colors shrink-0"
+            >
+              <i id="toggleSidebarIcon" class="fa-angles-left fa-solid"></i>
+            </button>
+            <h2 id="sidebarTitle" class="font-bold text-lg whitespace-nowrap">
+              Thư viện
+            </h2>
 
-          <div class="flex space-x-2">
-            <!-- Nút search -->
-            <button
-              id="sidebarSearchBtn"
-              class="text-gray-400 hover:text-white"
-            >
-              <i class="fa-solid fa-magnifying-glass"></i>
-            </button>
-            <!-- Nút tạo -->
-            <button
-              class="flex items-center bg-neutral-800 hover:bg-neutral-700 px-3 py-1 rounded-full font-semibold text-sm"
-            >
-              <i class="mr-1 fa-solid fa-plus"></i> Tạo
-            </button>
+            <div id="sidebarActions" class="flex space-x-2">
+              <button
+                id="sidebarSearchBtn"
+                type="button"
+                class="text-gray-400 hover:text-white"
+              >
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </button>
+
+              <button
+                id="createPlaylistBtn"
+                type="button"
+                class="flex items-center bg-neutral-800 hover:bg-neutral-700 px-3 py-1 rounded-full font-semibold text-sm whitespace-nowrap"
+              >
+                <i class="mr-1 fa-solid fa-plus"></i>
+                Tạo
+              </button>
+            </div>
           </div>
         </div>
 
@@ -178,6 +261,7 @@
       </aside>
 
       <main
+        id="mainContent"
         class="flex-1 bg-neutral-900 ml-4 p-6 border border-neutral-800 rounded-lg overflow-y-auto"
       >
         <h2 class="mb-4 font-bold text-xl">Trang chủ</h2>
@@ -267,7 +351,17 @@
         </section>
       </main>
     </div>
+    <button
+      id="openSidebarBtn"
+      type="button"
+      aria-label="Mở thư viện"
+      title="Mở thư viện"
+      class="top-24 left-0 z-[60] fixed flex justify-center items-center bg-neutral-800 hover:bg-green-500 opacity-0 rounded-r-lg w-8 h-12 text-white transition-opacity duration-200 pointer-events-none"
+    >
+      <i class="fa-angles-right fa-solid"></i>
+    </button>
     <div id="player-container"></div>
+    <div id="footer-container"></div>
     <script type="module" src="/src/app/router.js"></script>
     <script type="module" src="/src/main.js"></script>
 

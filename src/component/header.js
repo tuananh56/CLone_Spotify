@@ -138,14 +138,23 @@ export function initHeader() {
 
 export function updateHeaderUI() {
   const user = localStorage.getItem("user");
+
   const signupBtn = document.querySelector("#signupBtn");
   const loginBtn = document.querySelector("#loginBtn");
   const avatar = document.querySelector("#userAvatar");
   const avatarLetter = document.querySelector("#avatarLetter");
 
+  // Các mục menu trên header
+  const premiumLink = document.querySelector("#premiumLink");
+  const supportLink = document.querySelector("#supportLink");
+  const downloadLink = document.querySelector("#downloadLink");
+  const appInstallLink = document.querySelector("#appInstallLink");
+  const signupLink = document.querySelector("#signupLink");
+
   if (!avatar || !avatarLetter) return;
 
   let emailDisplay = document.querySelector("#userEmail");
+
   if (!emailDisplay) {
     emailDisplay = document.createElement("span");
     emailDisplay.id = "userEmail";
@@ -154,20 +163,47 @@ export function updateHeaderUI() {
   }
 
   if (user) {
-    const parsedUser = JSON.parse(user);
+    let parsedUser;
+
+    try {
+      parsedUser = JSON.parse(user);
+    } catch (error) {
+      console.error("Dữ liệu user trong localStorage không hợp lệ:", error);
+      localStorage.removeItem("user");
+      updateHeaderUI();
+      return;
+    }
+
+    // Đã đăng nhập: ẩn Đăng ký, Đăng nhập và các menu không cần thiết
     signupBtn?.classList.add("hidden");
     loginBtn?.classList.add("hidden");
 
-    const firstLetter = parsedUser.email?.charAt(0).toUpperCase() || "A";
-    avatarLetter.textContent = firstLetter;
-    // avatar.style.backgroundColor = `hsl(${Math.floor(Math.random() * 360)}, 70%, 60%)`;
+    supportLink?.classList.add("hidden");
+    downloadLink?.classList.add("hidden");
+    signupLink?.classList.add("hidden");
 
+    // Giữ lại Khám phá Premium và Cài đặt ứng dụng
+    premiumLink?.classList.remove("hidden");
+    appInstallLink?.classList.remove("hidden");
+
+    const firstLetter = parsedUser.email?.charAt(0).toUpperCase() || "A";
+
+    avatarLetter.textContent = firstLetter;
     avatar.classList.remove("hidden");
-    emailDisplay.textContent = parsedUser.email;
-    emailDisplay.classList.remove("hidden");
+
+    emailDisplay.textContent = parsedUser.email || "";
+    emailDisplay.classList.toggle("hidden", !parsedUser.email);
   } else {
+    // Chưa đăng nhập: hiện lại các menu mặc định
     signupBtn?.classList.remove("hidden");
     loginBtn?.classList.remove("hidden");
+
+    premiumLink?.classList.remove("hidden");
+    supportLink?.classList.remove("hidden");
+    downloadLink?.classList.remove("hidden");
+    appInstallLink?.classList.remove("hidden");
+    signupLink?.classList.remove("hidden");
+
     avatar.classList.add("hidden");
     emailDisplay.classList.add("hidden");
   }
