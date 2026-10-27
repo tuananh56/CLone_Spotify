@@ -121,7 +121,7 @@ function normalizeTrack(track) {
       track.album?.image_url ??
       track.album?.cover_image_url ??
       track.album?.image ??
-      "/src/assets/playlist.png",
+      "../src/assets/playlist.png",
     audio_url:
       track.audio_url ?? track.audioUrl ?? track.preview_url ?? track.url ?? "",
   };
@@ -249,7 +249,7 @@ function renderAllTracks(tracks) {
                 src="${escapeHTML(track.image_url)}"
                 alt=""
                 class="h-10 w-10 shrink-0 rounded object-cover"
-                onerror="this.onerror=null;this.src='/src/assets/playlist.png'"
+                onerror="this.onerror=null;this.src='../src/assets/playlist.png'"
               />
 
               <button

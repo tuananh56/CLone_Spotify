@@ -289,7 +289,7 @@ function renderAlbums(albums) {
         album.cover_image_url ||
         album.image_url ||
         album.cover_url ||
-        "/src/assets/placeholder.png";
+        "../src/assets/placeholder.png";
 
       const releaseYear = album.release_date
         ? String(album.release_date).slice(0, 4)
@@ -312,7 +312,7 @@ function renderAlbums(albums) {
               alt="${safeTitle}"
               loading="lazy"
               class="w-full h-full object-cover transition duration-300 group-hover:scale-105"
-              onerror="this.onerror=null;this.src='/src/assets/placeholder.png';"
+              onerror="this.onerror=null;this.src='../src/assets/placeholder.png';"
             />
 
             <div

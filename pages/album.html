@@ -142,7 +142,7 @@
               >
                 <img
                   id="detailImage"
-                  src="/src/assets/placeholder.png"
+                  src="../src/assets/placeholder.png"
                   alt="Album cover"
                   class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
                 />
@@ -244,7 +244,7 @@
 
     <!-- Header + Player initialization -->
     <script type="module">
-      import { initHeader, updateHeaderUI } from "/src/components/header.js";
+      import { initHeader, updateHeaderUI } from "../src/components/header.js";
 
       initHeader();
       updateHeaderUI();
@@ -266,7 +266,7 @@
 
           playerContainer.innerHTML = await response.text();
 
-          const { initPlayer } = await import("/src/player.js");
+          const { initPlayer } = await import("../src/player.js");
           initPlayer();
 
           document.dispatchEvent(new CustomEvent("playerloaded"));
@@ -279,6 +279,6 @@
     </script>
 
     <!-- Album script -->
-    <script type="module" src="/src/playlists/album.js"></script>
+    <script type="module" src="../src/playlists/album.js"></script>
   </body>
 </html>

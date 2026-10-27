@@ -233,12 +233,12 @@
     <div id="player-container"></div>
     <div id="footer-container"></div>
     <!-- Artist script -->
-    <script type="module" src="/src/playlists/artist.js"></script>
+    <script type="module" src="../src/playlists/artist.js"></script>
 
     <!-- Header + Player initialization -->
     <script type="module">
-      import { initPlayer } from "/src/player.js";
-      import { initHeader, updateHeaderUI } from "/src/components/header.js";
+      import { initPlayer } from "../src/player.js";
+      import { initHeader, updateHeaderUI } from "../src/components/header.js";
 
       async function initArtistPage() {
         initHeader();

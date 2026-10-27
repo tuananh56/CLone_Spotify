@@ -72,7 +72,7 @@ export async function initLibrary() {
                    hover:bg-neutral-800 cursor-pointer"
           >
             <img
-              src="${item.images?.[0]?.url || "/src/assets/placeholder.png"}"
+              src="${item.images?.[0]?.url || "../src/assets/placeholder.png"}"
               alt="${item.name || ""}"
               class="mb-2 h-32 w-32 rounded-lg object-cover"
             />
@@ -184,7 +184,7 @@ export async function initSidebarPlaylists() {
           >
             <img
               src="${
-                playlist.images?.[0]?.url || "/src/assets/placeholder.png"
+                playlist.images?.[0]?.url || "../src/assets/placeholder.png"
               }"
               alt=""
               class="h-10 w-10 shrink-0 rounded object-cover"

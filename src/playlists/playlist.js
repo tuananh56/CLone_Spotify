@@ -7,7 +7,7 @@ let activePlaylistId = null;
 let searchRequestId = 0;
 let detailRequestId = 0;
 
-const fallbackImage = "/src/assets/playlist.png";
+const fallbackImage = "../src/assets/playlist.png";
 
 // =========================
 // Khởi tạo trang Playlist

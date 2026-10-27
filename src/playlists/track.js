@@ -30,7 +30,7 @@ export async function initTrackPage(id) {
 
     const image = document.getElementById("trackImageHeader");
     if (image) {
-      image.src = track.image_url || "/src/assets/playlist.png";
+      image.src = track.image_url || "../src/assets/playlist.png";
     }
 
     // Cập nhật playlist dùng chung, không tạo audio mới.
@@ -80,7 +80,7 @@ function updateTrackPlayerUI(track) {
 
   const image = document.getElementById("trackImagePlayer");
   if (image) {
-    image.src = track.image_url || "/src/assets/playlist.png";
+    image.src = track.image_url || "../src/assets/playlist.png";
   }
 }
 

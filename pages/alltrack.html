@@ -368,16 +368,16 @@
     </button>
     <div id="player-container"></div>
     <div id="footer-container"></div>
-    <script type="module" src="/src/app/router.js"></script>
-    <script type="module" src="/src/main.js"></script>
+    <script type="module" src="../src/app/router.js"></script>
+    <script type="module" src="../src/main.js"></script>
 
     <script type="module">
-      import { initAllTrackPage } from "/src/components/page/alltrack.js";
-      import { initPlayer } from "/src/player.js";
+      import { initAllTrackPage } from "../src/components/page/alltrack.js";
+      import { initPlayer } from "../src/player.js";
 
       async function loadPlayer() {
         try {
-          const res = await fetch("/pages/player.html");
+          const res = await fetch("/${import.meta.env.BASE_URL}player.html");
 
           if (!res.ok) {
             throw new Error("Không tải được player.html");

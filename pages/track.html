@@ -103,7 +103,7 @@
             >
               <img
                 id="trackImageHeader"
-                src="/src/assets/playlist.png"
+                src="../src/assets/playlist.png"
                 alt="Track cover"
                 class="bg-neutral-800 shadow-2xl shadow-black/40 rounded-md w-full object-cover aspect-square"
               />
@@ -177,10 +177,10 @@
       <div id="footer-container"></div>
 
     <script type="module">
-      import { initHeader, updateHeaderUI } from "/src/components/header.js";
-      import { initPlayer } from "/src/player.js";
-      import { initTrackPage } from "/src/playlists/track.js";
-      import { navigate } from "/src/app/router.js";
+      import { initHeader, updateHeaderUI } from "../src/components/header.js";
+      import { initPlayer } from "../src/player.js";
+      import { initTrackPage } from "../src/playlists/track.js";
+      import { navigate } from "../src/app/router.js";
 
       document.getElementById("btnGoHome")?.addEventListener("click", () => {
         navigate("home");

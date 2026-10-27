@@ -84,7 +84,7 @@ function renderSection(containerId, items = [], type) {
         item.image_url ||
         item.album_cover_image_url ||
         item.images?.[0]?.url ||
-        "/src/assets/playlist.png";
+        "../src/assets/playlist.png";
 
       const sub =
         type === "artist"

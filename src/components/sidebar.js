@@ -135,7 +135,7 @@ async function loadSidebarPlaylists() {
               data-id="${p.id || p._id || p.playlistId || ""}"
             >
               <img
-                src="${p.images?.[0]?.url || "/src/assets/playlist.png"}"
+                src="${p.images?.[0]?.url || "../src/assets/playlist.png"}"
                 alt=""
                 class="w-10 h-10 rounded object-cover"
               />
@@ -176,7 +176,7 @@ function renderSidebarSearchResults(playlists) {
         >
           <img
             src="${
-              p.image_url || p.images?.[0]?.url || "/src/assets/playlist.png"
+              p.image_url || p.images?.[0]?.url || "../src/assets/playlist.png"
             }"
             alt=""
             class="w-10 h-10 rounded object-cover"

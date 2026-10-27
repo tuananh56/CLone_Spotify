@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Playlist</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    />
+    <script type="module" crossorigin src="/Spotify/assets/playlist-Bpj6h_oe.js"></script>
+    <link rel="modulepreload" crossorigin href="/Spotify/assets/router-DO-4XTMW.js">
+    <link rel="modulepreload" crossorigin href="/Spotify/assets/header-pDA3E7m-.js">
+    <link rel="modulepreload" crossorigin href="/Spotify/assets/player-BydhyAN6.js">
+    <link rel="modulepreload" crossorigin href="/Spotify/assets/playlist-jMlNvcrg.js">
+    <link rel="modulepreload" crossorigin href="/Spotify/assets/preload-helper-BnXo_W8C.js">
+  </head>
+  <body class="bg-neutral-900 min-h-screen text-white">
+    <header
+      class="top-0 z-50 sticky flex justify-between items-center bg-neutral-900 shadow-md px-6 py-3"
+    >
+      <!-- Logo + Search -->
+      <div class="flex items-center space-x-4">
+        <!-- Logo Spotify -->
+        <i class="text-green-500 text-2xl fa-brands fa-spotify"></i>
+
+        <!-- Nút Home -->
+        <button
+          type="button"
+          onclick="window.location.href = '/pages/home.html'"
+          aria-label="Trang chủ"
+          class="flex justify-center items-center bg-[#242424] hover:bg-[#333333] rounded-full w-12 h-12 transition shrink-0"
+        >
+          <i class="fa-solid fa-house"></i>
+        </button>
+
+        <div class="relative ml-6">
+          <!-- Ô search -->
+          <div
+            class="group flex items-center bg-neutral-800 px-4 py-2 rounded-full hover:ring-2 hover:ring-green-500 w-96 transition-all duration-200"
+          >
+            <i
+              class="mr-2 text-neutral-400 group-hover:text-green-500 fa-solid fa-magnifying-glass"
+            ></i>
+            <input
+              id="searchInput"
+              type="text"
+              placeholder="Bạn muốn phát nội dung gì?"
+              class="bg-transparent focus:outline-none w-full text-neutral-200 text-sm"
+            />
+          </div>
+
+          <!-- Khung kết quả -->
+          <div
+            id="searchResults"
+            class="hidden top-full absolute bg-neutral-950 shadow-lg mt-2 rounded-lg w-96 max-h-96 overflow-y-auto"
+          ></div>
+        </div>
+      </div>
+
+      <!-- Menu bên phải -->
+      <div
+        class="flex items-center space-x-6 font-semibold text-gray-400 text-sm"
+      >
+        <a href="#" class="hover:text-white transition-colors duration-200"
+          >Premium</a
+        >
+        <a href="#" class="hover:text-white transition-colors duration-200"
+          >Hỗ trợ</a
+        >
+        <a href="#" class="hover:text-white transition-colors duration-200"
+          >Tải xuống</a
+        >
+        <a href="#" class="hover:text-white transition-colors duration-200"
+          >Cài đặt ứng dụng</a
+        >
+        <a href="#" class="hover:text-white transition-colors duration-200"
+          >Đăng ký</a
+        >
+        <button
+          id="loginBtn"
+          type="button"
+          class="bg-white hover:bg-gray-200 px-4 py-1 rounded-full text-black hover:scale-105 transition duration-200 transform"
+        >
+          Đăng nhập
+        </button>
+        <button
+          id="signupBtn"
+          type="button"
+          class="hover:text-white hover:scale-105 transition duration-200 transform"
+        >
+          Đăng ký
+        </button>
+        <div
+          id="userAvatar"
+          class="hidden relative flex justify-center items-center bg-purple-400 rounded-full w-8 h-8 font-bold text-black"
+        >
+          <span id="avatarLetter"></span>
+          <div
+            class="top-0 right-0 absolute bg-green-500 rounded-full w-2 h-2"
+          ></div>
+        </div>
+      </div>
+    </header>
+    <div id="page-content">
+      <main class="p-6 overflow-y-auto">
+        <!-- Header Playlist -->
+        <section class="flex items-center space-x-6 mb-10">
+          <img
+            id="detailImage"
+            src="data:image/png;base64,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"
+            alt="Playlist cover"
+            class="bg-neutral-800 rounded-lg w-60 h-60 object-cover"
+          />
+          <div>
+            <p class="mb-1 text-gray-400 text-sm uppercase">
+              Danh sách phát công khai
+            </p>
+            <h1 id="detailName" class="mb-2 font-bold text-5xl">
+              Tên playlist
+            </h1>
+            <p id="detailDesc" class="mb-3 text-gray-300">Mô tả playlist...</p>
+            <p class="text-gray-400 text-sm"></p>
+
+            <!-- Nút hành động -->
+            <div class="flex space-x-3 mt-4">
+              <button
+                id="playBtn"
+                class="bg-green-500 hover:bg-green-400 px-5 py-2 rounded-full font-semibold text-black"
+              >
+                Phát
+              </button>
+              <!-- <button
+                id="toggleLibraryBtn"
+                class="bg-neutral-700 hover:bg-neutral-600 px-5 py-2 rounded-full font-semibold text-white"
+              >
+                Lưu vào thư viện
+              </button> -->
+              <button
+                id="deleteBtn"
+                class="hidden bg-red-600 hover:bg-red-500 px-5 py-2 rounded-full font-semibold text-white"
+              >
+                Xóa
+              </button>
+            </div>
+          </div>
+        </section>
+        <!-- Khu vực tìm bài hát -->
+        <section class="mb-6 pt-6 border-neutral-800 border-t">
+          <h2 class="mb-3 font-bold text-xl">
+            Hãy cùng tìm nội dung cho danh sách phát của bạn
+          </h2>
+
+          <input
+            id="playlistTrackSearch"
+            type="text"
+            placeholder="Tìm bài hát và tập podcast"
+            class="bg-neutral-800 px-4 py-3 rounded focus:outline-none w-full text-white"
+          />
+
+          <div id="trackSearchResults" class="space-y-2 mt-4"></div>
+        </section>
+
+        <!-- Danh sách bài hát -->
+        <section id="trackList" class="space-y-2 mb-10"></section>
+      </main>
+    </div>
+
+    <!-- Player -->
+    <div id="player-container"></div>
+    <div id="footer-container"></div>
+    <!-- Header + Player initialization -->
+  </body>
+</html>

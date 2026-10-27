@@ -139,7 +139,7 @@ function renderArtistHeader(artist) {
 
   if (!header) return;
 
-  const imageUrl = artist.image_url || "/src/assets/artist.png";
+  const imageUrl = artist.image_url || "../src/assets/artist.png";
   const artistName = artist.name || "Nghệ sĩ không tên";
   const monthlyListeners = Number(artist.monthly_listeners) || 0;
   const bio = artist.bio || "Chưa có mô tả";
@@ -150,7 +150,7 @@ function renderArtistHeader(artist) {
   image.className = "w-48 h-48 object-cover rounded-full shadow-lg";
   image.onerror = () => {
     image.onerror = null;
-    image.src = "/src/assets/artist.png";
+    image.src = "../src/assets/artist.png";
   };
 
   header.replaceChildren();
@@ -205,7 +205,7 @@ function renderTracksSection(tracks = []) {
 
     const title = track.title || "Bài hát không tên";
     const albumName = track.album_name || "Đĩa đơn";
-    const coverUrl = track.cover_image_url || "/src/assets/playlist.png";
+    const coverUrl = track.cover_image_url || "../src/assets/playlist.png";
 
     const button = document.createElement("button");
     button.type = "button";
@@ -218,7 +218,7 @@ function renderTracksSection(tracks = []) {
     image.className = "w-14 h-14 object-cover rounded";
     image.onerror = () => {
       image.onerror = null;
-      image.src = "/src/assets/playlist.png";
+      image.src = "../src/assets/playlist.png";
     };
 
     const info = document.createElement("div");
@@ -270,7 +270,7 @@ function renderAlbumsSection(albums = []) {
     const albumId = album.id ?? album.album_id ?? album._id;
 
     const title = album.title || "Album không tên";
-    const coverUrl = album.cover_image_url || "/src/assets/playlist.png";
+    const coverUrl = album.cover_image_url || "../src/assets/playlist.png";
     const releaseYear = album.release_year ?? "";
 
     const button = document.createElement("button");
@@ -284,7 +284,7 @@ function renderAlbumsSection(albums = []) {
     image.className = "w-full aspect-square object-cover rounded mb-2";
     image.onerror = () => {
       image.onerror = null;
-      image.src = "/src/assets/playlist.png";
+      image.src = "../src/assets/playlist.png";
     };
 
     const titleElement = document.createElement("p");

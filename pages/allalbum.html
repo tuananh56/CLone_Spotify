@@ -376,19 +376,19 @@
     <div id="player-container"></div>
     <div id="footer-container"></div>
 
-    <script type="module" src="/src/app/router.js"></script>
-    <script type="module" src="/src/main.js"></script>
+    <script type="module" src="../src/app/router.js"></script>
+    <script type="module" src="../src/main.js"></script>
 
     <script type="module">
-      import { initAllAlbumPage } from "/src/components/page/allalbum.js";
-      import { initPlayer } from "/src/player.js";
+      import { initAllAlbumPage } from "../src/components/page/allalbum.js";
+      import { initPlayer } from "../src/player.js";
 
       async function loadPlayer() {
         try {
           const playerContainer = document.getElementById("player-container");
 
           if (playerContainer && playerContainer.dataset.loaded !== "true") {
-            const response = await fetch("/pages/player.html");
+            const response = await fetch("/${import.meta.env.BASE_URL}player.html");
 
             if (!response.ok) {
               throw new Error("Không tải được player.html");
