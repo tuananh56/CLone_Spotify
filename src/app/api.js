@@ -5,24 +5,40 @@ export const BASE_URL = "https://spotify.f8team.dev";
 
 export const api = axios.create({
   baseURL: BASE_URL,
-  headers: { "Content-Type": "application/json" },
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
-// Tự động gắn token vào header nếu có
+// Tự động gắn token nếu đã đăng nhập
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
+
   if (token) {
+    config.headers = config.headers || {};
     config.headers.Authorization = `Bearer ${token}`;
   }
+
   return config;
 });
 
-// Bắt lỗi chung
+// Xử lý lỗi API
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    const status = error.response?.status;
     const message = error.response?.data?.message || "Có lỗi xảy ra!";
-    Swal.fire({ icon: "error", title: "Oops...", text: message });
+
+    // Không hiện popup cho lỗi 401 ở đây;
+    // trang đăng nhập hoặc nơi gọi API sẽ xử lý riêng.
+    if (status !== 401) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: message,
+      });
+    }
+
     return Promise.reject(error);
-  }
+  },
 );

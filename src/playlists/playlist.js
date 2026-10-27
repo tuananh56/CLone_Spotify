@@ -7,7 +7,7 @@ let activePlaylistId = null;
 let searchRequestId = 0;
 let detailRequestId = 0;
 
-const fallbackImage = "../src/assets/playlist.png";
+const fallbackImage = "..`${import.meta.env.BASE_URL}playlist.png`";
 
 // =========================
 // Khởi tạo trang Playlist
@@ -433,7 +433,7 @@ function initButtons(isOwner) {
           if (typeof window.goHome === "function") {
             window.goHome();
           } else {
-            window.location.href = "/pages/home.html";
+            window.location.href = "/Spotify/home.html";
           }
         }
       } catch (err) {

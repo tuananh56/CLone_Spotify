@@ -84,7 +84,7 @@ function renderSection(containerId, items = [], type) {
         item.image_url ||
         item.album_cover_image_url ||
         item.images?.[0]?.url ||
-        "../src/assets/playlist.png";
+        "..`${import.meta.env.BASE_URL}playlist.png`";
 
       const sub =
         type === "artist"
@@ -380,5 +380,5 @@ window.openDetail = function (type, id) {
 const openSearchPageBtn = document.getElementById("openSearchPageBtn");
 
 openSearchPageBtn?.addEventListener("click", () => {
-  window.location.href = "/pages/search.html";
+  window.location.href = "/Spotify/search.html";
 });

@@ -71,7 +71,7 @@ export function initHeader() {
           item.image_url ||
           item.image ||
           item.thumbnail ||
-          "../src/assets/placeholder.png";
+          "./src/assets/placeholder.png";
         const subLabel =
           item.type === "track"
             ? item.artists?.[0]?.name

@@ -1,5 +1,5 @@
-import { api } from "../src/app/api.js";
-import { navigate } from "../src/app/router.js";
+import { api } from "./src/app/api.js";
+import { navigate } from "./src/app/router.js";
 
 const input = document.getElementById("searchPageInput");
 const resultsBox = document.getElementById("searchPageResults");
@@ -34,7 +34,7 @@ function getImage(item) {
     item.image_url ||
     item.image ||
     item.thumbnail ||
-    "../src/assets/placeholder.png"
+    "./src/assets/placeholder.png"
   );
 }
 
@@ -97,7 +97,7 @@ function renderResults(items, keyword) {
                 alt=""
                 loading="lazy"
                 class="shadow-lg mb-4 rounded-md w-full object-cover aspect-square"
-                onerror="this.onerror=null;this.src='../src/assets/placeholder.png'"
+                onerror="this.onerror=null;this.src='./src/assets/placeholder.png'"
               />
               <h3 class="mb-1 font-bold truncate">${escapeHTML(getName(item))}</h3>
               <p class="text-neutral-400 text-sm truncate">${escapeHTML(getSubtitle(item))}</p>
@@ -136,7 +136,7 @@ function renderQuickResults(items) {
                 src="${escapeHTML(getImage(item))}"
                 alt=""
                 class="rounded w-12 h-12 object-cover"
-                onerror="this.onerror=null;this.src='../src/assets/placeholder.png'"
+                onerror="this.onerror=null;this.src='./src/assets/placeholder.png'"
               />
               <span class="flex-1 min-w-0">
                 <span class="block font-semibold text-sm truncate">${escapeHTML(getName(item))}</span>
@@ -339,7 +339,7 @@ signupBtn.addEventListener("click", () => {
 // Nếu dự án có xử lý đăng xuất trong header.js, hãy dùng chung hàm đó.
 avatar.addEventListener("click", async () => {
   try {
-    const { handleLogout } = await import("../src/auth/logout.js");
+    const { handleLogout } = await import("./src/auth/logout.js");
     handleLogout();
   } catch (error) {
     // console.error("Không thể đăng xuất:", error);

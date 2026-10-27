@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#121212" />
+
+    <title>Tất cả album | Music</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    />
+  </head>
+
+  <body class="bg-black min-h-screen text-white">
+    <!-- Header -->
+    <header
+      class="top-0 z-50 sticky flex justify-between items-center bg-neutral-900 shadow-md px-6 py-3"
+    >
+      <div class="flex items-center space-x-4">
+        <button
+          type="button"
+          onclick="window.goHome()"
+          aria-label="Về trang chủ"
+          class="text-green-500 text-2xl hover:scale-105 transition-transform"
+        >
+          <i class="fa-brands fa-spotify"></i>
+        </button>
+
+        <button
+          type="button"
+          onclick="window.goHome()"
+          aria-label="Trang chủ"
+          class="bg-neutral-800 hover:bg-green-500 p-3 rounded-full text-white transition-colors"
+        >
+          <i class="fa-solid fa-house"></i>
+        </button>
+
+        <div class="relative ml-6">
+          <div
+            class="group flex items-center bg-neutral-800 px-4 py-2 rounded-full hover:ring-2 hover:ring-green-500 w-96 transition-all duration-200"
+          >
+            <i
+              class="mr-2 text-neutral-400 group-hover:text-green-500 fa-solid fa-magnifying-glass"
+            ></i>
+
+            <input
+              id="searchInput"
+              type="text"
+              placeholder="Bạn muốn phát nội dung gì?"
+              class="bg-transparent focus:outline-none w-full text-neutral-200 text-sm"
+            />
+
+            <div
+              class="flex items-center gap-1 ml-2 text-neutral-400 text-xs shrink-0"
+            >
+              <span class="px-1.5 py-1 border border-neutral-600 rounded"
+                >Ctrl</span
+              >
+              <span>+</span>
+              <span class="px-1.5 py-1 border border-neutral-600 rounded"
+                >Shift</span
+              >
+              <span>+</span>
+              <span class="px-1.5 py-1 border border-neutral-600 rounded"
+                >L</span
+              >
+            </div>
+
+            <div class="ml-3 border-neutral-400 border-l-2 h-4"></div>
+
+            <button
+              id="openSearchPageBtn"
+              type="button"
+              aria-label="Mở trang tìm kiếm"
+              title="Tìm kiếm"
+              class="ml-3 text-neutral-400 hover:text-white transition shrink-0"
+            >
+              <i class="fa-solid fa-box-archive"></i>
+            </button>
+          </div>
+
+          <div
+            id="searchResults"
+            class="hidden top-full z-50 absolute bg-neutral-950 shadow-lg mt-2 rounded-lg w-96 max-h-96 overflow-y-auto"
+          ></div>
+        </div>
+      </div>
+
+      <div
+        class="flex items-center space-x-6 font-semibold text-gray-400 text-sm"
+      >
+        <a
+          id="premiumLink"
+          href="#"
+          class="inline-block bg-white hover:bg-gray-200 px-4 py-2 rounded-2xl font-semibold text-black hover:scale-105 transition-all duration-200 transform"
+        >
+          Khám phá Premium
+        </a>
+
+        <a id="supportLink" href="#" class="hover:text-white transition-colors">
+          Hỗ trợ
+        </a>
+
+        <a
+          id="downloadLink"
+          href="#"
+          class="hover:text-white transition-colors"
+        >
+          Tải xuống
+        </a>
+
+        <a
+          id="appInstallLink"
+          href="#"
+          class="inline-flex items-center gap-2 hover:text-white transition-colors"
+        >
+          <i class="leading-none fa-regular fa-circle-down"></i>
+          <span>Cài đặt ứng dụng</span>
+        </a>
+
+        <a id="signupLink" href="#" class="hover:text-white transition-colors">
+          Đăng ký
+        </a>
+
+        <button
+          id="loginBtn"
+          type="button"
+          class="bg-white hover:bg-gray-200 px-4 py-1 rounded-full text-black hover:scale-105 transition duration-200 transform"
+        >
+          Đăng nhập
+        </button>
+
+        <button
+          id="signupBtn"
+          type="button"
+          class="hover:text-white hover:scale-105 transition duration-200 transform"
+        >
+          Đăng ký
+        </button>
+
+        <div
+          id="userAvatar"
+          class="hidden relative justify-center items-center bg-purple-400 rounded-full w-8 h-8 font-bold text-black cursor-pointer"
+          title="Nhấn để đăng xuất"
+        >
+          <span id="avatarLetter"></span>
+          <div
+            class="top-0 right-0 absolute bg-green-500 rounded-full w-2 h-2"
+          ></div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Nội dung chính -->
+    <div id="page-content" class="flex gap-4 mt-3">
+      <!-- Sidebar -->
+      <aside
+        id="sidebar"
+        class="flex flex-col bg-neutral-900 p-4 border border-gray-700 rounded-xl w-64 h-[calc(100vh-64px)] overflow-y-auto shrink-0"
+      >
+        <div class="flex justify-between items-center mb-4">
+          <div class="flex items-center space-x-2">
+            <button
+              id="toggleSidebarBtn"
+              type="button"
+              aria-label="Thu gọn sidebar"
+              aria-expanded="true"
+              class="flex justify-center items-center hover:bg-neutral-700 rounded-full w-8 h-8 text-gray-400 hover:text-white transition-colors shrink-0"
+            >
+              <i id="toggleSidebarIcon" class="fa-angles-left fa-solid"></i>
+            </button>
+
+            <h2 id="sidebarTitle" class="font-bold text-lg whitespace-nowrap">
+              Thư viện
+            </h2>
+
+            <div id="sidebarActions" class="flex space-x-2">
+              <button
+                id="sidebarSearchBtn"
+                type="button"
+                class="text-gray-400 hover:text-white"
+              >
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </button>
+
+              <button
+                id="createPlaylistBtn"
+                type="button"
+                class="bg-neutral-800 hover:bg-neutral-700 px-3 py-1 rounded-full font-semibold text-sm whitespace-nowrap"
+              >
+                <i class="mr-1 fa-solid fa-plus"></i>
+                Tạo
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div id="sidebarSearchBox" class="hidden mb-3">
+          <input
+            id="sidebarSearchInput"
+            type="text"
+            placeholder="Tìm playlist, nghệ sĩ, album..."
+            class="bg-neutral-800 px-3 py-2 rounded focus:outline-none w-full text-white text-sm"
+          />
+        </div>
+
+        <div
+          id="firstPlaylistBlock"
+          class="bg-neutral-800 hover:bg-neutral-700 mb-3 p-4 rounded-lg transition-all duration-200"
+        >
+          <p class="mb-1 font-bold">Tạo danh sách phát đầu tiên của bạn</p>
+          <p class="mb-3 text-gray-300 text-sm">
+            Rất dễ! Chúng tôi sẽ giúp bạn
+          </p>
+        </div>
+
+        <div
+          id="podcastBlock"
+          class="bg-neutral-800 hover:bg-neutral-700 mb-3 p-4 rounded-lg transition-all duration-200"
+        >
+          <p class="mb-1 font-bold">Hãy cùng tìm và theo dõi một số podcast</p>
+          <p class="text-gray-300 text-sm">
+            Chúng tôi sẽ cập nhật cho bạn thông tin mới nhất
+          </p>
+        </div>
+
+        <div id="sidebarList" class="space-y-2 mt-4"></div>
+
+        <div class="space-y-1 mt-auto text-gray-400 text-xs">
+          <div class="flex flex-wrap gap-x-2">
+            <span>Pháp lý</span>
+            <span>Trung tâm an toàn và quyền riêng tư</span>
+            <span>Chính sách quyền riêng tư</span>
+            <span>Cookie</span>
+            <span>Giới thiệu Quảng cáo</span>
+            <span>Hỗ trợ tiếp cận</span>
+          </div>
+
+          <button
+            type="button"
+            class="flex items-center mt-2 px-2 py-1 border border-gray-500 rounded-full hover:text-white text-xs"
+          >
+            <i class="mr-1 fa-solid fa-globe"></i>
+            Tiếng Việt
+          </button>
+        </div>
+      </aside>
+
+      <!-- Main -->
+      <main
+        id="mainContent"
+        class="flex-1 bg-neutral-900 p-6 border border-neutral-800 rounded-lg min-w-0 overflow-y-auto"
+      >
+        <!-- Banner -->
+        <section
+          class="relative bg-gradient-to-br from-green-900 via-neutral-800 to-neutral-900 mb-8 p-8 rounded-lg overflow-hidden"
+        >
+          <div class="z-10 relative">
+            <p
+              class="mb-2 font-semibold text-green-400 text-sm uppercase tracking-widest"
+            >
+              Spotify Library
+            </p>
+
+            <h1 class="mb-3 font-bold text-white text-4xl">Tất cả album</h1>
+
+            <p class="max-w-xl text-neutral-300 text-sm">
+              Khám phá album, nghệ sĩ và những tuyển tập âm nhạc yêu thích.
+            </p>
+
+            <p id="albumCount" class="mt-3 text-neutral-400 text-sm">
+              Đang tải danh sách album...
+            </p>
+          </div>
+
+          <i
+            class="-right-3 -bottom-8 absolute text-[180px] text-white/5 rotate-12 fa-solid fa-compact-disc"
+            aria-hidden="true"
+          ></i>
+        </section>
+
+        <!-- Actions -->
+        <section class="flex flex-wrap items-center gap-4 mb-6">
+          <button
+            id="btnPlayAllAlbums"
+            type="button"
+            aria-label="Phát tất cả album"
+            title="Phát tất cả"
+            class="flex justify-center items-center bg-green-500 hover:bg-green-400 rounded-full w-14 h-14 text-black text-xl hover:scale-105 transition"
+          >
+            <i class="fa-solid fa-play"></i>
+          </button>
+
+          <button
+            id="btnReloadAlbums"
+            type="button"
+            class="flex items-center gap-2 hover:bg-white/10 px-4 py-2 border border-neutral-600 hover:border-white rounded-full font-semibold text-white text-sm transition"
+          >
+            <i class="fa-rotate-right fa-solid"></i>
+            Làm mới
+          </button>
+
+          <div
+            class="flex flex-1 items-center gap-3 bg-neutral-800 px-4 py-2 rounded-full focus-within:ring-2 focus-within:ring-green-500 min-w-[220px]"
+          >
+            <i class="text-neutral-400 fa-solid fa-magnifying-glass"></i>
+            <input
+              id="albumSearchInput"
+              type="search"
+              placeholder="Tìm album..."
+              aria-label="Tìm album"
+              class="bg-transparent outline-none w-full text-white placeholder:text-neutral-400 text-sm"
+            />
+          </div>
+
+          <button
+            id="btnGoHome"
+            type="button"
+            class="flex items-center gap-2 hover:bg-white/10 ml-auto px-4 py-2 rounded-full font-semibold text-neutral-300 hover:text-white text-sm transition"
+          >
+            <i class="fa-solid fa-house"></i>
+            Trang chủ
+          </button>
+        </section>
+
+        <!-- Album list -->
+        <section>
+          <div
+            class="flex justify-between items-center mb-4 px-2 py-3 border-neutral-700 border-b"
+          >
+            <h2 class="font-bold text-lg">Danh sách album</h2>
+
+            <span class="text-neutral-400 text-sm">
+              <i class="mr-1 fa-solid fa-compact-disc"></i>
+              Album
+            </span>
+          </div>
+
+          <div
+            id="allAlbumsList"
+            class="gap-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6"
+          >
+            <div
+              class="col-span-full py-10 text-neutral-400 text-sm text-center"
+            >
+              <i class="mb-3 text-2xl fa-solid fa-spinner fa-spin"></i>
+              <p>Đang tải danh sách album...</p>
+            </div>
+          </div>
+          <!-- Pagination -->
+          <nav
+            id="albumsPagination"
+            aria-label="Phân trang album"
+            class="mt-8 mb-4"
+          ></nav>
+        </section>
+      </main>
+    </div>
+
+    <!-- Nút mở sidebar -->
+    <button
+      id="openSidebarBtn"
+      type="button"
+      aria-label="Mở thư viện"
+      title="Mở thư viện"
+      class="top-24 left-0 z-[60] fixed flex justify-center items-center bg-neutral-800 hover:bg-green-500 opacity-0 rounded-r-lg w-8 h-12 text-white transition-opacity duration-200 pointer-events-none"
+    >
+      <i class="fa-angles-right fa-solid"></i>
+    </button>
+
+    <!-- Player + Footer -->
+    <div id="player-container"></div>
+    <div id="footer-container"></div>
+
+    <script type="module" src="./src/app/router.js"></script>
+    <script type="module" src="./src/main.js"></script>
+
+    <script type="module">
+      import { initAllAlbumPage } from "./src/components/page/allalbum.js";
+      import { initPlayer } from "./src/player.js";
+
+      async function loadPlayer() {
+        try {
+          const playerContainer = document.getElementById("player-container");
+
+          if (playerContainer && playerContainer.dataset.loaded !== "true") {
+            const response = await fetch("/Spotify/player.html");
+
+            if (!response.ok) {
+              throw new Error("Không tải được player.html");
+            }
+
+            playerContainer.innerHTML = await response.text();
+            playerContainer.dataset.loaded = "true";
+
+            initPlayer();
+            document.dispatchEvent(new Event("playerloaded"));
+          }
+        } catch (error) {
+          console.error("Lỗi tải player:", error);
+        }
+
+        await initAllAlbumPage();
+      }
+
+      loadPlayer();
+    </script>
+  </body>
+</html>

@@ -18,7 +18,7 @@ async function loadAlbumDetail(id) {
     const album = res.data;
 
     document.querySelector("#detailImage").src =
-      album.cover_image_url || "../src/assets/placeholder.png";
+      album.cover_image_url || "./src/assets/placeholder.png";
     document.querySelector("#detailName").textContent = album.title;
     document.querySelector("#detailDesc").textContent =
       `${album.artist_name || album.artist || ""} • ${album.release_date?.slice(0, 4) || ""}`;

@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#121212" />
+    <title>Album | Music</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    />
+  </head>
+
+  <body class="bg-black min-h-screen text-white">
+    <!-- Header -->
+    <header
+      class="top-0 z-50 sticky flex justify-between items-center bg-[#121212] shadow-md px-4 md:px-6 py-3"
+    >
+      <!-- Logo + Search -->
+      <div class="flex items-center gap-3 md:gap-4 min-w-0">
+        <a
+          href="/home.html"
+          aria-label="Trang chủ Spotify"
+          class="text-[#1ed760] text-2xl hover:scale-105 transition shrink-0"
+        >
+          <i class="fa-brands fa-spotify"></i>
+        </a>
+
+        <button
+          type="button"
+          onclick="window.location.href = '/home.html'"
+          aria-label="Trang chủ"
+          class="flex justify-center items-center bg-[#242424] hover:bg-[#333333] rounded-full w-12 h-12 transition shrink-0"
+        >
+          <i class="text-lg fa-solid fa-house"></i>
+        </button>
+
+        <div class="relative flex-1 md:flex-none ml-1 md:ml-2 md:w-96 min-w-0">
+          <div
+            class="group flex items-center bg-[#242424] px-4 py-3 border border-transparent hover:border-neutral-600 focus-within:border-white rounded-full md:w-96 transition"
+          >
+            <i
+              class="mr-3 text-neutral-400 group-focus-within:text-white text-lg transition fa-solid fa-magnifying-glass"
+            ></i>
+
+            <input
+              id="searchInput"
+              type="text"
+              autocomplete="off"
+              placeholder="Bạn muốn phát nội dung gì?"
+              class="bg-transparent outline-none w-full min-w-0 text-white placeholder:text-neutral-400 text-sm"
+            />
+          </div>
+
+          <div
+            id="searchResults"
+            class="hidden top-full left-0 z-50 absolute bg-[#282828] shadow-2xl mt-2 p-2 rounded-lg w-full md:w-96 max-h-96 overflow-y-auto"
+          ></div>
+        </div>
+      </div>
+
+      <!-- Menu -->
+      <div class="hidden lg:flex items-center gap-5 ml-3 shrink-0">
+        <a
+          href="#"
+          class="font-bold text-neutral-400 hover:text-white text-sm hover:scale-105 transition"
+        >
+          Premium
+        </a>
+
+        <a
+          href="#"
+          class="font-bold text-neutral-400 hover:text-white text-sm hover:scale-105 transition"
+        >
+          Hỗ trợ
+        </a>
+
+        <a
+          href="#"
+          class="font-bold text-neutral-400 hover:text-white text-sm hover:scale-105 transition"
+        >
+          Tải xuống
+        </a>
+
+        <div class="bg-neutral-700 w-px h-6"></div>
+
+        <button
+          id="signupBtn"
+          type="button"
+          class="font-bold text-neutral-400 hover:text-white text-sm hover:scale-105 transition"
+        >
+          Đăng ký
+        </button>
+
+        <button
+          id="loginBtn"
+          type="button"
+          class="bg-white hover:bg-neutral-200 px-7 py-3 rounded-full font-bold text-black text-sm hover:scale-105 transition"
+        >
+          Đăng nhập
+        </button>
+
+        <div
+          id="userAvatar"
+          class="hidden relative justify-center items-center bg-purple-400 rounded-full w-9 h-9 font-bold text-black"
+        >
+          <span id="avatarLetter"></span>
+
+          <div
+            class="top-0 right-0 absolute bg-[#1ed760] border-[#121212] border-2 rounded-full w-2.5 h-2.5"
+          ></div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Page -->
+    <div id="page-content" class="min-h-[calc(100vh-70px)]">
+      <main
+        class="bg-[#121212] mx-auto pb-32 rounded-lg max-w-[1800px] min-h-screen overflow-hidden"
+      >
+        <!-- Album hero -->
+        <section
+          class="relative bg-gradient-to-b from-[#6b6257] via-[#38332e] to-[#121212] px-5 sm:px-8 md:px-10 pt-8 md:pt-12 pb-7 sm:pb-9 overflow-hidden"
+        >
+          <!-- Decorative gradient -->
+          <div
+            class="absolute inset-0 bg-gradient-to-b from-white/5 via-transparent to-[#121212] pointer-events-none"
+          ></div>
+
+          <div
+            class="z-10 relative flex sm:flex-row flex-col items-center sm:items-end gap-7 sm:gap-8"
+          >
+            <!-- Album cover -->
+            <div
+              class="group relative w-full sm:w-52 md:w-60 max-w-[260px] md:max-w-none shrink-0"
+            >
+              <div
+                class="bg-[#282828] shadow-2xl shadow-black/40 rounded-md aspect-square overflow-hidden"
+              >
+                <img
+                  id="detailImage"
+                  src="./src/assets/placeholder.png"
+                  alt="Album cover"
+                  class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                />
+              </div>
+            </div>
+
+            <!-- Album info -->
+            <div class="w-full min-w-0 sm:text-left text-center">
+              <p
+                class="mb-3 font-bold text-white text-xs sm:text-sm uppercase tracking-wider"
+              >
+                Album
+              </p>
+
+              <h1
+                id="detailName"
+                class="mb-4 font-black text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl break-words leading-tight tracking-tight"
+              >
+                Đang tải album...
+              </h1>
+
+              <p
+                id="detailDesc"
+                class="text-neutral-200 text-sm sm:text-base leading-relaxed"
+              >
+                Đang tải thông tin nghệ sĩ...
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Action bar -->
+        <section
+          class="flex flex-wrap items-center gap-5 md:gap-7 px-5 sm:px-8 md:px-10 py-6"
+        >
+          <button
+            id="playBtn"
+            type="button"
+            aria-label="Phát album"
+            class="flex justify-center items-center bg-[#1ed760] hover:bg-[#3be477] rounded-full w-14 h-14 text-black hover:scale-105 transition shrink-0"
+          >
+            <i class="ml-1 text-xl fa-solid fa-play"></i>
+          </button>
+
+          <!-- <button
+            id="toggleLibraryBtn"
+            type="button"
+            class="px-5 py-2 border border-neutral-500 hover:border-white rounded-full font-bold text-white text-sm hover:scale-105 transition"
+          >
+            Lưu vào thư viện
+          </button> -->
+
+          <button
+            type="button"
+            aria-label="Tùy chọn album"
+            class="flex justify-center items-center rounded-full w-10 h-10 text-neutral-400 hover:text-white transition"
+          >
+            <i class="text-2xl fa-solid fa-ellipsis"></i>
+          </button>
+        </section>
+
+        <!-- Track list -->
+        <section class="px-4 sm:px-8 md:px-10">
+          <div class="mb-4">
+            <h2 class="font-bold text-white text-xl">Danh sách bài hát</h2>
+          </div>
+
+          <!-- Column headers -->
+          <div
+            class="items-center gap-4 grid grid-cols-[32px_minmax(0,1fr)_40px] px-3 py-3 border-white/10 border-b text-neutral-400 text-sm"
+          >
+            <span class="text-center">#</span>
+            <span>Tiêu đề</span>
+            <span class="text-right">
+              <i class="fa-regular fa-clock"></i>
+            </span>
+          </div>
+
+          <!-- album.js renders tracks here -->
+          <section id="trackList" class="space-y-1 mt-2">
+            <p class="px-3 py-5 text-neutral-400 text-sm">
+              Đang tải danh sách bài hát...
+            </p>
+          </section>
+
+          <!-- Album footer -->
+          <div class="mt-8 pt-5 border-white/10 border-t">
+            <p class="text-neutral-400 text-xs">
+              Nghe nhạc và khám phá các bài hát trong album này.
+            </p>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Player -->
+    <div id="player-container"></div>
+    <div id="footer-container"></div>
+
+    <!-- Header + Player initialization -->
+    <script type="module">
+      import { initHeader, updateHeaderUI } from "./src/components/header.js";
+
+      initHeader();
+      updateHeaderUI();
+
+      async function loadPlayer() {
+        const playerContainer = document.getElementById("player-container");
+
+        if (!playerContainer) {
+          console.error("Không tìm thấy player-container");
+          return;
+        }
+
+        try {
+          const response = await fetch("/player.html");
+
+          if (!response.ok) {
+            throw new Error("Không tải được player.html");
+          }
+
+          playerContainer.innerHTML = await response.text();
+
+          const { initPlayer } = await import("./src/player.js");
+          initPlayer();
+
+          document.dispatchEvent(new CustomEvent("playerloaded"));
+        } catch (error) {
+          console.error("Lỗi khởi tạo Player:", error);
+        }
+      }
+
+      loadPlayer();
+    </script>
+
+    <!-- Album script -->
+    <script type="module" src="./src/playlists/album.js"></script>
+  </body>
+</html>

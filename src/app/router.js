@@ -1,19 +1,30 @@
-const routes = {
-  home: "/pages/home.html",
-  track: "/pages/track.html",
-  playlist: "/pages/playlist.html",
-  artist: "/pages/artist.html",
-  album: "/pages/album.html",
-  allalbum: "/pages/allalbum.html",
-  alltrack: "/pages/alltrack.html",
-};
+const BASE_URL = import.meta.env.BASE_URL;
 
+const routes = {
+  home: `${BASE_URL}home.html`,
+  track: `${BASE_URL}track.html`,
+  playlist: `${BASE_URL}playlist.html`,
+  artist: `${BASE_URL}artist.html`,
+  album: `${BASE_URL}album.html`,
+  allalbum: `${BASE_URL}allalbum.html`,
+  alltrack: `${BASE_URL}alltrack.html`,
+  allartist: `${BASE_URL}allartist.html`,
+  allplaylist: `${BASE_URL}allplaylist.html`,
+  search: `${BASE_URL}search.html`,
+};
 let currentPage = null;
 let navigationId = 0;
 
 function getPageFromPath(pathname) {
+  const normalizedPath = pathname.replace(/\/+$/, "");
+
   for (const [page, path] of Object.entries(routes)) {
-    if (pathname.endsWith(path)) {
+    const routePath = new URL(path, window.location.origin).pathname.replace(
+      /\/+$/,
+      "",
+    );
+
+    if (normalizedPath === routePath) {
       return page;
     }
   }
@@ -44,12 +55,10 @@ export async function navigate(page, params = {}) {
   }
 
   const url = buildUrl(page, params);
-
-  // Cập nhật URL trước khi khởi tạo trang mới.
   const success = await renderPage(page, params, url);
 
   if (success) {
-    history.pushState({ page, params }, "", url);
+    history.pushState({ page, params }, "", url.pathname + url.search);
   }
 }
 
@@ -79,15 +88,11 @@ async function renderPage(page, params = {}, targetUrl = null) {
       );
     }
 
-    // Bỏ qua phản hồi cũ nếu người dùng đã chuyển trang khác.
     if (requestId !== navigationId) return false;
 
-    // Chỉ thay nội dung trang, giữ nguyên player và audio.
     currentContent.replaceWith(newContent.cloneNode(true));
-
     currentPage = page;
 
-    // Thông báo cho main.js khởi tạo nội dung tương ứng.
     document.dispatchEvent(
       new CustomEvent("pagechanged", {
         detail: {

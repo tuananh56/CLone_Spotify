@@ -1,3 +1,4 @@
+import { navigate } from "../app/router.js";
 import { api } from "../app/api.js";
 
 let sidebarInitialized = false;
@@ -39,7 +40,7 @@ export function initSidebar() {
         throw new Error("Không tìm thấy ID trong phản hồi API");
       }
 
-      window.location.href = `/pages/playlist.html?id=${newPlaylistId}`;
+      window.location.href = `${import.meta.env.BASE_URL}playlist.html?id=${encodeURIComponent(newPlaylistId)}`;
     } catch (err) {
       console.error("Lỗi tạo playlist:", err);
     }
@@ -69,7 +70,7 @@ export function initSidebar() {
     if (item) {
       const id = item.dataset.id;
       if (id) {
-        window.location.href = `/pages/playlist.html?id=${id}`;
+        window.location.href = `${import.meta.env.BASE_URL}playlist.html?id=${encodeURIComponent(id)}`;
       }
     }
   });
@@ -135,7 +136,7 @@ async function loadSidebarPlaylists() {
               data-id="${p.id || p._id || p.playlistId || ""}"
             >
               <img
-                src="${p.images?.[0]?.url || "../src/assets/playlist.png"}"
+                src="${p.images?.[0]?.url || "..`${import.meta.env.BASE_URL}playlist.png`"}"
                 alt=""
                 class="w-10 h-10 rounded object-cover"
               />
@@ -176,7 +177,9 @@ function renderSidebarSearchResults(playlists) {
         >
           <img
             src="${
-              p.image_url || p.images?.[0]?.url || "../src/assets/playlist.png"
+              p.image_url ||
+              p.images?.[0]?.url ||
+              "..`${import.meta.env.BASE_URL}playlist.png`"
             }"
             alt=""
             class="w-10 h-10 rounded object-cover"

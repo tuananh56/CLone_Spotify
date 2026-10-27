@@ -1,1 +1,0 @@
-import"./router-DO-4XTMW.js";import"./player-BydhyAN6.js";fetch(`../src/player.html`).then(e=>{if(!e.ok)throw Error(`Không tải được player.html: ${e.status}`);return e.text()}).then(e=>{document.getElementById(`player-container`).innerHTML=e}).catch(e=>console.error(e));

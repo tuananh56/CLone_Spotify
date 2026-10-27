@@ -1,39 +1,32 @@
-
-import { defineConfig } from 'vite';
-import { resolve } from 'node:path';
+import { defineConfig } from "vite";
+import { resolve } from "node:path";
 
 const pages = [
-  'index',
-  'home',
-  'track',
-  'artist',
-  'album',
-  'playlist',
-  'alltrack',
-  'allalbum',
-  'allartist',
-  'allplaylist',
-  'search',
-  'login',
-  'register',
-  'player',
+  "index",
+  "home",
+  "track",
+  "artist",
+  "album",
+  "playlist",
+  "alltrack",
+  "allalbum",
+  "allartist",
+  "allplaylist",
+  "search",
+  "login",
+  "register",
+  "player",
 ];
 
 export default defineConfig({
-  root: 'pages',
-  base: '/Spotify/',
-  publicDir: '../public',
+  base: "/Spotify/",
 
   build: {
-    outDir: '../dist',
+    outDir: "dist",
     emptyOutDir: true,
-
     rollupOptions: {
       input: Object.fromEntries(
-        pages.map((page) => [
-          page,
-          resolve(process.cwd(), 'pages', `${page}.html`),
-        ]),
+        pages.map((page) => [page, resolve(process.cwd(), `${page}.html`)]),
       ),
     },
   },

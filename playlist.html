@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Playlist</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    />
+  </head>
+  <body class="bg-neutral-900 min-h-screen text-white">
+    <header
+      class="top-0 z-50 sticky flex justify-between items-center bg-neutral-900 shadow-md px-6 py-3"
+    >
+      <!-- Logo + Search -->
+      <div class="flex items-center space-x-4">
+        <!-- Logo Spotify -->
+        <i class="text-green-500 text-2xl fa-brands fa-spotify"></i>
+
+        <!-- Nút Home -->
+        <button
+          type="button"
+          onclick="window.location.href = '/Spotify/home.html'"
+          aria-label="Trang chủ"
+          class="flex justify-center items-center bg-[#242424] hover:bg-[#333333] rounded-full w-12 h-12 transition shrink-0"
+        >
+          <i class="fa-solid fa-house"></i>
+        </button>
+
+        <div class="relative ml-6">
+          <!-- Ô search -->
+          <div
+            class="group flex items-center bg-neutral-800 px-4 py-2 rounded-full hover:ring-2 hover:ring-green-500 w-96 transition-all duration-200"
+          >
+            <i
+              class="mr-2 text-neutral-400 group-hover:text-green-500 fa-solid fa-magnifying-glass"
+            ></i>
+            <input
+              id="searchInput"
+              type="text"
+              placeholder="Bạn muốn phát nội dung gì?"
+              class="bg-transparent focus:outline-none w-full text-neutral-200 text-sm"
+            />
+          </div>
+
+          <!-- Khung kết quả -->
+          <div
+            id="searchResults"
+            class="hidden top-full absolute bg-neutral-950 shadow-lg mt-2 rounded-lg w-96 max-h-96 overflow-y-auto"
+          ></div>
+        </div>
+      </div>
+
+      <!-- Menu bên phải -->
+      <div
+        class="flex items-center space-x-6 font-semibold text-gray-400 text-sm"
+      >
+        <a href="#" class="hover:text-white transition-colors duration-200"
+          >Premium</a
+        >
+        <a href="#" class="hover:text-white transition-colors duration-200"
+          >Hỗ trợ</a
+        >
+        <a href="#" class="hover:text-white transition-colors duration-200"
+          >Tải xuống</a
+        >
+        <a href="#" class="hover:text-white transition-colors duration-200"
+          >Cài đặt ứng dụng</a
+        >
+        <a href="#" class="hover:text-white transition-colors duration-200"
+          >Đăng ký</a
+        >
+        <button
+          id="loginBtn"
+          type="button"
+          class="bg-white hover:bg-gray-200 px-4 py-1 rounded-full text-black hover:scale-105 transition duration-200 transform"
+        >
+          Đăng nhập
+        </button>
+        <button
+          id="signupBtn"
+          type="button"
+          class="hover:text-white hover:scale-105 transition duration-200 transform"
+        >
+          Đăng ký
+        </button>
+        <div
+          id="userAvatar"
+          class="hidden relative flex justify-center items-center bg-purple-400 rounded-full w-8 h-8 font-bold text-black"
+        >
+          <span id="avatarLetter"></span>
+          <div
+            class="top-0 right-0 absolute bg-green-500 rounded-full w-2 h-2"
+          ></div>
+        </div>
+      </div>
+    </header>
+    <div id="page-content">
+      <main class="p-6 overflow-y-auto">
+        <!-- Header Playlist -->
+        <section class="flex items-center space-x-6 mb-10">
+          <img
+            id="detailImage"
+            src="./src/assets/placeholder.png"
+            alt="Playlist cover"
+            class="bg-neutral-800 rounded-lg w-60 h-60 object-cover"
+          />
+          <div>
+            <p class="mb-1 text-gray-400 text-sm uppercase">
+              Danh sách phát công khai
+            </p>
+            <h1 id="detailName" class="mb-2 font-bold text-5xl">
+              Tên playlist
+            </h1>
+            <p id="detailDesc" class="mb-3 text-gray-300">Mô tả playlist...</p>
+            <p class="text-gray-400 text-sm"></p>
+
+            <!-- Nút hành động -->
+            <div class="flex space-x-3 mt-4">
+              <button
+                id="playBtn"
+                class="bg-green-500 hover:bg-green-400 px-5 py-2 rounded-full font-semibold text-black"
+              >
+                Phát
+              </button>
+              <!-- <button
+                id="toggleLibraryBtn"
+                class="bg-neutral-700 hover:bg-neutral-600 px-5 py-2 rounded-full font-semibold text-white"
+              >
+                Lưu vào thư viện
+              </button> -->
+              <button
+                id="deleteBtn"
+                class="hidden bg-red-600 hover:bg-red-500 px-5 py-2 rounded-full font-semibold text-white"
+              >
+                Xóa
+              </button>
+            </div>
+          </div>
+        </section>
+        <!-- Khu vực tìm bài hát -->
+        <section class="mb-6 pt-6 border-neutral-800 border-t">
+          <h2 class="mb-3 font-bold text-xl">
+            Hãy cùng tìm nội dung cho danh sách phát của bạn
+          </h2>
+
+          <input
+            id="playlistTrackSearch"
+            type="text"
+            placeholder="Tìm bài hát và tập podcast"
+            class="bg-neutral-800 px-4 py-3 rounded focus:outline-none w-full text-white"
+          />
+
+          <div id="trackSearchResults" class="space-y-2 mt-4"></div>
+        </section>
+
+        <!-- Danh sách bài hát -->
+        <section id="trackList" class="space-y-2 mb-10"></section>
+      </main>
+    </div>
+
+    <!-- Player -->
+    <div id="player-container"></div>
+    <div id="footer-container"></div>
+    <!-- Header + Player initialization -->
+    <script type="module">
+      import { initHeader, updateHeaderUI } from "./src/components/header.js";
+      import { initPlaylistPage } from "./src/playlists/playlist.js";
+
+      initHeader();
+      updateHeaderUI();
+
+      const playerContainer = document.getElementById("player-container");
+
+      try {
+        if (!playerContainer) {
+          throw new Error("Không tìm thấy player-container");
+        }
+
+        const response = await fetch(
+          `${window.location.origin}/Spotify/player.html`,
+        );
+
+        if (!response.ok) {
+          throw new Error("Không tải được player.html");
+        }
+
+        playerContainer.innerHTML = await response.text();
+
+        const { initPlayer } = await import("./src/player.js");
+        initPlayer();
+
+        document.dispatchEvent(new CustomEvent("playerloaded"));
+
+        const params = new URLSearchParams(window.location.search);
+        await initPlaylistPage(params.get("id"));
+      } catch (error) {
+        console.error("Lỗi khởi tạo trang Playlist:", error);
+      }
+    </script>
+  </body>
+</html>

@@ -121,7 +121,7 @@ function normalizeTrack(track) {
       track.album?.image_url ??
       track.album?.cover_image_url ??
       track.album?.image ??
-      "../src/assets/playlist.png",
+      "..`${import.meta.env.BASE_URL}playlist.png`",
     audio_url:
       track.audio_url ?? track.audioUrl ?? track.preview_url ?? track.url ?? "",
   };
@@ -173,14 +173,14 @@ function initAllTrackEvents() {
     const trackButton = event.target.closest(".open-track-btn");
 
     if (trackButton?.dataset.id) {
-      window.location.href = `/pages/track.html?id=${encodeURIComponent(trackButton.dataset.id)}`;
+      window.location.href = `/Spotify/track.html?id=${encodeURIComponent(trackButton.dataset.id)}`;
     }
   });
 
   // Vì alltrack.html không nằm trong routes của router.js,
   // quay về Home bằng điều hướng trang thông thường.
   document.getElementById("btnGoHome")?.addEventListener("click", () => {
-    window.location.href = "/pages/home.html";
+    window.location.href = "/Spotify/home.html";
   });
 }
 
@@ -249,7 +249,7 @@ function renderAllTracks(tracks) {
                 src="${escapeHTML(track.image_url)}"
                 alt=""
                 class="h-10 w-10 shrink-0 rounded object-cover"
-                onerror="this.onerror=null;this.src='../src/assets/playlist.png'"
+              onerror="this.onerror=null;this.src='/Spotify/playlist.png'"
               />
 
               <button
