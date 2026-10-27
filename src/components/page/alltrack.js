@@ -121,7 +121,7 @@ function normalizeTrack(track) {
       track.album?.image_url ??
       track.album?.cover_image_url ??
       track.album?.image ??
-      "..`${import.meta.env.BASE_URL}playlist.png`",
+      `${import.meta.env.BASE_URL}playlist.png`,
     audio_url:
       track.audio_url ?? track.audioUrl ?? track.preview_url ?? track.url ?? "",
   };

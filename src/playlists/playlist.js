@@ -7,7 +7,7 @@ let activePlaylistId = null;
 let searchRequestId = 0;
 let detailRequestId = 0;
 
-const fallbackImage = "..`${import.meta.env.BASE_URL}playlist.png`";
+const fallbackImage = `${import.meta.env.BASE_URL}playlist.png`;
 
 // =========================
 // Khởi tạo trang Playlist

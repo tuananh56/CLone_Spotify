@@ -1,4 +1,4 @@
-import{a as e,i as t,n,o as r,r as i,t as a}from"./header-F1TId91I.js";import{t as o}from"./router-CP7NI5UO.js";import"./player-BtNM4bws.js";import{t as s}from"./track-DIsDq1jT.js";import{t as c}from"./artist-DOz-aiMd.js";import{t as l}from"./album-D9gvEbNj.js";import{t as u}from"./playlist-Cju7xKRd.js";function d(){let e=document.querySelector(`#footer-container`);e&&e.dataset.initialized!==`true`&&(e.dataset.initialized=`true`,e.innerHTML=`
+import{a as e,i as t,n,o as r,r as i,t as a}from"./header-F1TId91I.js";import{t as o}from"./router-CP7NI5UO.js";import"./player-B77JGl4t.js";import{t as s}from"./track-JSxuqELA.js";import{t as c}from"./artist-DHfq43Fj.js";import{t as l}from"./album-Ib1zNDM7.js";import{t as u}from"./playlist-BYg4urKv.js";function d(){let e=document.querySelector(`#footer-container`);e&&e.dataset.initialized!==`true`&&(e.dataset.initialized=`true`,e.innerHTML=`
   <footer class="mt-16 border-t border-neutral-800 px-6 py-10 text-sm text-neutral-400">
     <!-- 5 cột nội dung -->
     <div class="grid grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-5">
@@ -170,7 +170,7 @@ import{a as e,i as t,n,o as r,r as i,t as a}from"./header-F1TId91I.js";import{t 
               data-id="${e.id||e._id||e.playlistId||``}"
             >
               <img
-                src="${e.images?.[0]?.url||"..`${import.meta.env.BASE_URL}playlist.png`"}"
+                src="${e.images?.[0]?.url||`/CLone_Spotify/playlist.png`}"
                 alt=""
                 class="w-10 h-10 rounded object-cover"
               />
@@ -192,7 +192,7 @@ import{a as e,i as t,n,o as r,r as i,t as a}from"./header-F1TId91I.js";import{t 
           data-id="${e.id||e._id||e.playlistId||``}"
         >
           <img
-            src="${e.image_url||e.images?.[0]?.url||"..`${import.meta.env.BASE_URL}playlist.png`"}"
+            src="${e.image_url||e.images?.[0]?.url||`/CLone_Spotify/playlist.png`}"
             alt=""
             class="w-10 h-10 rounded object-cover"
           />
@@ -206,7 +206,7 @@ import{a as e,i as t,n,o as r,r as i,t as a}from"./header-F1TId91I.js";import{t 
             </p>
           </div>
         </div>
-      `).join(``))}async function C(){try{let[e,n,r,i]=await Promise.all([t.get(`/api/tracks/trending`),t.get(`/api/artists/trending`),t.get(`/api/albums/popular`),t.get(`/api/playlists?limit=50&offset=0`)]);w(`trendingTracks`,e.data?.tracks,`track`),w(`trendingArtists`,n.data?.artists,`artist`),w(`popularAlbums`,r.data?.albums,`album`);let a=i.data;w(`allPlaylists`,Array.isArray(a)?a:a?.playlists?.items??a?.playlists??a?.items??a?.data?.playlists??a?.data?.items??[],`playlist`)}catch(e){console.error(`Lỗi tải giao diện trang chủ:`,e)}}function w(e,t=[],n){let r=document.getElementById(e);r?Array.isArray(t)?r.innerHTML=t.map(e=>{let t=e.id??e.artistId??e._id??e.playlistId,r=e.title||e.name||e.album_title||e.albumName||`Unknown`,i=e.cover_image_url||e.image_url||e.album_cover_image_url||e.images?.[0]?.url||"..`${import.meta.env.BASE_URL}playlist.png`",a=n===`artist`?`${Number(e.monthly_listeners||0).toLocaleString()} người nghe/tháng`:e.artist_name||e.artist||e.owner?.display_name||e.owner?.name||e.publisher||``,o=String(t??``),s=T(r),c=T(i),l=T(a),u=``;return o&&(u=`onclick="window.openDetail('${n}', '${E(o)}')"`),`
+      `).join(``))}async function C(){try{let[e,n,r,i]=await Promise.all([t.get(`/api/tracks/trending`),t.get(`/api/artists/trending`),t.get(`/api/albums/popular`),t.get(`/api/playlists?limit=50&offset=0`)]);w(`trendingTracks`,e.data?.tracks,`track`),w(`trendingArtists`,n.data?.artists,`artist`),w(`popularAlbums`,r.data?.albums,`album`);let a=i.data;w(`allPlaylists`,Array.isArray(a)?a:a?.playlists?.items??a?.playlists??a?.items??a?.data?.playlists??a?.data?.items??[],`playlist`)}catch(e){console.error(`Lỗi tải giao diện trang chủ:`,e)}}function w(e,t=[],n){let r=document.getElementById(e);r?Array.isArray(t)?r.innerHTML=t.map(e=>{let t=e.id??e.artistId??e._id??e.playlistId,r=e.title||e.name||e.album_title||e.albumName||`Unknown`,i=e.cover_image_url||e.image_url||e.album_cover_image_url||e.images?.[0]?.url||`/CLone_Spotify/playlist.png`,a=n===`artist`?`${Number(e.monthly_listeners||0).toLocaleString()} người nghe/tháng`:e.artist_name||e.artist||e.owner?.display_name||e.owner?.name||e.publisher||``,o=String(t??``),s=T(r),c=T(i),l=T(a),u=``;return o&&(u=`onclick="window.openDetail('${n}', '${E(o)}')"`),`
         <div
           class="flex-shrink-0 w-44 p-3 bg-neutral-800 rounded-lg hover:bg-neutral-700 transition cursor-pointer"
           ${u}

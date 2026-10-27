@@ -205,7 +205,7 @@ function renderTracksSection(tracks = []) {
 
     const title = track.title || "Bài hát không tên";
     const albumName = track.album_name || "Đĩa đơn";
-    const coverUrl = track.cover_image_url || "..`${import.meta.env.BASE_URL}playlist.png`";
+    const coverUrl = track.cover_image_url || `${import.meta.env.BASE_URL}playlist.png`;
 
     const button = document.createElement("button");
     button.type = "button";
@@ -218,7 +218,7 @@ function renderTracksSection(tracks = []) {
     image.className = "w-14 h-14 object-cover rounded";
     image.onerror = () => {
       image.onerror = null;
-      image.src = "..`${import.meta.env.BASE_URL}playlist.png`";
+      image.src = `${import.meta.env.BASE_URL}playlist.png`;
     };
 
     const info = document.createElement("div");
@@ -270,7 +270,7 @@ function renderAlbumsSection(albums = []) {
     const albumId = album.id ?? album.album_id ?? album._id;
 
     const title = album.title || "Album không tên";
-    const coverUrl = album.cover_image_url || "..`${import.meta.env.BASE_URL}playlist.png`";
+    const coverUrl = album.cover_image_url || `${import.meta.env.BASE_URL}playlist.png`;
     const releaseYear = album.release_year ?? "";
 
     const button = document.createElement("button");
@@ -284,7 +284,7 @@ function renderAlbumsSection(albums = []) {
     image.className = "w-full aspect-square object-cover rounded mb-2";
     image.onerror = () => {
       image.onerror = null;
-      image.src = "..`${import.meta.env.BASE_URL}playlist.png`";
+      image.src = `${import.meta.env.BASE_URL}playlist.png`;
     };
 
     const titleElement = document.createElement("p");
