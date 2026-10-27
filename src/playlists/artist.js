@@ -45,7 +45,7 @@ async function loadArtistView(artistId, currentRequestId) {
     let artistRes;
 
     try {
-      artistRes = await api.get(`/api/artists/${encodeURIComponent(artistId)}`);
+      artistRes = await api.get(`/api/artists/${encodeURIcomponents(artistId)}`);
     } catch (err) {
       if (currentRequestId !== requestId) return;
 
@@ -75,8 +75,8 @@ async function loadArtistView(artistId, currentRequestId) {
 
     // 2. Lấy danh sách bài hát và album
     const [tracksResult, albumsResult] = await Promise.allSettled([
-      api.get(`/api/artists/${encodeURIComponent(artistId)}/tracks`),
-      api.get(`/api/artists/${encodeURIComponent(artistId)}/albums`),
+      api.get(`/api/artists/${encodeURIcomponents(artistId)}/tracks`),
+      api.get(`/api/artists/${encodeURIcomponents(artistId)}/albums`),
     ]);
 
     if (currentRequestId !== requestId) return;

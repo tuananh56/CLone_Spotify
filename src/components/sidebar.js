@@ -88,7 +88,7 @@ export function initSidebar() {
 
     try {
       const res = await api.get(
-        `/api/search/playlists?q=${encodeURIComponent(query)}&limit=20`,
+        `/api/search/playlists?q=${encodeURIcomponents(query)}&limit=20`,
       );
 
       // Bỏ qua kết quả cũ nếu người dùng đã nhập tiếp

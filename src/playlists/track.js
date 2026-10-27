@@ -12,7 +12,7 @@ export async function initTrackPage(id) {
   const requestId = ++currentRequestId;
 
   try {
-    const res = await api.get(`/api/tracks/${encodeURIComponent(id)}`);
+    const res = await api.get(`/api/tracks/${encodeURIcomponents(id)}`);
     const track = res.data;
 
     // Bỏ qua kết quả cũ nếu người dùng đã chuyển sang bài khác.

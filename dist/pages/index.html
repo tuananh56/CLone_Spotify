@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script type="module" crossorigin src="/CLone_Spotify/assets/router-DO-4XTMW.js"></script>
+    <script type="module" crossorigin src="/CLone_Spotify/assets/player-D4MsrBSL.js"></script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <div id="player-container"></div>
+
+    <script>
+      fetch("/src/player.html")
+        .then((res) => res.text())
+        .then((html) => {
+          document.getElementById("player-container").innerHTML = html;
+        });
+    </script>
+  </body>
+</html>

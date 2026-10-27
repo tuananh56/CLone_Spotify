@@ -173,7 +173,7 @@ function initAllTrackEvents() {
     const trackButton = event.target.closest(".open-track-btn");
 
     if (trackButton?.dataset.id) {
-      window.location.href = `/pages/track.html?id=${encodeURIComponent(trackButton.dataset.id)}`;
+      window.location.href = `/pages/track.html?id=${encodeURIcomponents(trackButton.dataset.id)}`;
     }
   });
 
