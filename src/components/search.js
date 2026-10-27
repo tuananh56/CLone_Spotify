@@ -156,7 +156,7 @@ async function searchMusic(keyword, showPage = false) {
 
   try {
     const response = await api.get(
-      `/api/search?q=${encodeURIcomponents(keyword)}&type=all&limit=20&offset=0`,
+      `/api/search?q=${encodeURIComponent(keyword)}&type=all&limit=20&offset=0`,
     );
 
     if (currentRequest !== requestId) return;

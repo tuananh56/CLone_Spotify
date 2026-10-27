@@ -46,7 +46,7 @@ export async function initPlaylistPage(id) {
 
 async function loadPlaylistDetail(id, requestId = ++detailRequestId) {
   try {
-    const res = await api.get(`/api/playlists/${encodeURIcomponents(id)}`);
+    const res = await api.get(`/api/playlists/${encodeURIComponent(id)}`);
 
     if (requestId !== detailRequestId) return;
 
@@ -96,7 +96,7 @@ async function loadPlaylistDetail(id, requestId = ++detailRequestId) {
     if (rawTracks.length === 0) {
       try {
         const tracksRes = await api.get(
-          `/api/playlists/${encodeURIcomponents(id)}/tracks`,
+          `/api/playlists/${encodeURIComponent(id)}/tracks`,
         );
 
         if (requestId !== detailRequestId) return;
@@ -323,7 +323,7 @@ function renderTrackList(tracks, isOwner = false) {
 
       try {
         await api.delete(
-          `/api/playlists/${encodeURIcomponents(playlistId)}/tracks/${encodeURIcomponents(track.id)}`,
+          `/api/playlists/${encodeURIComponent(playlistId)}/tracks/${encodeURIComponent(track.id)}`,
         );
 
         // Tải lại danh sách bài hát sau khi xóa thành công
@@ -389,7 +389,7 @@ function initButtons(isOwner) {
       try {
         if (toggleLibraryBtn.textContent.includes("Save")) {
           await api.post(
-            `/api/playlists/${encodeURIcomponents(playlistId)}/followers`,
+            `/api/playlists/${encodeURIComponent(playlistId)}/followers`,
           );
 
           if (playlistId === activePlaylistId) {
@@ -397,7 +397,7 @@ function initButtons(isOwner) {
           }
         } else {
           await api.delete(
-            `/api/playlists/${encodeURIcomponents(playlistId)}/followers`,
+            `/api/playlists/${encodeURIComponent(playlistId)}/followers`,
           );
 
           if (playlistId === activePlaylistId) {
@@ -427,7 +427,7 @@ function initButtons(isOwner) {
       if (!confirmed) return;
 
       try {
-        await api.delete(`/api/playlists/${encodeURIcomponents(playlistId)}`);
+        await api.delete(`/api/playlists/${encodeURIComponent(playlistId)}`);
 
         if (playlistId === activePlaylistId) {
           if (typeof window.goHome === "function") {
@@ -468,7 +468,7 @@ function bindSearchInput() {
 
     try {
       const res = await api.get(
-        `/api/search?q=${encodeURIcomponents(query)}&type=track`,
+        `/api/search?q=${encodeURIComponent(query)}&type=track`,
       );
 
       if (requestId !== searchRequestId) return;
@@ -580,7 +580,7 @@ function renderSearchResults(tracks) {
 
       try {
         await api.post(
-          `/api/playlists/${encodeURIcomponents(playlistId)}/tracks`,
+          `/api/playlists/${encodeURIComponent(playlistId)}/tracks`,
           { track_id: trackId },
         );
 

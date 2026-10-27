@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html lang="vi">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Spotify Clone</title>
   </head>
   <body>
     <div id="app"></div>
@@ -11,12 +11,19 @@
 
     <script type="module" src="/src/app/router.js"></script>
     <script type="module" src="/src/player.js"></script>
-    <script>
+
+    <script type="module">
       fetch("/src/player.html")
-        .then((res) => res.text())
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error(`Không tải được player.html: ${res.status}`);
+          }
+          return res.text();
+        })
         .then((html) => {
           document.getElementById("player-container").innerHTML = html;
-        });
+        })
+        .catch((error) => console.error(error));
     </script>
   </body>
 </html>
