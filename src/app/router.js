@@ -4,6 +4,8 @@ const routes = {
   playlist: "/pages/playlist.html",
   artist: "/pages/artist.html",
   album: "/pages/album.html",
+  allalbum: "/pages/allalbum.html",
+  alltrack: "/pages/alltrack.html",
 };
 
 let currentPage = null;

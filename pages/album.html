@@ -241,35 +241,41 @@
     <!-- Player -->
     <div id="player-container"></div>
     <div id="footer-container"></div>
+
     <!-- Header + Player initialization -->
     <script type="module">
-      import { initHeader, updateHeaderUI } from "/src/component/header.js";
+      import { initHeader, updateHeaderUI } from "/src/components/header.js";
 
       initHeader();
       updateHeaderUI();
 
-      const playerContainer = document.getElementById("player-container");
-
-      try {
-        const response = await fetch("/player.html");
-
-        if (!response.ok) {
-          throw new Error("Không tải được player.html");
-        }
+      async function loadPlayer() {
+        const playerContainer = document.getElementById("player-container");
 
         if (!playerContainer) {
-          throw new Error("Không tìm thấy player-container");
+          console.error("Không tìm thấy player-container");
+          return;
         }
 
-        playerContainer.innerHTML = await response.text();
+        try {
+          const response = await fetch("/player.html");
 
-        const { initPlayer } = await import("/src/player.js");
-        initPlayer();
+          if (!response.ok) {
+            throw new Error("Không tải được player.html");
+          }
 
-        document.dispatchEvent(new CustomEvent("playerloaded"));
-      } catch (error) {
-        console.error("Lỗi khởi tạo Player:", error);
+          playerContainer.innerHTML = await response.text();
+
+          const { initPlayer } = await import("/src/player.js");
+          initPlayer();
+
+          document.dispatchEvent(new CustomEvent("playerloaded"));
+        } catch (error) {
+          console.error("Lỗi khởi tạo Player:", error);
+        }
       }
+
+      loadPlayer();
     </script>
 
     <!-- Album script -->
