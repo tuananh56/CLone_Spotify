@@ -1,6 +1,6 @@
-import { updateHeaderUI } from "../component/header.js";
-import { api } from "../app/api.js";
 import Swal from "sweetalert2";
+import { updateHeaderUI } from "../components/header.js";
+import { api } from "../app/api.js";
 
 export async function handleLogin(email, password) {
   try {
@@ -10,10 +10,7 @@ export async function handleLogin(email, password) {
 
     const user = res.data.user || {};
     const token =
-      res.data.token ||
-      res.data.access_token ||
-      res.data.data?.token ||
-      null;
+      res.data.token || res.data.access_token || res.data.data?.token || null;
 
     if (!token) {
       throw new Error("Không tìm thấy token trong phản hồi API");
@@ -34,7 +31,7 @@ export async function handleLogin(email, password) {
         id: user.id || user._id || null, // đảm bảo có id
         email: user.email,
         name: user.name,
-      })
+      }),
     );
 
     // Cập nhật giao diện header
@@ -48,9 +45,7 @@ export async function handleLogin(email, password) {
       icon: "error",
       title: "Oops...",
       text:
-        error.response?.data?.message ||
-        error.message ||
-        "Đăng nhập thất bại",
+        error.response?.data?.message || error.message || "Đăng nhập thất bại",
     });
   }
 }

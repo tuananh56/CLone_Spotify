@@ -1,45 +1,52 @@
-import { initFooter } from "./component/footer.js";
-import { initSidebarToggle } from "./component/sidebar-toggle.js";
+import { initFooter } from "./components/footer.js";
+import { initSidebarToggle } from "./components/sidebar-toggle.js";
 import { initPlayer } from "./player.js";
+
 import { initTrackPage } from "./playlists/track.js";
 import { initArtistPage } from "./playlists/artist.js";
 import { initAlbumPage } from "./playlists/album.js";
 import { initPlaylistPage } from "./playlists/playlist.js";
 
-import { navigate } from "./app/router.js";
-import { initLibrary, initSidebarPlaylists } from "./component/library.js";
-import { initSidebar } from "./component/sidebar.js";
 import { handleRegister } from "./auth/register.js";
 import { handleLogin } from "./auth/login.js";
 import { handleLogout } from "./auth/logout.js";
+
+import { navigate } from "./app/router.js";
+import { initLibrary, initSidebarPlaylists } from "./components/library.js";
+import { initSidebar } from "./components/sidebar.js";
+
 import { api } from "./app/api.js";
-import { initHeader, updateHeaderUI } from "./component/header.js";
+import { initHeader, updateHeaderUI } from "./components/header.js";
 
 // ==================== MAIN VIEW ====================
 
 async function loadMainView() {
   try {
-    const user = JSON.parse(localStorage.getItem("user"));
-
-    if (!user?.id) {
-      console.warn("User chưa đăng nhập hoặc thiếu ID");
-      return;
-    }
-
     const [tracksRes, artistsRes, albumsRes, playlistsRes] = await Promise.all([
       api.get("/api/tracks/trending"),
       api.get("/api/artists/trending"),
       api.get("/api/albums/popular"),
-      api.get(`/api/users/${user.id}/playlists`),
+      api.get("/api/playlists?limit=50&offset=0"),
     ]);
 
     renderSection("trendingTracks", tracksRes.data?.tracks, "track");
+
     renderSection("trendingArtists", artistsRes.data?.artists, "artist");
+
     renderSection("popularAlbums", albumsRes.data?.albums, "album");
 
-    const playlists = playlistsRes.data?.playlists ?? playlistsRes.data;
-    initLibrary();
-    // renderSection("allPlaylists", playlists, "playlist");
+    const responseData = playlistsRes.data;
+
+    const playlists = Array.isArray(responseData)
+      ? responseData
+      : (responseData?.playlists?.items ??
+        responseData?.playlists ??
+        responseData?.items ??
+        responseData?.data?.playlists ??
+        responseData?.data?.items ??
+        []);
+
+    renderSection("allPlaylists", playlists, "playlist");
   } catch (error) {
     console.error("Lỗi tải giao diện trang chủ:", error);
   }
@@ -63,7 +70,7 @@ function renderSection(containerId, items = [], type) {
 
   container.innerHTML = items
     .map((item) => {
-      const id = item.id ?? item.artistId ?? item._id;
+      const id = item.id ?? item.artistId ?? item._id ?? item.playlistId;
 
       const name =
         item.title ||
@@ -76,6 +83,7 @@ function renderSection(containerId, items = [], type) {
         item.cover_image_url ||
         item.image_url ||
         item.album_cover_image_url ||
+        item.images?.[0]?.url ||
         "/src/assets/playlist.png";
 
       const sub =
@@ -86,6 +94,7 @@ function renderSection(containerId, items = [], type) {
           : item.artist_name ||
             item.artist ||
             item.owner?.display_name ||
+            item.owner?.name ||
             item.publisher ||
             "";
 
@@ -371,5 +380,5 @@ window.openDetail = function (type, id) {
 const openSearchPageBtn = document.getElementById("openSearchPageBtn");
 
 openSearchPageBtn?.addEventListener("click", () => {
-  window.location.href = "/search.html";
+  window.location.href = "/pages/search.html";
 });

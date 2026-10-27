@@ -1,6 +1,6 @@
 import { api } from "../app/api.js";
 import Swal from "sweetalert2";
-import { updateHeaderUI } from "../component/header.js";
+import { updateHeaderUI } from "../components/header.js";
 
 export async function handleLogout() {
   try {

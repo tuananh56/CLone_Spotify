@@ -1,4 +1,4 @@
-import { updateHeaderUI } from "../component/header.js";
+import { updateHeaderUI } from "../components/header.js";
 import { api } from "../app/api.js";
 import Swal from "sweetalert2";
 export async function handleRegister(email, password) {

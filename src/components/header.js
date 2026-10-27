@@ -49,7 +49,7 @@ export function initHeader() {
         ];
         renderSearchResults(data);
       } catch (err) {
-        // console.error("Search error:", err);
+        console.error("Search error:", err);
         searchResults.innerHTML = `<div class="p-2 text-red-400">Lỗi khi tìm kiếm</div>`;
       }
     }, 500),
@@ -215,14 +215,14 @@ document.addEventListener("DOMContentLoaded", () => {
   if (loginBtn)
     loginBtn.addEventListener(
       "click",
-      () => (window.location.href = "/login.html"),
+      () => navigate("login"),
     );
 
   const signupBtn = document.getElementById("signupBtn");
   if (signupBtn)
     signupBtn.addEventListener(
       "click",
-      () => (window.location.href = "/register.html"),
+      () => navigate("register"),
     );
 
   const avatar = document.querySelector("#userAvatar");

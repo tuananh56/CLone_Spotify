@@ -349,6 +349,38 @@
             <i class="fa-chevron-right fa-solid"></i>
           </button>
         </section>
+
+        <!-- All Playlists -->
+        <section class="relative mb-8">
+          <div class="flex justify-between items-center mb-3">
+            <h3 class="font-bold text-lg">All Playlists</h3>
+            <button
+              id="showAllPlaylists"
+              class="font-semibold text-gray-300 hover:text-green-500 text-sm transition-colors"
+            >
+              Hiển thị tất cả
+            </button>
+          </div>
+
+          <button
+            class="top-1/2 left-0 z-10 absolute bg-neutral-800 hover:bg-neutral-700 p-2 rounded-full -translate-y-1/2"
+            onclick="scrollSection('allPlaylists', -1)"
+          >
+            <i class="fa-chevron-left fa-solid"></i>
+          </button>
+
+          <div
+            id="allPlaylists"
+            class="[&::-webkit-scrollbar]:hidden flex gap-4 px-8 [-ms-overflow-style:none] overflow-x-auto scroll-smooth [scrollbar-width:none]"
+          ></div>
+
+          <button
+            class="top-1/2 right-0 z-10 absolute bg-neutral-800 hover:bg-neutral-700 p-2 rounded-full -translate-y-1/2"
+            onclick="scrollSection('allPlaylists', 1)"
+          >
+            <i class="fa-chevron-right fa-solid"></i>
+          </button>
+        </section>
       </main>
     </div>
     <button
@@ -370,7 +402,7 @@
 
       async function loadPlayer() {
         try {
-          const res = await fetch("/player.html");
+          const res = await fetch("/pages/player.html");
 
           if (!res.ok) {
             throw new Error("Không tải được player.html");

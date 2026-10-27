@@ -1,5 +1,5 @@
-import { api } from "../app/api.js";
 import { playTrack } from "../player.js";
+import { api } from "../app/api.js";
 
 export async function initAlbumPage(id) {
   if (!id) {

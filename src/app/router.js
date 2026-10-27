@@ -1,9 +1,9 @@
 const routes = {
-  home: "/home.html",
-  track: "/track.html",
-  playlist: "/playlist.html",
-  artist: "/artist.html",
-  album: "/album.html",
+  home: "/pages/home.html",
+  track: "/pages/track.html",
+  playlist: "/pages/playlist.html",
+  artist: "/pages/artist.html",
+  album: "/pages/album.html",
 };
 
 let currentPage = null;

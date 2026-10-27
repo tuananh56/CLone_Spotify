@@ -1,5 +1,5 @@
-import { api } from "../app/api.js";
 import { playTrack } from "../player.js";
+import { api } from "../app/api.js";
 
 let currentPlaylist = null;
 let currentPlaylistTracks = [];
@@ -433,7 +433,7 @@ function initButtons(isOwner) {
           if (typeof window.goHome === "function") {
             window.goHome();
           } else {
-            window.location.href = "/home.html";
+            window.location.href = "/pages/home.html";
           }
         }
       } catch (err) {

@@ -39,7 +39,7 @@ export function initSidebar() {
         throw new Error("Không tìm thấy ID trong phản hồi API");
       }
 
-      window.location.href = `/playlist.html?id=${newPlaylistId}`;
+      window.location.href = `/pages/playlist.html?id=${newPlaylistId}`;
     } catch (err) {
       console.error("Lỗi tạo playlist:", err);
     }
@@ -69,7 +69,7 @@ export function initSidebar() {
     if (item) {
       const id = item.dataset.id;
       if (id) {
-        window.location.href = `/playlist.html?id=${id}`;
+        window.location.href = `/pages/playlist.html?id=${id}`;
       }
     }
   });
