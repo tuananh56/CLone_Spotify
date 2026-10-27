@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "https://cdn.jsdelivr.net/npm/axios@1.11.0/+esm";
 import Swal from "sweetalert2";
 
 export const BASE_URL = "https://spotify.f8team.dev";
