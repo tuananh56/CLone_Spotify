@@ -380,5 +380,5 @@ window.openDetail = function (type, id) {
 const openSearchPageBtn = document.getElementById("openSearchPageBtn");
 
 openSearchPageBtn?.addEventListener("click", () => {
-  window.location.href = "/Spotify/search.html";
+  window.location.href = "/CLone_Spotify/search.html";
 });

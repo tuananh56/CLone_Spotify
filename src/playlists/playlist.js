@@ -433,7 +433,7 @@ function initButtons(isOwner) {
           if (typeof window.goHome === "function") {
             window.goHome();
           } else {
-            window.location.href = "/Spotify/home.html";
+            window.location.href = "/CLone_Spotify/home.html";
           }
         }
       } catch (err) {

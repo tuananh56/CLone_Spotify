@@ -173,14 +173,14 @@ function initAllTrackEvents() {
     const trackButton = event.target.closest(".open-track-btn");
 
     if (trackButton?.dataset.id) {
-      window.location.href = `/Spotify/track.html?id=${encodeURIComponent(trackButton.dataset.id)}`;
+      window.location.href = `/CLone_Spotify/track.html?id=${encodeURIComponent(trackButton.dataset.id)}`;
     }
   });
 
   // Vì alltrack.html không nằm trong routes của router.js,
   // quay về Home bằng điều hướng trang thông thường.
   document.getElementById("btnGoHome")?.addEventListener("click", () => {
-    window.location.href = "/Spotify/home.html";
+    window.location.href = "/CLone_Spotify/home.html";
   });
 }
 
@@ -249,7 +249,7 @@ function renderAllTracks(tracks) {
                 src="${escapeHTML(track.image_url)}"
                 alt=""
                 class="h-10 w-10 shrink-0 rounded object-cover"
-              onerror="this.onerror=null;this.src='/Spotify/playlist.png'"
+              onerror="this.onerror=null;this.src='/CLone_Spotify/playlist.png'"
               />
 
               <button

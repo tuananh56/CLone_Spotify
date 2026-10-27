@@ -388,7 +388,7 @@
           const playerContainer = document.getElementById("player-container");
 
           if (playerContainer && playerContainer.dataset.loaded !== "true") {
-            const response = await fetch("/Spotify/player.html");
+            const response = await fetch("/CLone_Spotify/player.html");
 
             if (!response.ok) {
               throw new Error("Không tải được player.html");

@@ -272,7 +272,7 @@
             <h3 class="font-bold text-lg">Today’s biggest hits</h3>
             <button
               type="button"
-              onclick="window.location.href = '/Spotify/alltrack.html'"
+              onclick="window.location.href = '/CLone_Spotify/alltrack.html'"
               class="font-semibold text-gray-300 hover:text-green-500 text-sm transition-colors"
             >
               Hiển thị tất cả
@@ -302,7 +302,7 @@
             <h3 class="font-bold text-lg">Trending artists</h3>
             <button
               type="button"
-              onclick="window.location.href = '/Spotify/allartist.html'"
+              onclick="window.location.href = '/CLone_Spotify/allartist.html'"
               class="font-semibold text-gray-300 hover:text-green-500 text-sm transition-colors"
             >
               Hiển thị tất cả
@@ -332,7 +332,7 @@
             <h3 class="font-bold text-lg">Popular albums</h3>
             <button
             type="button"
-              onclick="window.location.href = '/Spotify/allalbum.html'"
+              onclick="window.location.href = '/CLone_Spotify/allalbum.html'"
               class="font-semibold text-gray-300 hover:text-green-500 text-sm transition-colors"
             >
               Hiển thị tất cả
@@ -363,7 +363,7 @@
             <button
               id="showAllPlaylists"
               type="button"
-              onclick="window.location.href = '/Spotify/allplaylist.html'"
+              onclick="window.location.href = '/CLone_Spotify/allplaylist.html'"
               class="font-semibold text-gray-300 hover:text-green-500 text-sm transition-colors"
             >
               Hiển thị tất cả
@@ -410,7 +410,7 @@
 
       async function loadPlayer() {
         try {
-          const res = await fetch("/Spotify/player.html");
+          const res = await fetch("/CLone_Spotify/player.html");
 
           if (!res.ok) {
             throw new Error("Không tải được player.html");
