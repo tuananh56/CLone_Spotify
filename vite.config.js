@@ -19,7 +19,7 @@ const pages = [
 ];
 
 export default defineConfig({
-  base: "/Spotify/",
+  base: "/CLone_Spotify/",
 
   build: {
     outDir: "dist",
