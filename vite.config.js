@@ -1,26 +1,31 @@
 
 import { defineConfig } from "vite";
-import { resolve } from "node:path";
+import { resolve, dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const rootDir = dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
+  // Deploy ở domain gốc: "/"
+  // Deploy ở repository GitHub Pages: "/TEN_REPOSITORY/"
   base: "/",
 
   build: {
     rolldownOptions: {
       input: {
-        index: resolve(import.meta.dirname, "pages/index.html"),
-        home: resolve(import.meta.dirname, "pages/home.html"),
-        login: resolve(import.meta.dirname, "pages/login.html"),
-        register: resolve(import.meta.dirname, "pages/register.html"),
-        album: resolve(import.meta.dirname, "pages/album.html"),
-        allalbum: resolve(import.meta.dirname, "pages/allalbum.html"),
-        allartist: resolve(import.meta.dirname, "pages/allartist.html"),
-        allplaylist: resolve(import.meta.dirname, "pages/allplaylist.html"),
-        alltrack: resolve(import.meta.dirname, "pages/alltrack.html"),
-        artist: resolve(import.meta.dirname, "pages/artist.html"),
-        playlist: resolve(import.meta.dirname, "pages/playlist.html"),
-        search: resolve(import.meta.dirname, "pages/search.html"),
-        track: resolve(import.meta.dirname, "pages/track.html"),
+        index: resolve(rootDir, "pages/index.html"),
+        home: resolve(rootDir, "pages/home.html"),
+        login: resolve(rootDir, "pages/login.html"),
+        register: resolve(rootDir, "pages/register.html"),
+        album: resolve(rootDir, "pages/album.html"),
+        allalbum: resolve(rootDir, "pages/allalbum.html"),
+        allartist: resolve(rootDir, "pages/allartist.html"),
+        allplaylist: resolve(rootDir, "pages/allplaylist.html"),
+        alltrack: resolve(rootDir, "pages/alltrack.html"),
+        artist: resolve(rootDir, "pages/artist.html"),
+        playlist: resolve(rootDir, "pages/playlist.html"),
+        search: resolve(rootDir, "pages/search.html"),
+        track: resolve(rootDir, "pages/track.html"),
       },
     },
   },
