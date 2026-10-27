@@ -20,7 +20,7 @@ export async function handleRegister(email, password) {
   try {
     // Gọi API bằng axios instance
     const res = await api.post("/api/auth/register", { email, password });
-    console.log("Register response:", res.data);
+    // console.log("Register response:", res.data);
 
     Swal.fire({
       icon: "success",
@@ -35,7 +35,7 @@ export async function handleRegister(email, password) {
     // Điều hướng sang trang login
     window.location.href = "/login.html";
   } catch (error) {
-    console.error("Register error:", error);
+    // console.error("Register error:", error);
     Swal.fire({
       icon: "error",
       title: "Oops...",

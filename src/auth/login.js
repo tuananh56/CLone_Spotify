@@ -6,7 +6,7 @@ export async function handleLogin(email, password) {
   try {
     // Gọi API login
     const res = await api.post("/api/auth/login", { email, password });
-    console.log("Login response full:", res.data);
+    // console.log("Login response full:", res.data);
 
     const user = res.data.user || {};
     const token =
@@ -43,7 +43,7 @@ export async function handleLogin(email, password) {
     // Điều hướng sang trang home
     window.location.href = "/home.html";
   } catch (error) {
-    console.error("Login error:", error);
+    // console.error("Login error:", error);
     Swal.fire({
       icon: "error",
       title: "Oops...",

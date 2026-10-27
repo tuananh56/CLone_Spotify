@@ -316,14 +316,14 @@ document.addEventListener("pagechanged", async (event) => {
   const id =
     params?.id || new URLSearchParams(window.location.search).get("id");
 
-  console.log("[pagechanged] Nhận sự kiện:", {
-    page,
-    params,
-    id,
-    url: window.location.href,
-    trackListExists: !!document.querySelector("#trackList"),
-    playlistNameExists: !!document.querySelector("#detailName"),
-  });
+  // console.log("[pagechanged] Nhận sự kiện:", {
+  //   page,
+  //   params,
+  //   id,
+  //   url: window.location.href,
+  //   trackListExists: !!document.querySelector("#trackList"),
+  //   playlistNameExists: !!document.querySelector("#detailName"),
+  // });
 
   switch (page) {
     case "home":
@@ -346,9 +346,9 @@ document.addEventListener("pagechanged", async (event) => {
 
     case "playlist":
       if (id) {
-        console.log("[main.js] Bắt đầu initPlaylistPage:", id);
+        // console.log("[main.js] Bắt đầu initPlaylistPage:", id);
         await initPlaylistPage(id);
-        console.log("[main.js] Hoàn tất initPlaylistPage:", id);
+        // console.log("[main.js] Hoàn tất initPlaylistPage:", id);
       } else {
         console.error("Router không truyền ID playlist:", event.detail);
       }

@@ -177,7 +177,7 @@ async function searchMusic(keyword, showPage = false) {
   } catch (error) {
     if (currentRequest !== requestId) return;
 
-    console.error("Lỗi tìm kiếm:", error);
+    // console.error("Lỗi tìm kiếm:", error);
 
     if (showPage) {
       renderResults([], keyword);
@@ -342,6 +342,6 @@ avatar.addEventListener("click", async () => {
     const { handleLogout } = await import("/src/auth/logout.js");
     handleLogout();
   } catch (error) {
-    console.error("Không thể đăng xuất:", error);
+    // console.error("Không thể đăng xuất:", error);
   }
 });

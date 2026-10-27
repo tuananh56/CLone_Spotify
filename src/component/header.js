@@ -49,7 +49,7 @@ export function initHeader() {
         ];
         renderSearchResults(data);
       } catch (err) {
-        console.error("Search error:", err);
+        // console.error("Search error:", err);
         searchResults.innerHTML = `<div class="p-2 text-red-400">Lỗi khi tìm kiếm</div>`;
       }
     }, 500),

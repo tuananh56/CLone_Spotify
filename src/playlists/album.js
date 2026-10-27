@@ -25,7 +25,7 @@ async function loadAlbumDetail(id) {
 
     // Lấy danh sách bài hát trong album
     const resTracks = await api.get(`/api/albums/${id}/tracks`);
-    console.log("Tracks response:", resTracks.data);
+    // console.log("Tracks response:", resTracks.data);
 
     // API trả về { tracks: [...] }
     const tracks = Array.isArray(resTracks.data.tracks)

@@ -1,4 +1,3 @@
-
 import { api } from "../app/api.js";
 
 export async function initLibrary() {
@@ -33,7 +32,6 @@ export async function initLibrary() {
       };
     } catch (err) {
       console.error("Lỗi tải dữ liệu Library:", err);
-
       return {
         playlists: [],
         artists: [],
@@ -52,19 +50,14 @@ export async function initLibrary() {
 
     if (currentSort === "recent") {
       items.sort(
-        (a, b) =>
-          new Date(b.added_at || 0) - new Date(a.added_at || 0),
+        (a, b) => new Date(b.added_at || 0) - new Date(a.added_at || 0),
       );
     } else if (currentSort === "alphabetical") {
-      items.sort((a, b) =>
-        (a.name || "").localeCompare(b.name || ""),
-      );
+      items.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
     } else if (currentSort === "creator") {
       items.sort((a, b) => {
-        const creatorA =
-          a.owner?.display_name || a.artists?.[0]?.name || "";
-        const creatorB =
-          b.owner?.display_name || b.artists?.[0]?.name || "";
+        const creatorA = a.owner?.display_name || a.artists?.[0]?.name || "";
+        const creatorB = b.owner?.display_name || b.artists?.[0]?.name || "";
 
         return creatorA.localeCompare(creatorB);
       });
@@ -90,9 +83,7 @@ export async function initLibrary() {
 
             <p class="text-sm text-gray-400">
               by ${
-                item.owner?.display_name ||
-                item.artists?.[0]?.name ||
-                "Unknown"
+                item.owner?.display_name || item.artists?.[0]?.name || "Unknown"
               }
             </p>
           </div>
@@ -105,22 +96,12 @@ export async function initLibrary() {
   filterBtns.forEach((btn) => {
     btn.addEventListener("click", () => {
       filterBtns.forEach((item) => {
-        item.classList.remove(
-          "bg-green-500",
-          "text-black",
-          "font-bold",
-        );
+        item.classList.remove("bg-green-500", "text-black", "font-bold");
       });
 
-      btn.classList.add(
-        "bg-green-500",
-        "text-black",
-        "font-bold",
-      );
+      btn.classList.add("bg-green-500", "text-black", "font-bold");
 
-      currentFilter = btn.id
-        .replace("filter", "")
-        .toLowerCase();
+      currentFilter = btn.id.replace("filter", "").toLowerCase();
 
       renderList();
     });
@@ -130,22 +111,12 @@ export async function initLibrary() {
   sortBtns.forEach((btn) => {
     btn.addEventListener("click", () => {
       sortBtns.forEach((item) => {
-        item.classList.remove(
-          "bg-green-500",
-          "text-black",
-          "font-bold",
-        );
+        item.classList.remove("bg-green-500", "text-black", "font-bold");
       });
 
-      btn.classList.add(
-        "bg-green-500",
-        "text-black",
-        "font-bold",
-      );
+      btn.classList.add("bg-green-500", "text-black", "font-bold");
 
-      currentSort = btn.id
-        .replace("sort", "")
-        .toLowerCase();
+      currentSort = btn.id.replace("sort", "").toLowerCase();
 
       renderList();
     });
@@ -176,9 +147,7 @@ export async function initSidebarPlaylists() {
 
   try {
     // Lấy thông tin user đã đăng nhập
-    const user = JSON.parse(
-      localStorage.getItem("user") || "null",
-    );
+    const user = JSON.parse(localStorage.getItem("user") || "null");
 
     if (!user?.id) {
       sidebarList.innerHTML = `
@@ -190,9 +159,7 @@ export async function initSidebarPlaylists() {
     }
 
     // Lấy playlist của user
-    const res = await api.get(
-      `/api/users/${user.id}/playlists`,
-    );
+    const res = await api.get(`/api/users/${user.id}/playlists`);
 
     const playlists = res.data?.playlists ?? res.data ?? [];
 
@@ -217,8 +184,7 @@ export async function initSidebarPlaylists() {
           >
             <img
               src="${
-                playlist.images?.[0]?.url ||
-                "/src/assets/placeholder.png"
+                playlist.images?.[0]?.url || "/src/assets/placeholder.png"
               }"
               alt=""
               class="h-10 w-10 shrink-0 rounded object-cover"
