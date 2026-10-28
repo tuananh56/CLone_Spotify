@@ -809,16 +809,10 @@ function initPlaylistEditUI(isOwner) {
         return;
       }
 
-      if (selectedFile) {
-        showError("Chưa thể lưu ảnh vì chưa xác định được API upload ảnh.");
-      }
-
       const nameChanged = newName !== oldName;
 
-      if (!nameChanged) {
-        if (!selectedFile) {
-          closeEditor();
-        }
+      if (!nameChanged && !selectedFile) {
+        closeEditor();
         return;
       }
 
@@ -829,9 +823,57 @@ function initPlaylistEditUI(isOwner) {
       showError("");
 
       try {
+        let imageUrl =
+          currentPlaylist?.image_url || currentPlaylist?.imageUrl || "";
+
+        // 1. Upload ảnh mới nếu người dùng đã chọn ảnh
+        if (selectedFile) {
+          const formData = new FormData();
+          formData.append("cover", selectedFile);
+
+          const uploadRes = await api.post(
+            `/api/upload/playlist/${encodeURIComponent(activePlaylistId)}/cover`,
+            formData,
+          );
+
+          console.log(
+            "Upload response:",
+            JSON.stringify(uploadRes.data, null, 2),
+          );
+
+          const uploadData = uploadRes.data;
+
+          // Lấy URL ảnh từ phản hồi upload
+          imageUrl =
+            uploadData?.image_url ||
+            uploadData?.imageUrl ||
+            uploadData?.url ||
+            uploadData?.data?.image_url ||
+            uploadData?.data?.imageUrl ||
+            uploadData?.data?.url ||
+            uploadData?.file?.url ||
+            "";
+
+          if (!imageUrl) {
+            throw new Error(
+              "Upload thành công nhưng không tìm thấy URL ảnh trong phản hồi.",
+            );
+          }
+          updatePlaylistCover(imageUrl);
+        }
+
+        // 2. Cập nhật thông tin playlist
+        const payload = {
+          name: newName,
+        };
+
+        if (selectedFile) {
+          payload.image_url = imageUrl;
+        }
+
         const res = await api.put(
           `/api/playlists/${encodeURIComponent(activePlaylistId)}`,
-          { name: newName },
+          payload,
         );
 
         const data = res.data;
@@ -843,6 +885,12 @@ function initPlaylistEditUI(isOwner) {
           name: updated?.name || newName,
         };
 
+        if (selectedFile) {
+          currentPlaylist.image_url =
+            updated?.image_url || updated?.imageUrl || imageUrl;
+        }
+
+        // 3. Cập nhật tên playlist trên giao diện
         const detailName = document.querySelector("#detailName");
 
         if (detailName) {
@@ -853,24 +901,28 @@ function initPlaylistEditUI(isOwner) {
           nameInput.value = currentPlaylist.name;
         }
 
-        // Không xóa ảnh đang chọn nếu chưa upload được.
-        if (selectedFile) {
-          showError(
-            "Đã lưu tên playlist, nhưng ảnh mới chưa được lưu lên server.",
-          );
-          return;
+        // 4. Cập nhật ảnh bìa trên giao diện
+        const cover = document.querySelector(
+          "#playlistCover, #detailImage, #playlistImage",
+        );
+
+        if (cover && currentPlaylist.image_url) {
+          cover.src = currentPlaylist.image_url;
         }
 
+        // 5. Đóng trình chỉnh sửa khi lưu thành công
         closeEditor();
       } catch (err) {
-        console.error("Lỗi cập nhật playlist:", {
+        console.error("Lỗi lưu playlist:", {
           status: err.response?.status,
           data: err.response?.data,
           message: err.message,
         });
 
         showError(
-          err.response?.data?.message ||
+          err.response?.data?.error?.message ||
+            err.response?.data?.message ||
+            err.message ||
             "Không thể cập nhật playlist. Vui lòng thử lại.",
         );
       } finally {
@@ -878,5 +930,22 @@ function initPlaylistEditUI(isOwner) {
         saveBtn.textContent = "Lưu";
       }
     });
+  }
+}
+function updatePlaylistCover(imageUrl) {
+  if (!imageUrl) return;
+
+  const selectors = ["#playlistCover", "#detailImage", "#playlistImage"];
+
+  selectors.forEach((selector) => {
+    document.querySelectorAll(selector).forEach((img) => {
+      img.src = imageUrl;
+    });
+  });
+
+  // Cập nhật dữ liệu đang dùng trong trang
+  if (currentPlaylist) {
+    currentPlaylist.image_url = imageUrl;
+    currentPlaylist.imageUrl = imageUrl;
   }
 }
