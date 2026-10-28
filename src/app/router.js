@@ -11,6 +11,8 @@ const routes = {
   allartist: `${BASE_URL}allartist.html`,
   allplaylist: `${BASE_URL}allplaylist.html`,
   search: `${BASE_URL}search.html`,
+  login: `${BASE_URL}login.html`,
+  register: `${BASE_URL}register.html`,
 };
 let currentPage = null;
 let navigationId = 0;

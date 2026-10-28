@@ -1,4 +1,4 @@
-import{a as e,i as t,n,o as r,r as i,s as a,t as o}from"./header-ioSngGP7.js";import"./player-B77JGl4t.js";import{t as s}from"./track-0kPoKrTW.js";import{t as c}from"./artist-CCI3Jr2m.js";import{t as l}from"./album-CQGn5s52.js";import{t as u}from"./playlist-ByMnM9oR.js";function d(){let e=document.querySelector(`#footer-container`);e&&e.dataset.initialized!==`true`&&(e.dataset.initialized=`true`,e.innerHTML=`
+import{a as e,i as t,n,o as r,r as i,s as a,t as o}from"./header-OS-G52xv.js";import"./player-B77JGl4t.js";import{t as s}from"./track-D5GxDsr-.js";import{t as c}from"./artist-DPP5oQtm.js";import{t as l}from"./album-C25QTKOT.js";import{t as u}from"./playlist-B_pbQK5M.js";function d(){let e=document.querySelector(`#footer-container`);e&&e.dataset.initialized!==`true`&&(e.dataset.initialized=`true`,e.innerHTML=`
   <footer class="mt-16 border-t border-neutral-800 px-6 py-10 text-sm text-neutral-400">
     <!-- 5 cột nội dung -->
     <div class="grid grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-5">
