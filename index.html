@@ -1,19 +1,219 @@
-
 <!doctype html>
 <html lang="vi">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      http-equiv="refresh"
-      content="0; url=./home.html"
+    <meta name="theme-color" content="#121212" />
+
+    <title>Spotify Clone | Your Music</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     />
-    <title>Spotify Clone</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+      @keyframes fade-in {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes float {
+        from {
+          transform: translateY(0);
+        }
+        to {
+          transform: translateY(-18px);
+        }
+      }
+
+      @keyframes equalizer {
+        0%,
+        100% {
+          height: 12px;
+        }
+        50% {
+          height: 30px;
+        }
+      }
+
+      .fade-in {
+        animation: fade-in 0.8s ease-out both;
+      }
+
+      .float {
+        animation: float 3s ease-in-out infinite alternate;
+      }
+
+      .bar {
+        animation: equalizer 0.8s ease-in-out infinite;
+      }
+
+      .bar:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+
+      .bar:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+
+      .bar:nth-child(4) {
+        animation-delay: 0.15s;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation: none !important;
+          transition: none !important;
+        }
+      }
+    </style>
   </head>
-  <body>
-    <p>
-      Đang chuyển đến trang chủ...
-      <a href="./home.html">Nhấn vào đây nếu không tự chuyển</a>
-    </p>
+
+  <body class="bg-[#121212] min-h-screen overflow-hidden text-white">
+    <!-- Background -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+      <div
+        class="-top-32 -left-32 absolute bg-green-500/20 blur-[120px] rounded-full w-96 h-96"
+      ></div>
+
+      <div
+        class="-right-20 -bottom-40 absolute bg-emerald-400/10 blur-[140px] rounded-full w-[500px] h-[500px]"
+      ></div>
+
+      <div
+        class="top-1/2 left-1/2 absolute border border-white/[0.04] rounded-full w-80 h-80 -translate-x-1/2 -translate-y-1/2"
+      ></div>
+
+      <div
+        class="top-1/2 left-1/2 absolute border border-white/[0.03] rounded-full w-[460px] h-[460px] -translate-x-1/2 -translate-y-1/2"
+      ></div>
+    </div>
+
+    <!-- Main -->
+    <main
+      class="relative flex justify-center items-center px-5 py-10 min-h-screen"
+    >
+      <section class="w-full max-w-xl text-center fade-in">
+        <!-- Logo -->
+        <div class="inline-flex items-center gap-3 mb-10">
+          <div
+            class="flex justify-center items-center bg-[#1ed760] shadow-[0_0_40px_rgba(30,215,96,0.2)] rounded-full w-14 h-14 text-black text-2xl"
+          >
+            <i class="fa-solid fa-music"></i>
+          </div>
+
+          <span class="font-extrabold text-2xl tracking-tight">
+            Spotify <span class="text-[#1ed760]">Clone</span>
+          </span>
+        </div>
+
+        <!-- Music icon -->
+        <div class="float flex justify-center mb-8">
+          <div
+            class="flex justify-center items-center bg-white/[0.04] shadow-2xl backdrop-blur-xl border border-white/10 rounded-[2rem] w-32 h-32"
+          >
+            <i class="text-[#1ed760] text-6xl fa-solid fa-headphones"></i>
+          </div>
+        </div>
+
+        <!-- Heading -->
+        <p
+          class="mb-4 font-bold text-[#1ed760] text-xs sm:text-sm uppercase tracking-[0.3em]"
+        >
+          Your music. Your moment.
+        </p>
+
+        <h1
+          class="mb-5 font-black text-4xl sm:text-6xl leading-tight tracking-tight"
+        >
+          Âm nhạc của bạn,
+          <span
+            class="block bg-clip-text bg-gradient-to-r from-[#1ed760] to-emerald-300 text-transparent"
+          >
+            thế giới của bạn.
+          </span>
+        </h1>
+
+        <p
+          class="mx-auto mb-9 max-w-md text-neutral-400 text-sm sm:text-base leading-7"
+        >
+          Khám phá bài hát yêu thích, tìm nghệ sĩ mới và tận hưởng thế giới âm
+          nhạc theo cách của riêng bạn.
+        </p>
+
+        <!-- CTA -->
+        <a
+          href="./home.html"
+          class="group inline-flex justify-center items-center gap-3 bg-[#1ed760] hover:bg-[#3be477] hover:shadow-[0_0_35px_rgba(30,215,96,0.25)] px-8 py-4 rounded-full min-h-14 font-bold text-black hover:scale-105 active:scale-95 transition duration-300"
+        >
+          <i class="group-hover:scale-110 transition fa-solid fa-play"></i>
+          Mở Spotify Clone
+          <i
+            class="fa-arrow-right text-sm transition-transform group-hover:translate-x-1 fa-solid"
+          ></i>
+        </a>
+
+        <!-- Redirect status -->
+        <div class="flex flex-col items-center gap-4 mt-9">
+          <div class="flex items-end gap-1 h-8">
+            <span class="bg-[#1ed760] rounded-full w-1.5 bar"></span>
+            <span class="bg-[#1ed760] rounded-full w-1.5 bar"></span>
+            <span class="bg-[#1ed760] rounded-full w-1.5 bar"></span>
+            <span class="bg-[#1ed760] rounded-full w-1.5 bar"></span>
+          </div>
+
+          <p id="redirectMessage" class="text-neutral-500 text-xs">
+            Đang chuẩn bị không gian âm nhạc của bạn...
+          </p>
+
+          <div class="bg-white/10 rounded-full w-40 h-1 overflow-hidden">
+            <div
+              id="progressBar"
+              class="bg-[#1ed760] rounded-full w-0 h-full transition-[width] duration-100 ease-linear"
+            ></div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-16 text-neutral-600 text-xs">
+          Made with <i class="mx-1 text-[#1ed760] fa-solid fa-heart"></i>
+          for music lovers
+        </footer>
+      </section>
+    </main>
+
+    <script>
+      const HOME_URL = "./home.html";
+      const REDIRECT_DELAY = 2000;
+
+      const progressBar = document.getElementById("progressBar");
+      const redirectMessage = document.getElementById("redirectMessage");
+
+      const startTime = Date.now();
+
+      const progressTimer = setInterval(() => {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min((elapsed / REDIRECT_DELAY) * 100, 100);
+
+        progressBar.style.width = `${progress}%`;
+
+        if (progress >= 100) {
+          clearInterval(progressTimer);
+          redirectMessage.textContent = "Đang mở trang chủ...";
+          window.location.replace(HOME_URL);
+        }
+      }, 30);
+    </script>
   </body>
 </html>
