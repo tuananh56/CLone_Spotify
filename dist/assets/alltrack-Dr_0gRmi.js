@@ -33,7 +33,7 @@ import{i as e}from"./header-ioSngGP7.js";import"./main-hoB8VFJ7.js";import{n as 
                 src="${p(e.image_url)}"
                 alt=""
                 class="h-10 w-10 shrink-0 rounded object-cover"
-              onerror="this.onerror=null;this.src='/CLone_Spotify/playlist.png'"
+              onerror="this.onerror=null;this.src='/CLone_Spotify/assets/playlist.png'"
               />
 
               <button

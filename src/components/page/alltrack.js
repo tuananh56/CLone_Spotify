@@ -249,7 +249,7 @@ function renderAllTracks(tracks) {
                 src="${escapeHTML(track.image_url)}"
                 alt=""
                 class="h-10 w-10 shrink-0 rounded object-cover"
-              onerror="this.onerror=null;this.src='/CLone_Spotify/playlist.png'"
+              onerror="this.onerror=null;this.src='/CLone_Spotify/assets/playlist.png'"
               />
 
               <button
