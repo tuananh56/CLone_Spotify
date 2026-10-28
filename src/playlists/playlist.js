@@ -78,13 +78,20 @@ async function loadPlaylistDetail(id, requestId = ++detailRequestId) {
       currentUser = null;
     }
 
-    const currentUserName = currentUser?.name;
+    const currentUserId = currentUser?.id;
 
     const isOwner =
       playlist.is_owner === true ||
-      playlist.owner?.display_name === currentUserName ||
-      playlist.additional_info?.creator_name === currentUserName;
-
+      (currentUserId != null &&
+        [
+          playlist.owner?.id,
+          playlist.owner_id,
+          playlist.user_id,
+          playlist.created_by,
+        ].some(
+          (ownerId) =>
+            ownerId != null && String(ownerId) === String(currentUserId),
+        ));
     const deleteBtn = document.querySelector("#deleteBtn");
 
     if (deleteBtn) {
@@ -133,15 +140,21 @@ async function loadPlaylistDetail(id, requestId = ++detailRequestId) {
     // Không ghi đè window.playlist khi chỉ mở trang.
     currentPlaylistTracks = rawTracks.map(normalizeTrack);
 
+    const trackCount = document.querySelector("#trackCount");
+
+    if (trackCount) {
+      const count = currentPlaylistTracks.length;
+      trackCount.textContent = `${count} bài hát`;
+    }
+
     renderTrackList(currentPlaylistTracks, isOwner);
 
-    const toggleLibraryBtn = document.querySelector("#toggleLibraryBtn");
+    // Khởi tạo các nút chỉnh sửa
+    initPlaylistEditUI(isOwner);
 
-    // if (toggleLibraryBtn) {
-    //   toggleLibraryBtn.textContent = playlist.is_following
-    //     ? "Remove from Your Library"
-    //     : "Save to Your Library";
-    // }
+    document
+      .querySelector("#editPlaylistBtn")
+      ?.classList.toggle("hidden", !isOwner);
 
     initButtons(isOwner);
   } catch (err) {
@@ -426,19 +439,25 @@ function initButtons(isOwner) {
 
       if (!confirmed) return;
 
+      deleteBtn.disabled = true;
+
       try {
         await api.delete(`/api/playlists/${encodeURIComponent(playlistId)}`);
 
-        if (playlistId === activePlaylistId) {
-          if (typeof window.goHome === "function") {
-            window.goHome();
-          } else {
-            window.location.href = "/CLone_Spotify/home.html";
-          }
-        }
+        // Xóa thành công thì chuyển về trang chủ
+        const homeUrl = `${import.meta.env.BASE_URL}home.html`;
+
+        window.location.assign(homeUrl);
       } catch (err) {
         console.error("Lỗi xóa playlist:", err);
         console.error("Backend response:", err.response?.data);
+
+        window.alert(
+          err.response?.data?.message ||
+            "Không thể xóa playlist. Vui lòng thử lại.",
+        );
+      } finally {
+        deleteBtn.disabled = false;
       }
     });
   }
@@ -632,4 +651,232 @@ function escapeHTML(value) {
 
     return entities[char];
   });
+}
+
+let previewImageUrl = null;
+let originalImageUrl = null;
+
+function initPlaylistEditUI(isOwner) {
+  const imageBtn = document.querySelector("#changeImageBtn");
+  const imageInput = document.querySelector("#playlistImageInput");
+  const image = document.querySelector("#detailImage");
+  const preview = document.querySelector("#editPlaylistImagePreview");
+
+  const editForm = document.querySelector("#editPlaylistForm");
+  const nameInput = document.querySelector("#editPlaylistName");
+  const selectImageBtn = document.querySelector("#selectPlaylistImageBtn");
+  const saveBtn = document.querySelector("#savePlaylistBtn");
+
+  const cancelBtns = [
+    document.querySelector("#cancelEditPlaylistBtn"),
+    document.querySelector("#cancelEditPlaylistBtnSecondary"),
+  ].filter(Boolean);
+
+  const errorEl = document.querySelector("#editPlaylistError");
+
+  if (!imageBtn || !editForm) return;
+
+  // Chỉ chủ sở hữu mới được mở hộp chỉnh sửa
+  imageBtn.classList.toggle("hidden", !isOwner);
+
+  if (!isOwner) {
+    editForm.classList.add("hidden");
+    return;
+  }
+
+  function showError(message = "") {
+    if (!errorEl) return;
+
+    errorEl.textContent = message;
+    errorEl.classList.toggle("hidden", !message);
+  }
+
+  function getOriginalName() {
+    return currentPlaylist?.title || currentPlaylist?.name || "";
+  }
+
+  function getOriginalImage() {
+    return (
+      currentPlaylist?.image_url ||
+      currentPlaylist?.cover_image_url ||
+      fallbackImage
+    );
+  }
+
+  function openEditor() {
+    if (nameInput) nameInput.value = getOriginalName();
+
+    originalImageUrl = getOriginalImage();
+
+    if (image) image.src = originalImageUrl;
+    if (preview) preview.src = originalImageUrl;
+
+    editForm.classList.remove("hidden");
+    showError("");
+    nameInput?.focus();
+  }
+
+  function closeEditor() {
+    editForm.classList.add("hidden");
+
+    if (nameInput) nameInput.value = getOriginalName();
+
+    if (previewImageUrl) {
+      URL.revokeObjectURL(previewImageUrl);
+      previewImageUrl = null;
+    }
+
+    if (image) image.src = originalImageUrl || getOriginalImage();
+    if (preview) preview.src = originalImageUrl || getOriginalImage();
+
+    if (imageInput) imageInput.value = "";
+
+    showError("");
+  }
+
+  // Nhấn ảnh playlist để mở hộp chỉnh sửa
+  if (imageBtn.dataset.editBound !== "true") {
+    imageBtn.dataset.editBound = "true";
+    imageBtn.addEventListener("click", openEditor);
+  }
+
+  // Nút chọn ảnh trong hộp thoại
+  if (selectImageBtn && selectImageBtn.dataset.editBound !== "true") {
+    selectImageBtn.dataset.editBound = "true";
+    selectImageBtn.addEventListener("click", () => imageInput?.click());
+  }
+
+  // Xem trước ảnh mới ngay lập tức
+  if (imageInput && imageInput.dataset.editBound !== "true") {
+    imageInput.dataset.editBound = "true";
+
+    imageInput.addEventListener("change", () => {
+      const file = imageInput.files?.[0];
+      if (!file) return;
+
+      const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+
+      if (!allowedTypes.includes(file.type)) {
+        showError("Chỉ chấp nhận ảnh JPG, PNG hoặc WEBP.");
+        imageInput.value = "";
+        return;
+      }
+
+      if (file.size > 5 * 1024 * 1024) {
+        showError("Ảnh không được vượt quá 5 MB.");
+        imageInput.value = "";
+        return;
+      }
+
+      if (previewImageUrl) URL.revokeObjectURL(previewImageUrl);
+
+      previewImageUrl = URL.createObjectURL(file);
+
+      if (image) image.src = previewImageUrl;
+      if (preview) preview.src = previewImageUrl;
+
+      editForm.classList.remove("hidden");
+      showError("");
+    });
+  }
+
+  // Cả hai nút Hủy/Đóng đều hoạt động
+  cancelBtns.forEach((button) => {
+    if (button.dataset.editBound === "true") return;
+
+    button.dataset.editBound = "true";
+    button.addEventListener("click", closeEditor);
+  });
+
+  // Lưu hiện chưa gọi API cập nhật
+
+  if (saveBtn && saveBtn.dataset.editBound !== "true") {
+    saveBtn.dataset.editBound = "true";
+
+    saveBtn.addEventListener("click", async () => {
+      const newName = nameInput?.value.trim() || "";
+      const oldName = getOriginalName();
+      const selectedFile = imageInput?.files?.[0] || null;
+
+      if (!newName) {
+        showError("Vui lòng nhập tên playlist.");
+        nameInput?.focus();
+        return;
+      }
+
+      if (!activePlaylistId) {
+        showError("Không tìm thấy ID playlist.");
+        return;
+      }
+
+      if (selectedFile) {
+        showError("Chưa thể lưu ảnh vì chưa xác định được API upload ảnh.");
+      }
+
+      const nameChanged = newName !== oldName;
+
+      if (!nameChanged) {
+        if (!selectedFile) {
+          closeEditor();
+        }
+        return;
+      }
+
+      if (saveBtn.disabled) return;
+
+      saveBtn.disabled = true;
+      saveBtn.textContent = "Đang lưu...";
+      showError("");
+
+      try {
+        const res = await api.put(
+          `/api/playlists/${encodeURIComponent(activePlaylistId)}`,
+          { name: newName },
+        );
+
+        const data = res.data;
+        const updated = data?.playlist || data?.data || data;
+
+        currentPlaylist = {
+          ...currentPlaylist,
+          ...(updated && typeof updated === "object" ? updated : {}),
+          name: updated?.name || newName,
+        };
+
+        const detailName = document.querySelector("#detailName");
+
+        if (detailName) {
+          detailName.textContent = currentPlaylist.name;
+        }
+
+        if (nameInput) {
+          nameInput.value = currentPlaylist.name;
+        }
+
+        // Không xóa ảnh đang chọn nếu chưa upload được.
+        if (selectedFile) {
+          showError(
+            "Đã lưu tên playlist, nhưng ảnh mới chưa được lưu lên server.",
+          );
+          return;
+        }
+
+        closeEditor();
+      } catch (err) {
+        console.error("Lỗi cập nhật playlist:", {
+          status: err.response?.status,
+          data: err.response?.data,
+          message: err.message,
+        });
+
+        showError(
+          err.response?.data?.message ||
+            "Không thể cập nhật playlist. Vui lòng thử lại.",
+        );
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = "Lưu";
+      }
+    });
+  }
 }

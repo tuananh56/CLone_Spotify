@@ -100,46 +100,174 @@
     <div id="page-content">
       <main class="p-6 overflow-y-auto">
         <!-- Header Playlist -->
-        <section class="flex items-center space-x-6 mb-10">
-          <img
-            id="detailImage"
-            src="./src/assets/placeholder.png"
-            alt="Playlist cover"
-            class="bg-neutral-800 rounded-lg w-60 h-60 object-cover"
-          />
-          <div>
-            <p class="mb-1 text-gray-400 text-sm uppercase">
-              Danh sách phát công khai
-            </p>
-            <h1 id="detailName" class="mb-2 font-bold text-5xl">
+        <section class="flex sm:flex-row flex-col items-start gap-6 mb-10">
+          <div class="group relative shrink-0">
+            <button
+              id="changeImageBtn"
+              type="button"
+              aria-label="Chỉnh sửa playlist"
+              title="Chỉnh sửa playlist"
+              class="block relative rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+            >
+              <img
+                id="detailImage"
+                src="./src/assets/placeholder.png"
+                alt="Ảnh playlist"
+                class="bg-neutral-800 shadow-lg rounded-lg w-60 h-60 object-cover"
+              />
+
+              <span
+                class="absolute inset-0 flex flex-col justify-center items-center bg-black/60 opacity-0 group-hover:opacity-100 rounded-lg transition-opacity"
+              >
+                <i class="mb-2 text-3xl fa-solid fa-pen"></i>
+                <span class="font-semibold text-sm">Chỉnh sửa playlist</span>
+              </span>
+            </button>
+
+            <input
+              id="playlistImageInput"
+              type="file"
+              accept="image/png,image/jpeg,image/webp"
+              class="hidden"
+            />
+          </div>
+
+          <div class="flex-1 min-w-0">
+            <p class="mb-2 text-gray-400 text-sm uppercase">Danh sách phát</p>
+
+            <h1
+              id="detailName"
+              class="mb-2 font-bold text-3xl sm:text-5xl break-words"
+            >
               Tên playlist
             </h1>
-            <p id="detailDesc" class="mb-3 text-gray-300">Mô tả playlist...</p>
-            <p class="text-gray-400 text-sm"></p>
 
-            <!-- Nút hành động -->
-            <div class="flex space-x-3 mt-4">
+            <p id="detailDesc" class="mb-3 text-gray-300">Mô tả playlist...</p>
+
+            <!-- Thông tin số bài hát -->
+            <p class="text-gray-400 text-sm">
+              <i class="mr-2 fa-solid fa-music"></i>
+              <span id="trackCount">0 bài hát</span>
+            </p>
+
+            <div class="flex flex-wrap gap-3 mt-5">
               <button
                 id="playBtn"
+                type="button"
                 class="bg-green-500 hover:bg-green-400 px-5 py-2 rounded-full font-semibold text-black"
               >
-                Phát
+                <i class="mr-2 fa-solid fa-play"></i>Phát
               </button>
-              <!-- <button
-                id="toggleLibraryBtn"
-                class="bg-neutral-700 hover:bg-neutral-600 px-5 py-2 rounded-full font-semibold text-white"
+
+              <button
+                id="editPlaylistBtn"
+                type="button"
+                class="hidden bg-neutral-700 hover:bg-neutral-600 px-5 py-2 rounded-full font-semibold text-white"
               >
-                Lưu vào thư viện
-              </button> -->
+                <i class="mr-2 fa-solid fa-pen"></i>Chỉnh sửa
+              </button>
+
               <button
                 id="deleteBtn"
+                type="button"
                 class="hidden bg-red-600 hover:bg-red-500 px-5 py-2 rounded-full font-semibold text-white"
               >
-                Xóa
+                Xóa playlist
               </button>
             </div>
           </div>
         </section>
+
+        <!-- Hộp chỉnh sửa playlist -->
+        <section
+          id="editPlaylistForm"
+          class="hidden z-[100] fixed inset-0 flex justify-center items-center bg-black/70 p-4"
+        >
+          <div
+            class="bg-neutral-800 shadow-2xl p-6 rounded-xl w-full max-w-md"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="editPlaylistTitle"
+          >
+            <div class="flex justify-between items-center mb-5">
+              <h2 id="editPlaylistTitle" class="font-bold text-xl">
+                Chỉnh sửa thông tin
+              </h2>
+
+              <button
+                id="cancelEditPlaylistBtn"
+                type="button"
+                aria-label="Đóng"
+                class="text-neutral-400 hover:text-white text-2xl"
+              >
+                &times;
+              </button>
+            </div>
+
+            <!-- Ảnh xem trước -->
+            <div class="flex flex-col items-center mb-5">
+              <img
+                id="editPlaylistImagePreview"
+                src="./src/assets/placeholder.png"
+                alt="Ảnh xem trước"
+                class="shadow-lg mb-3 rounded-lg w-40 h-40 object-cover"
+              />
+
+              <button
+                id="selectPlaylistImageBtn"
+                type="button"
+                class="bg-neutral-700 hover:bg-neutral-600 px-4 py-2 rounded-full text-sm"
+              >
+                <i class="mr-2 fa-solid fa-camera"></i>
+                Chọn ảnh
+              </button>
+            </div>
+
+            <!-- Tên playlist -->
+            <label
+              for="editPlaylistName"
+              class="block mb-2 font-semibold text-sm"
+            >
+              Tên playlist
+            </label>
+
+            <input
+              id="editPlaylistName"
+              name="title"
+              type="text"
+              maxlength="100"
+              required
+              placeholder="Nhập tên playlist"
+              class="bg-neutral-900 px-4 py-3 border border-neutral-700 focus:border-green-500 rounded-lg outline-none w-full text-white"
+            />
+
+            <p
+              id="editPlaylistError"
+              role="alert"
+              class="hidden mt-2 text-red-400 text-sm"
+            ></p>
+
+            <!-- Nút thao tác -->
+            <div class="flex justify-end gap-3 mt-6">
+              <button
+                id="cancelEditPlaylistBtnSecondary"
+                type="button"
+                class="bg-neutral-700 hover:bg-neutral-600 px-5 py-2 rounded-full"
+              >
+                Hủy
+              </button>
+
+              <button
+                id="savePlaylistBtn"
+                type="button"
+                class="bg-green-500 hover:bg-green-400 px-5 py-2 rounded-full font-semibold text-black"
+              >
+                Lưu
+              </button>
+            </div>
+          </div>
+        </section>
+
         <!-- Khu vực tìm bài hát -->
         <section class="mb-6 pt-6 border-neutral-800 border-t">
           <h2 class="mb-3 font-bold text-xl">
@@ -179,9 +307,7 @@
           throw new Error("Không tìm thấy player-container");
         }
 
-        const response = await fetch(
-          `${window.location.origin}/CLone_Spotify/player.html`,
-        );
+        const response = await fetch(`${import.meta.env.BASE_URL}player.html`);
 
         if (!response.ok) {
           throw new Error("Không tải được player.html");
