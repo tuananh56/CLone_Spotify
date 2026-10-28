@@ -1,4 +1,5 @@
-import axios from "https://cdn.jsdelivr.net/npm/axios@1.11.0/+esm";
+
+import axios from "axios";
 import Swal from "sweetalert2";
 
 export const BASE_URL = "https://spotify.f8team.dev";
@@ -29,8 +30,6 @@ api.interceptors.response.use(
     const status = error.response?.status;
     const message = error.response?.data?.message || "Có lỗi xảy ra!";
 
-    // Không hiện popup cho lỗi 401 ở đây;
-    // trang đăng nhập hoặc nơi gọi API sẽ xử lý riêng.
     if (status !== 401) {
       Swal.fire({
         icon: "error",

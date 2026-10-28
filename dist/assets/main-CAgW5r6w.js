@@ -1,4 +1,4 @@
-import{a as e,i as t,n,o as r,r as i,t as a}from"./header-F1TId91I.js";import{t as o}from"./router-CP7NI5UO.js";import"./player-B77JGl4t.js";import{t as s}from"./track-JSxuqELA.js";import{t as c}from"./artist-DHfq43Fj.js";import{t as l}from"./album-Ib1zNDM7.js";import{t as u}from"./playlist-BYg4urKv.js";function d(){let e=document.querySelector(`#footer-container`);e&&e.dataset.initialized!==`true`&&(e.dataset.initialized=`true`,e.innerHTML=`
+import{a as e,i as t,n,o as r,r as i,t as a}from"./header-CumW_c_8.js";import{t as o}from"./router-CP7NI5UO.js";import"./player-B77JGl4t.js";import{t as s}from"./track-BsGoP103.js";import{t as c}from"./artist-nrEUrhjJ.js";import{t as l}from"./album-D4j3c_ND.js";import{t as u}from"./playlist-B2fQH788.js";function d(){let e=document.querySelector(`#footer-container`);e&&e.dataset.initialized!==`true`&&(e.dataset.initialized=`true`,e.innerHTML=`
   <footer class="mt-16 border-t border-neutral-800 px-6 py-10 text-sm text-neutral-400">
     <!-- 5 cột nội dung -->
     <div class="grid grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-5">
