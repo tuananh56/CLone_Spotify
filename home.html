@@ -272,7 +272,7 @@
             <h3 class="font-bold text-lg">Today’s biggest hits</h3>
             <button
               type="button"
-              onclick="window.location.href = '/CLone_Spotify/alltrack.html'"
+              onclick="window.location.href = `${import.meta.env.BASE_URL}alltrack.html`"
               class="font-semibold text-gray-300 hover:text-green-500 text-sm transition-colors"
             >
               Hiển thị tất cả
@@ -331,7 +331,7 @@
           <div class="flex justify-between items-center mb-3">
             <h3 class="font-bold text-lg">Popular albums</h3>
             <button
-            type="button"
+              type="button"
               onclick="window.location.href = '/CLone_Spotify/allalbum.html'"
               class="font-semibold text-gray-300 hover:text-green-500 text-sm transition-colors"
             >
@@ -410,7 +410,7 @@
 
       async function loadPlayer() {
         try {
-          const res = await fetch("/CLone_Spotify/player.html");
+          const res = await fetch(`${import.meta.env.BASE_URL}player.html`); /////////////////
 
           if (!res.ok) {
             throw new Error("Không tải được player.html");
