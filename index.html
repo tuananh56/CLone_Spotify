@@ -1,29 +1,19 @@
+
 <!doctype html>
 <html lang="vi">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="refresh"
+      content="0; url=./home.html"
+    />
     <title>Spotify Clone</title>
   </head>
   <body>
-    <div id="app"></div>
-    <div id="player-container"></div>
-
-    <script type="module" src="./src/app/router.js"></script>
-    <script type="module" src="./src/player.js"></script>
-
-    <script type="module">
-      fetch("./player.html")
-        .then((res) => {
-          if (!res.ok) {
-            throw new Error(`Không tải được player.html: ${res.status}`);
-          }
-          return res.text();
-        })
-        .then((html) => {
-          document.getElementById("player-container").innerHTML = html;
-        })
-        .catch((error) => console.error(error));
-    </script>
+    <p>
+      Đang chuyển đến trang chủ...
+      <a href="./home.html">Nhấn vào đây nếu không tự chuyển</a>
+    </p>
   </body>
 </html>
