@@ -57,6 +57,14 @@ export async function navigate(page, params = {}) {
   }
 
   const url = buildUrl(page, params);
+
+  // Login và register là các trang HTML độc lập
+  if (page === "login" || page === "register") {
+    window.location.href = url.href;
+    return;
+  }
+
+  // Các trang còn lại tiếp tục sử dụng SPA router
   const success = await renderPage(page, params, url);
 
   if (success) {
