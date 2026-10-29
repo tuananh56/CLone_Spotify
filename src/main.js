@@ -368,10 +368,14 @@ document.addEventListener("pagechanged", async (event) => {
   const id =
     params?.id || new URLSearchParams(window.location.search).get("id");
 
+  // Khởi tạo sidebar mới sau mỗi lần SPA chuyển trang
+  if (document.getElementById("sidebarList")) {
+    initSidebar();
+    initSidebarPlaylists();
+  }
+
   switch (page) {
     case "home":
-      initSidebar();
-      initSidebarPlaylists();
       loadMainView();
       break;
 
