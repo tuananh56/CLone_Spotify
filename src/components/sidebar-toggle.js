@@ -1,40 +1,49 @@
-
 export function initSidebarToggle() {
   const sidebar = document.getElementById("sidebar");
   const mainContent = document.getElementById("mainContent");
   const openBtn = document.getElementById("openSidebarBtn");
+  const toggleBtn = document.getElementById("toggleSidebarBtn");
 
-  if (!sidebar || !mainContent || !openBtn) return;
+  if (!sidebar || !openBtn || !toggleBtn) {
+    console.warn("Không tìm thấy phần tử sidebar:", {
+      sidebar: !!sidebar,
+      mainContent: !!mainContent,
+      openBtn: !!openBtn,
+      toggleBtn: !!toggleBtn,
+    });
+    return;
+  }
 
-  let isCollapsed = false;
+  // Tránh đăng ký sự kiện nhiều lần
+  if (sidebar.dataset.toggleInitialized === "true") return;
+  sidebar.dataset.toggleInitialized = "true";
+
+  let isCollapsed = sidebar.classList.contains("hidden");
 
   function setSidebarCollapsed(collapsed) {
     isCollapsed = collapsed;
 
     sidebar.classList.toggle("hidden", collapsed);
+
     openBtn.classList.toggle("opacity-0", !collapsed);
     openBtn.classList.toggle("pointer-events-none", !collapsed);
 
     openBtn.setAttribute("aria-expanded", String(!collapsed));
+    toggleBtn.setAttribute("aria-expanded", String(!collapsed));
 
-    // Main tự mở rộng khi sidebar biến mất
-    mainContent.classList.toggle("flex-1", true);
+    if (mainContent) {
+      mainContent.classList.add("flex-1");
+    }
   }
+
+  toggleBtn.addEventListener("click", () => {
+    setSidebarCollapsed(true);
+  });
 
   openBtn.addEventListener("click", () => {
     setSidebarCollapsed(false);
   });
 
-  // Nút mũi tên thu gọn trong sidebar
-  const toggleBtn = document.getElementById("toggleSidebarBtn");
-
-  if (toggleBtn) {
-    toggleBtn.addEventListener("click", () => {
-      setSidebarCollapsed(true);
-    });
-  }
-
-  // Chỉ hiện nút khi rê chuột vào mép trái
   document.addEventListener("mousemove", (event) => {
     if (!isCollapsed) return;
 
@@ -44,4 +53,6 @@ export function initSidebarToggle() {
       openBtn.classList.add("opacity-0", "pointer-events-none");
     }
   });
+
+  setSidebarCollapsed(isCollapsed);
 }

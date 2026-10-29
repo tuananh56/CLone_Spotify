@@ -36,7 +36,7 @@ export async function initAllTrackPage() {
     }
 
     const normalizedTracks = tracks.map(normalizeTrack);
-    console.table(normalizedTracks.map(({ id, title }) => ({ id, title })));
+    // console.table(normalizedTracks.map(({ id, title }) => ({ id, title })));
 
     // Lưu danh sách gốc để tìm kiếm và phát đúng bài hát.
     allTracks = normalizedTracks;
