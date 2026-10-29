@@ -316,6 +316,36 @@
             <i class="fa-rotate-right fa-solid"></i>
             Làm mới
           </button>
+          <!-- Tìm kiếm bài hát -->
+          <div
+            class="flex flex-1 items-center gap-3 bg-neutral-800 px-4 py-2 rounded-full focus-within:ring-2 focus-within:ring-green-500 min-w-[220px]"
+          >
+            <i class="text-neutral-400 fa-solid fa-magnifying-glass"></i>
+
+            <input
+              id="trackSearchInput"
+              type="text"
+              placeholder="Tìm bài hát..."
+              aria-label="Tìm bài hát"
+              autocomplete="off"
+              class="bg-transparent outline-none w-full text-white placeholder:text-neutral-400 text-sm"
+            />
+
+            <button
+              type="button"
+              onclick="
+                document.getElementById('trackSearchInput').value = '';
+                document
+                  .getElementById('trackSearchInput')
+                  .dispatchEvent(new Event('input', { bubbles: true }));
+              "
+              class="text-neutral-400 hover:text-white transition"
+              aria-label="Xóa tìm kiếm"
+              title="Xóa tìm kiếm"
+            >
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
 
           <button
             id="btnGoHome"

@@ -13,14 +13,14 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     />
-    <script type="module" crossorigin src="/CLone_Spotify/assets/alltrack-CR2jBjUy.js"></script>
+    <script type="module" crossorigin src="/CLone_Spotify/assets/alltrack-DZrLMsXA.js"></script>
     <link rel="modulepreload" crossorigin href="/CLone_Spotify/assets/header-Dh-pTS38.js">
     <link rel="modulepreload" crossorigin href="/CLone_Spotify/assets/player-B77JGl4t.js">
     <link rel="modulepreload" crossorigin href="/CLone_Spotify/assets/track-Q0vWDO3O.js">
     <link rel="modulepreload" crossorigin href="/CLone_Spotify/assets/artist-KCVOnXfN.js">
-    <link rel="modulepreload" crossorigin href="/CLone_Spotify/assets/album-BJPWN5VY.js">
+    <link rel="modulepreload" crossorigin href="/CLone_Spotify/assets/album-HhKs-w2e.js">
     <link rel="modulepreload" crossorigin href="/CLone_Spotify/assets/playlist-5joP2Sx8.js">
-    <link rel="modulepreload" crossorigin href="/CLone_Spotify/assets/main-BdqjAeM5.js">
+    <link rel="modulepreload" crossorigin href="/CLone_Spotify/assets/main-BZjr6fch.js">
   </head>
 
   <body class="bg-black min-h-screen text-white">
@@ -324,6 +324,36 @@
             <i class="fa-rotate-right fa-solid"></i>
             Làm mới
           </button>
+          <!-- Tìm kiếm bài hát -->
+          <div
+            class="flex flex-1 items-center gap-3 bg-neutral-800 px-4 py-2 rounded-full focus-within:ring-2 focus-within:ring-green-500 min-w-[220px]"
+          >
+            <i class="text-neutral-400 fa-solid fa-magnifying-glass"></i>
+
+            <input
+              id="trackSearchInput"
+              type="text"
+              placeholder="Tìm bài hát..."
+              aria-label="Tìm bài hát"
+              autocomplete="off"
+              class="bg-transparent outline-none w-full text-white placeholder:text-neutral-400 text-sm"
+            />
+
+            <button
+              type="button"
+              onclick="
+                document.getElementById('trackSearchInput').value = '';
+                document
+                  .getElementById('trackSearchInput')
+                  .dispatchEvent(new Event('input', { bubbles: true }));
+              "
+              class="text-neutral-400 hover:text-white transition"
+              aria-label="Xóa tìm kiếm"
+              title="Xóa tìm kiếm"
+            >
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
 
           <button
             id="btnGoHome"

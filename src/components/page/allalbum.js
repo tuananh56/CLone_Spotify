@@ -1,27 +1,30 @@
 import { api } from "../../app/api.js";
 import { navigate } from "../../app/router.js";
 
+// =========================
+// Cấu hình phân trang
+// =========================
+
 const ALBUMS_PER_PAGE = 5;
-const TOTAL_ALBUMS = 7;
+
 let currentPage = 0;
 let currentRequestId = 0;
-let hasNextPage = false;
 let isLoading = false;
+
 let allAlbums = [];
 let searchQuery = "";
-let totalAlbums = null;
 
+// =========================
 // Khởi tạo trang tất cả album
+// =========================
+
 export function initAllAlbumPage() {
   const albumsList = document.querySelector("#allAlbumsList");
 
   if (!albumsList) return;
 
-  // Tránh đăng ký sự kiện nhiều lần
-  if (albumsList.dataset.initialized === "true") {
-    renderFilteredAlbums();
-    return;
-  }
+  // Tránh đăng ký sự kiện nhiều lần.
+  if (albumsList.dataset.initialized === "true") return;
 
   albumsList.dataset.initialized = "true";
 
@@ -30,83 +33,85 @@ export function initAllAlbumPage() {
   const searchInput = document.querySelector("#albumSearchInput");
   const pagination = document.querySelector("#albumsPagination");
 
-  // Tải lại trang album hiện tại
+  // Tải lại danh sách album.
   reloadBtn?.addEventListener("click", () => {
-    loadAlbums(currentPage);
+    loadAlbums();
   });
 
-  // Quay về trang chủ
+  // Quay về trang chủ.
   homeBtn?.addEventListener("click", () => {
     navigate("home");
   });
 
-  // Tìm kiếm theo tên album hoặc nghệ sĩ
+  // Tìm kiếm trên toàn bộ danh sách album đã tải.
   searchInput?.addEventListener("input", (event) => {
     searchQuery = event.target.value.trim().toLowerCase();
+    currentPage = 0;
     renderFilteredAlbums();
   });
 
-  // Mở trang chi tiết album
-  albumsList.addEventListener("click", (event) => {
-    const albumCard = event.target.closest("[data-album-id]");
-
-    if (!albumCard || !albumsList.contains(albumCard)) return;
-
-    const albumId = albumCard.dataset.albumId;
-
-    if (!albumId) return;
-
-    navigate("album", { id: albumId });
-  });
-
-  // Hỗ trợ mở album bằng bàn phím
-  albumsList.addEventListener("keydown", (event) => {
-    const albumCard = event.target.closest("[data-album-id][role='link']");
-
-    if (!albumCard || !albumsList.contains(albumCard)) return;
-
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      albumCard.click();
-    }
-  });
-
-  // Phân trang bằng các nút số
+  // Phân trang phía frontend.
   pagination?.addEventListener("click", (event) => {
     const button = event.target.closest("button[data-page]");
 
     if (!button || button.disabled || isLoading) return;
 
     const page = Number(button.dataset.page);
-
-    if (!Number.isInteger(page) || page < 0 || page === currentPage) {
-      return;
-    }
-
-    // Không cho chuyển đến trang vượt quá trang kế tiếp
-    // nếu API không cung cấp tổng số album.
-    if (totalAlbums === null && page > currentPage + 1) {
-      return;
-    }
+    const filteredAlbums = getFilteredAlbums();
+    const totalPages = Math.ceil(filteredAlbums.length / ALBUMS_PER_PAGE);
 
     if (
-      totalAlbums !== null &&
-      page >= Math.ceil(totalAlbums / ALBUMS_PER_PAGE)
+      !Number.isInteger(page) ||
+      page < 0 ||
+      page >= totalPages ||
+      page === currentPage
     ) {
       return;
     }
 
-    if (page < Math.ceil(totalAlbums / ALBUMS_PER_PAGE)) {
-      loadAlbums(page);
+    currentPage = page;
+    renderFilteredAlbums();
+
+    albumsList.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  });
+
+  // Mở trang chi tiết album.
+  albumsList.addEventListener("click", (event) => {
+    const card = event.target.closest("[data-album-id]");
+
+    if (!card || !albumsList.contains(card)) return;
+
+    const albumId = card.dataset.albumId;
+
+    if (!albumId) return;
+
+    navigate("album", { id: albumId });
+  });
+
+  // Hỗ trợ bàn phím.
+  albumsList.addEventListener("keydown", (event) => {
+    const card = event.target.closest("[data-album-id][role='link']");
+
+    if (!card || !albumsList.contains(card)) return;
+
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      card.click();
     }
   });
 
-  // Tải trang đầu tiên
-  loadAlbums(0);
+  // Tải dữ liệu lần đầu.
+  loadAlbums();
 }
 
-// Tải danh sách album từ API
-async function loadAlbums(page = 0) {
+// =========================
+// Tải danh sách album
+// =========================
+
+async function loadAlbums() {
   const albumsList = document.querySelector("#allAlbumsList");
   const albumCount = document.querySelector("#albumCount");
   const reloadBtn = document.querySelector("#btnReloadAlbums");
@@ -116,7 +121,6 @@ async function loadAlbums(page = 0) {
   isLoading = true;
 
   const requestId = ++currentRequestId;
-  const offset = page * ALBUMS_PER_PAGE;
 
   if (albumCount) {
     albumCount.textContent = "Đang tải danh sách album...";
@@ -127,8 +131,6 @@ async function loadAlbums(page = 0) {
     reloadBtn.classList.add("opacity-50", "cursor-not-allowed");
   }
 
-  renderPagination();
-
   albumsList.innerHTML = `
     <div class="col-span-full py-10 text-center text-neutral-400">
       <i class="fa-solid fa-spinner fa-spin text-2xl mb-3"></i>
@@ -136,10 +138,11 @@ async function loadAlbums(page = 0) {
     </div>
   `;
 
+  renderPagination();
+
   try {
-    const res = await api.get(
-      `/api/albums?offset=${offset}&limit=${ALBUMS_PER_PAGE}`,
-    );
+    // Lấy danh sách album một lần để phân trang ở frontend.
+    const res = await api.get("/api/albums?limit=50&offset=0");
 
     if (requestId !== currentRequestId) return;
 
@@ -149,41 +152,24 @@ async function loadAlbums(page = 0) {
       ? data
       : Array.isArray(data?.albums)
         ? data.albums
-        : Array.isArray(data?.data)
-          ? data.data
-          : Array.isArray(data?.data?.albums)
-            ? data.data.albums
+        : Array.isArray(data?.data?.albums)
+          ? data.data.albums
+          : Array.isArray(data?.data)
+            ? data.data
             : null;
 
     if (!albums) {
+      console.error("Response API album không hợp lệ:", data);
       throw new Error("Không đọc được danh sách album từ API.");
     }
 
     allAlbums = albums;
-    currentPage = page;
-
-    const total =
-      data?.total ??
-      data?.totalCount ??
-      data?.pagination?.total ??
-      data?.data?.total ??
-      data?.data?.totalCount;
-
-    // Chỉ sử dụng tổng số album nếu API trả về giá trị đáng tin cậy.
-    totalAlbums = TOTAL_ALBUMS;
-    hasNextPage = (currentPage + 1) * ALBUMS_PER_PAGE < TOTAL_ALBUMS;
-    // console.log("Album tải được:", albums.length);
-    // console.log("Tổng album từ API:", totalAlbums);
-    // console.log("Có trang tiếp theo:", hasNextPage);
-    // console.log("Trang hiện tại:", currentPage + 1);
+    currentPage = 0;
 
     renderFilteredAlbums();
 
     if (albumCount) {
-      albumCount.textContent =
-        totalAlbums !== null
-          ? `Có ${totalAlbums} album trong thư viện`
-          : `Trang ${currentPage + 1} • ${albums.length} album`;
+      albumCount.textContent = `Có ${allAlbums.length} album trong thư viện`;
     }
   } catch (error) {
     if (requestId !== currentRequestId) return;
@@ -203,7 +189,11 @@ async function loadAlbums(page = 0) {
       </div>
     `;
 
-    hasNextPage = false;
+    const pagination = document.querySelector("#albumsPagination");
+
+    if (pagination) {
+      pagination.innerHTML = "";
+    }
 
     if (albumCount) {
       albumCount.textContent = "Tải danh sách album thất bại";
@@ -222,124 +212,188 @@ async function loadAlbums(page = 0) {
   }
 }
 
-// Lọc danh sách album đã tải
-function renderFilteredAlbums() {
-  const filteredAlbums = allAlbums.filter((album) => {
-    const title = album.title || album.name || "";
+// =========================
+// Lọc album theo từ khóa
+// =========================
 
-    const artist =
-      album.artist_name ||
-      album.artist?.name ||
-      (typeof album.artist === "string" ? album.artist : "") ||
-      (Array.isArray(album.artists)
-        ? album.artists
-            .map((item) => item.name)
-            .filter(Boolean)
-            .join(" ")
-        : "");
+function getFilteredAlbums() {
+  return allAlbums.filter((album) => {
+    const title = album.title || album.name || album.album_title || "";
 
-    const searchableText = `${title} ${artist}`.toLowerCase();
+    const artistValue =
+      album.artist_name || album.artist || album.artists || "";
+
+    const artistName = Array.isArray(artistValue)
+      ? artistValue
+          .map((artist) =>
+            typeof artist === "string"
+              ? artist
+              : artist?.name || artist?.artist_name || "",
+          )
+          .join(" ")
+      : typeof artistValue === "object" && artistValue !== null
+        ? artistValue.name || artistValue.artist_name || ""
+        : artistValue;
+
+    const searchableText = `${title} ${artistName}`.toLowerCase();
 
     return searchableText.includes(searchQuery);
   });
-
-  renderAlbums(filteredAlbums);
 }
 
-// Hiển thị danh sách album
+// =========================
+// Hiển thị album của trang hiện tại
+// =========================
+
+function renderFilteredAlbums() {
+  const filteredAlbums = getFilteredAlbums();
+
+  const totalPages = Math.ceil(filteredAlbums.length / ALBUMS_PER_PAGE);
+
+  // Đảm bảo trang hiện tại hợp lệ sau khi tìm kiếm.
+  if (totalPages === 0) {
+    currentPage = 0;
+  } else if (currentPage >= totalPages) {
+    currentPage = totalPages - 1;
+  }
+
+  const start = currentPage * ALBUMS_PER_PAGE;
+
+  const albumsOnPage = filteredAlbums.slice(start, start + ALBUMS_PER_PAGE);
+
+  renderAlbums(albumsOnPage);
+  renderPagination();
+
+  const albumCount = document.querySelector("#albumCount");
+
+  if (albumCount && !isLoading) {
+    albumCount.textContent = searchQuery
+      ? `Tìm thấy ${filteredAlbums.length} album`
+      : `Có ${allAlbums.length} album trong thư viện`;
+  }
+}
+
+// =========================
+// Render danh sách album
+// =========================
+
 function renderAlbums(albums) {
   const albumsList = document.querySelector("#allAlbumsList");
 
   if (!albumsList) return;
 
-  if (!albums.length) {
+  if (albums.length === 0) {
     albumsList.innerHTML = `
       <div class="col-span-full py-10 text-center text-neutral-400">
         <i class="fa-solid fa-compact-disc text-3xl mb-3"></i>
         <p>
           ${
             searchQuery
-              ? "Không tìm thấy album phù hợp trong trang hiện tại."
+              ? "Không tìm thấy album phù hợp."
               : "Không tìm thấy album nào."
           }
         </p>
       </div>
     `;
+
     return;
   }
 
   albumsList.innerHTML = albums
     .map((album) => {
-      const id = album.id ?? album._id;
-      const title = album.title || album.name || "Chưa có tên album";
+      const id = album.id ?? album._id ?? album.album_id;
 
-      const artist =
-        album.artist_name ||
-        album.artist?.name ||
-        (typeof album.artist === "string" ? album.artist : "") ||
-        (Array.isArray(album.artists)
-          ? album.artists
-              .map((item) => item.name)
-              .filter(Boolean)
-              .join(", ")
-          : "") ||
-        "Chưa rõ nghệ sĩ";
+      const title =
+        album.title || album.name || album.album_title || "Chưa có tên album";
+
+      const artistValue =
+        album.artist_name || album.artist || album.artists || "";
+
+      const artistName = Array.isArray(artistValue)
+        ? artistValue
+            .map((artist) =>
+              typeof artist === "string"
+                ? artist
+                : artist?.name || artist?.artist_name || "",
+            )
+            .filter(Boolean)
+            .join(", ")
+        : typeof artistValue === "object" && artistValue !== null
+          ? artistValue.name || artistValue.artist_name || "Nghệ sĩ"
+          : artistValue || "Nghệ sĩ";
 
       const image =
         album.cover_image_url ||
         album.image_url ||
         album.cover_url ||
-        "./src/assets/placeholder.png";
+        album.thumbnail_url ||
+        `${import.meta.env.BASE_URL}playlist.png`;
 
-      const releaseYear = album.release_date
-        ? String(album.release_date).slice(0, 4)
-        : "";
+      const releaseDate = album.release_date || "";
 
       const safeId = escapeHTML(id ?? "");
       const safeTitle = escapeHTML(title);
-      const safeArtist = escapeHTML(artist);
+      const safeArtist = escapeHTML(artistName);
       const safeImage = escapeHTML(image);
+      const safeReleaseDate = escapeHTML(releaseDate);
+
+      const clickable = id !== null && id !== undefined && id !== "";
 
       return `
         <article
-          data-album-id="${safeId}"
-          class="group min-w-0 rounded-lg bg-neutral-900 hover:bg-neutral-800 p-3 cursor-pointer transition"
-          ${id == null ? 'aria-disabled="true"' : 'role="link" tabindex="0"'}
+          ${
+            clickable
+              ? `data-album-id="${safeId}" role="link" tabindex="0"`
+              : 'aria-disabled="true"'
+          }
+          class="group min-w-0 rounded-lg bg-neutral-900 p-3 transition hover:bg-neutral-800 ${
+            clickable ? "cursor-pointer" : "cursor-default"
+          }"
         >
-          <div class="relative mb-3 aspect-square overflow-hidden rounded-md bg-neutral-800 shadow-lg">
+          <div class="relative mb-3 aspect-square overflow-hidden rounded-lg bg-neutral-800 shadow-lg">
             <img
               src="${safeImage}"
               alt="${safeTitle}"
               loading="lazy"
-              class="w-full h-full object-cover transition duration-300 group-hover:scale-105"
-              onerror="this.onerror=null;this.src='./src/assets/placeholder.png';"
+              class="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+              onerror="this.onerror=null;this.src='${import.meta.env.BASE_URL}playlist.png';"
             />
 
-            <div
-              class="absolute right-2 bottom-2 flex justify-center items-center bg-green-500 rounded-full w-12 h-12 text-black text-lg opacity-0 shadow-xl translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition"
-              aria-hidden="true"
-            >
-              <i class="fa-solid fa-arrow-up-right-from-square"></i>
-            </div>
+            ${
+              clickable
+                ? `
+                  <div
+                    class="absolute bottom-2 right-2 flex h-12 w-12 translate-y-2 items-center justify-center rounded-full bg-green-500 text-lg text-black opacity-0 shadow-xl transition group-hover:translate-y-0 group-hover:opacity-100"
+                    aria-hidden="true"
+                  >
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                  </div>
+                `
+                : ""
+            }
           </div>
 
           <h2
-            class="mb-1 font-semibold text-white text-sm truncate"
+            class="mb-1 truncate text-sm font-semibold text-white"
             title="${safeTitle}"
           >
             ${safeTitle}
           </h2>
 
           <p
-            class="text-neutral-400 text-sm truncate"
+            class="truncate text-sm text-neutral-400"
             title="${safeArtist}"
           >
             ${safeArtist}
           </p>
 
           ${
-            releaseYear
-              ? `<p class="mt-1 text-neutral-500 text-xs">${escapeHTML(releaseYear)}</p>`
+            safeReleaseDate
+              ? `
+                <p class="mt-1 truncate text-xs text-neutral-500">
+                  ${safeReleaseDate}
+                </p>
+              `
               : ""
           }
         </article>
@@ -348,37 +402,24 @@ function renderAlbums(albums) {
     .join("");
 }
 
-// Hiển thị Pagination theo giao diện alltrack.js
+// =========================
+// Render phân trang
+// =========================
+
 function renderPagination() {
   const pagination = document.querySelector("#albumsPagination");
 
   if (!pagination) return;
 
-  // Nếu API không trả tổng số album, chỉ hiện trang hiện tại
-  // và trang tiếp theo nếu còn dữ liệu.
-  const totalPages =
-    totalAlbums !== null
-      ? Math.ceil(totalAlbums / ALBUMS_PER_PAGE)
-      : currentPage + (hasNextPage ? 2 : 1);
+  const totalPages = Math.ceil(getFilteredAlbums().length / ALBUMS_PER_PAGE);
 
+  // Chỉ hiện phân trang khi có hơn 5 album.
   if (totalPages <= 1) {
     pagination.innerHTML = "";
     return;
   }
 
-  const pages = [];
-
-  if (totalAlbums !== null) {
-    for (let page = 0; page < totalPages; page++) {
-      pages.push(page);
-    }
-  } else {
-    if (currentPage > 0) pages.push(currentPage - 1);
-
-    pages.push(currentPage);
-
-    if (hasNextPage) pages.push(currentPage + 1);
-  }
+  const pages = Array.from({ length: totalPages }, (_, index) => index);
 
   pagination.innerHTML = `
     <div class="flex flex-wrap items-center justify-center gap-2">
@@ -393,31 +434,29 @@ function renderPagination() {
       </button>
 
       ${pages
-        .map((page) => {
-          const active = page === currentPage;
-
-          return `
+        .map(
+          (page) => `
             <button
               type="button"
               data-page="${page}"
               ${isLoading ? "disabled" : ""}
-              aria-current="${active ? "page" : "false"}"
+              aria-current="${page === currentPage ? "page" : "false"}"
               class="h-10 min-w-10 rounded-full px-3 font-semibold transition ${
-                active
+                page === currentPage
                   ? "bg-green-500 text-black"
                   : "bg-neutral-800 text-white hover:bg-neutral-700"
               } disabled:opacity-50"
             >
               ${page + 1}
             </button>
-          `;
-        })
+          `,
+        )
         .join("")}
 
       <button
         type="button"
         data-page="${currentPage + 1}"
-        ${!hasNextPage || isLoading ? "disabled" : ""}
+        ${currentPage >= totalPages - 1 || isLoading ? "disabled" : ""}
         class="flex h-10 w-10 items-center justify-center rounded-full bg-neutral-800 text-white hover:bg-neutral-700 disabled:opacity-40"
         aria-label="Trang tiếp theo"
       >
@@ -427,9 +466,12 @@ function renderPagination() {
   `;
 }
 
-// Chuyển dữ liệu thành chuỗi an toàn khi đưa vào HTML
+// =========================
+// Escape HTML
+// =========================
+
 function escapeHTML(value) {
-  return String(value).replace(/[&<>"']/g, (char) => {
+  return String(value ?? "").replace(/[&<>"']/g, (char) => {
     const entities = {
       "&": "&amp;",
       "<": "&lt;",

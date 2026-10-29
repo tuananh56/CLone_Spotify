@@ -45,15 +45,34 @@ async function loadAlbumDetail(id) {
           const trackTitle = t.title || "Không rõ tên bài hát";
           const duration = t.duration ? formatDuration(t.duration) : "0:00";
 
+          const trackImage =
+            t.image_url ||
+            t.cover_image_url ||
+            album.cover_image_url ||
+            "./src/assets/placeholder.png";
+
           return `
-      <div class="flex items-center justify-between p-2 hover:bg-neutral-800 rounded cursor-pointer"
-           onclick="window.openTrack('${t.id}')"
-        <div>
-          <p class="text-white">${trackTitle}</p>
-          <p class="text-gray-400 text-sm">${artistNames}</p>
+        <div
+          class="flex items-center gap-3 p-2 hover:bg-neutral-800 rounded cursor-pointer"
+          onclick="window.openTrack('${t.id}')"
+        >
+          <img
+            src="${trackImage}"
+            alt="${trackTitle}"
+            class="w-12 h-12 rounded object-cover shrink-0"
+            onerror="this.onerror=null;this.src='./src/assets/placeholder.png'"
+          />
+
+          <div class="flex-1 min-w-0">
+            <p class="text-white truncate">${trackTitle}</p>
+            <p class="text-gray-400 text-sm truncate">${artistNames}</p>
+          </div>
+
+          <span class="text-xs text-gray-400 shrink-0">
+            ${duration}
+          </span>
         </div>
-        <span class="text-xs text-gray-400">${duration}</span>
-      </div>`;
+      `;
         })
         .join("");
     }

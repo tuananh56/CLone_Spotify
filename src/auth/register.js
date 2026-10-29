@@ -33,7 +33,7 @@
       localStorage.setItem("user", JSON.stringify(res.data.user));
 
       // Điều hướng sang trang login
-      window.location.href = "/login.html";
+      window.location.href = "./login.html";
     } catch (error) {
       // console.error("Register error:", error);
       Swal.fire({

@@ -11,10 +11,10 @@
     />
     <title>Document</title>
   </head>
-  <body class="bg-black min-h-screen text-white">
+  <body class="bg-black min-h-screen overflow-x-hidden text-white">
     <!-- Header cố định trên cùng -->
     <header
-      class="top-0 z-50 sticky flex justify-between items-center bg-neutral-900 shadow-md px-6 py-3"
+      class="top-0 z-50 sticky flex justify-between items-center gap-2 bg-neutral-900 shadow-md px-3 sm:px-6 py-3"
     >
       <!-- Logo + Search -->
       <div class="flex items-center space-x-4">
@@ -360,7 +360,7 @@
         <section class="relative mb-8">
           <div class="flex justify-between items-center mb-3">
             <h3 class="font-bold text-lg">All Playlists</h3>
-           <button
+            <button
               type="button"
               onclick="window.location.href = '/CLone_Spotify/allplaylist.html'"
               class="font-semibold text-gray-300 hover:text-green-500 text-sm transition-colors"

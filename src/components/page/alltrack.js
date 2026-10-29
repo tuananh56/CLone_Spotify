@@ -3,7 +3,8 @@ import { api } from "../../app/api.js";
 
 let currentRequestId = 0;
 let eventsInitialized = false;
-
+let allTracks = [];
+let searchQuery = "";
 /**
  * Khởi tạo trang danh sách tất cả bài hát.
  */
@@ -35,13 +36,15 @@ export async function initAllTrackPage() {
     }
 
     const normalizedTracks = tracks.map(normalizeTrack);
+    console.table(normalizedTracks.map(({ id, title }) => ({ id, title })));
 
-    // Cập nhật playlist dùng chung với player.
+    // Lưu danh sách gốc để tìm kiếm và phát đúng bài hát.
+    allTracks = normalizedTracks;
     window.playlist = normalizedTracks;
 
     currentTrackPage = 1;
 
-    renderAllTracks(normalizedTracks);
+    renderAllTracks(getFilteredTracks());
 
     initTrackPaginationEvents();
     renderTrackPagination();
@@ -110,7 +113,7 @@ function normalizeTrack(track) {
     "Chưa rõ album";
 
   return {
-    id: track.id ?? track._id ?? "",
+    id: String(track.id ?? track._id ?? ""),
     title: track.title ?? track.name ?? "Chưa có tên",
     artist,
     album,
@@ -126,7 +129,18 @@ function normalizeTrack(track) {
       track.audio_url ?? track.audioUrl ?? track.preview_url ?? track.url ?? "",
   };
 }
+/**
+ * Lọc bài hát theo tên bài hát, nghệ sĩ và album.
+ */
+function getFilteredTracks() {
+  return allTracks.filter((track) => {
+    const searchableText = [track.title, track.artist, track.album]
+      .join(" ")
+      .toLowerCase();
 
+    return searchableText.includes(searchQuery);
+  });
+}
 /**
  * Đăng ký sự kiện một lần.
  */
@@ -147,12 +161,26 @@ function initAllTrackEvents() {
     .getElementById("btnRetryTracks")
     ?.addEventListener("click", initAllTrackPage);
 
+  // Tìm kiếm bài hát
+  document
+    .getElementById("trackSearchInput")
+    ?.addEventListener("input", (event) => {
+      searchQuery = event.target.value.trim().toLowerCase();
+
+      currentTrackPage = 1;
+
+      renderAllTracks(getFilteredTracks());
+      renderTrackPagination();
+    });
+
+  // Phát tất cả bài hát
   document.getElementById("btnPlayAllTracks")?.addEventListener("click", () => {
     if (window.playlist?.length) {
       playTrack(0);
     }
   });
 
+  // Xử lý click trong danh sách bài hát
   container.addEventListener("click", (event) => {
     const playButton = event.target.closest(".play-track-btn");
 
@@ -172,13 +200,27 @@ function initAllTrackEvents() {
 
     const trackButton = event.target.closest(".open-track-btn");
 
-    if (trackButton?.dataset.id) {
-      window.location.href = `/CLone_Spotify/track.html?id=${encodeURIComponent(trackButton.dataset.id)}`;
+    if (trackButton) {
+      const trackId = trackButton.dataset.id;
+
+      console.log("Bài hát được chọn:", {
+        id: trackId,
+        title: trackButton.textContent.trim(),
+      });
+
+      if (!trackId) {
+        console.error("Bài hát này không có ID hợp lệ.");
+        return;
+      }
+
+      const trackUrl = new URL("track.html", window.location.href);
+      trackUrl.searchParams.set("id", trackId);
+
+      window.location.href = trackUrl.href;
     }
   });
 
-  // Vì alltrack.html không nằm trong routes của router.js,
-  // quay về Home bằng điều hướng trang thông thường.
+  // Quay về Home
   document.getElementById("btnGoHome")?.addEventListener("click", () => {
     window.location.href = "/CLone_Spotify/home.html";
   });
@@ -216,72 +258,85 @@ function renderAllTracks(tracks) {
 
   if (tracks.length === 0) {
     container.innerHTML = `
-      <div class="px-4 py-10 text-center text-neutral-400">
-        <i class="fa-solid fa-music mb-3 text-2xl"></i>
-        <p>Chưa có bài hát nào.</p>
-      </div>
-    `;
+    <div
+      id="trackMessage"
+      class="px-4 py-10 text-center text-neutral-400"
+    >
+      <i class="fa-solid fa-music mb-3 text-2xl"></i>
+      <p>
+        ${
+          searchQuery
+            ? "Không tìm thấy bài hát phù hợp."
+            : "Chưa có bài hát nào."
+        }
+      </p>
+    </div>
+  `;
   } else {
     container.innerHTML = tracks
-      .map(
-        (track, index) => `
-          <div
-            class="group grid grid-cols-[40px_minmax(0,1fr)_100px] items-center gap-3 rounded-md px-3 py-2 text-sm text-neutral-400 hover:bg-neutral-800 md:grid-cols-[40px_minmax(0,1fr)_minmax(100px,0.7fr)_100px]"
+      .map((track) => {
+        const index = allTracks.indexOf(track);
+
+        return `
+      <div
+        class="track-row group grid grid-cols-[40px_minmax(0,1fr)_100px] items-center gap-3 rounded-md px-3 py-2 text-sm text-neutral-400 hover:bg-neutral-800 md:grid-cols-[40px_minmax(0,1fr)_minmax(100px,0.7fr)_100px]"
+      >
+        <div class="flex items-center justify-center">
+          <span class="track-number group-hover:hidden">
+            ${index + 1}
+          </span>
+
+          <button
+            type="button"
+            class="play-track-btn hidden text-white group-hover:block"
+            data-index="${index}"
+            aria-label="Phát ${escapeHTML(track.title)}"
+            title="Phát bài hát"
           >
-            <div class="flex items-center justify-center">
-              <span class="track-number group-hover:hidden">
-                ${index + 1}
-              </span>
+            <i class="fa-solid fa-play"></i>
+          </button>
+        </div>
 
-              <button
-                type="button"
-                class="play-track-btn hidden text-white group-hover:block"
-                data-index="${index}"
-                aria-label="Phát ${escapeHTML(track.title)}"
-                title="Phát bài hát"
-              >
-                <i class="fa-solid fa-play"></i>
-              </button>
-            </div>
+        <div class="flex min-w-0 items-center gap-3">
+          <img
+            src="${escapeHTML(track.image_url)}"
+            alt=""
+            class="h-10 w-10 shrink-0 rounded object-cover"
+            onerror="this.onerror=null;this.src='/CLone_Spotify/playlist.png'"
+          />
 
-            <div class="flex min-w-0 items-center gap-3">
-              <img
-                src="${escapeHTML(track.image_url)}"
-                alt=""
-                class="h-10 w-10 shrink-0 rounded object-cover"
-              onerror="this.onerror=null;this.src='/CLone_Spotify/playlist.png'"
-              />
-
-              <button
-                type="button"
-                class="open-track-btn min-w-0 text-left"
-                data-id="${escapeHTML(track.id)}"
-                title="Xem chi tiết bài hát"
-              >
-                <span class="block truncate font-medium text-white hover:underline">
-                  ${escapeHTML(track.title)}
-                </span>
-                <span class="block truncate text-xs text-neutral-400">
-                  ${escapeHTML(track.artist)}
-                </span>
-              </button>
-            </div>
-
-            <span class="hidden truncate md:block">
-              ${escapeHTML(track.album)}
+          <button
+            type="button"
+            class="open-track-btn min-w-0 text-left"
+            data-id="${escapeHTML(track.id)}"
+            title="Xem chi tiết bài hát"
+          >
+            <span class="block truncate font-medium text-white hover:underline">
+              ${escapeHTML(track.title)}
             </span>
-
-            <span class="text-right tabular-nums">
-              ${formatDuration(track.duration)}
+            <span class="block truncate text-xs text-neutral-400">
+              ${escapeHTML(track.artist)}
             </span>
-          </div>
-        `,
-      )
+          </button>
+        </div>
+
+        <span class="hidden truncate md:block">
+          ${escapeHTML(track.album)}
+        </span>
+
+        <span class="text-right tabular-nums">
+          ${formatDuration(track.duration)}
+        </span>
+      </div>
+    `;
+      })
       .join("");
   }
 
   if (count) {
-    count.textContent = `${tracks.length} bài hát`;
+    count.textContent = searchQuery
+      ? `Tìm thấy ${tracks.length} bài hát`
+      : `${tracks.length} bài hát`;
   }
 }
 
@@ -375,9 +430,7 @@ function renderTrackPagination() {
   if (!list || !pagination) return;
 
   // Lấy các hàng bài hát đã được render
-  const rows = Array.from(list.children).filter(
-    (element) => element.id !== "trackMessage",
-  );
+  const rows = Array.from(list.querySelectorAll(".track-row"));
 
   const totalTracks = rows.length;
   const totalPages = Math.ceil(totalTracks / TRACKS_PER_PAGE);

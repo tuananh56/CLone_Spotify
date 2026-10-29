@@ -114,6 +114,8 @@ async function loadSidebarPlaylists() {
 
   try {
     const res = await api.get("/api/me/playlists");
+    // console.log("Playlist sidebar:", JSON.stringify(res.data, null, 2));
+
     const playlists = res.data.playlists || [];
 
     // Có thể router đã thay sidebar trong lúc chờ API
@@ -127,31 +129,46 @@ async function loadSidebarPlaylists() {
       podcastBlock?.classList.add("hidden");
 
       sidebarList.innerHTML = playlists
-        .map(
-          (p) => `
-            <div
-              class="sidebar-item flex items-center space-x-3 p-2
-                     hover:bg-neutral-800 rounded cursor-pointer"
-              data-type="playlist"
-              data-id="${p.id || p._id || p.playlistId || ""}"
-            >
-              <img
-                src="${p.images?.[0]?.url || `${import.meta.env.BASE_URL}playlist.png`}"
-                alt=""
-                class="w-10 h-10 rounded object-cover"
-              />
+        .map((p) => {
+          const playlistId = p.id || p._id || p.playlistId || "";
 
-              <div class="min-w-0">
-                <p class="truncate text-white text-sm">
-                  ${p.name || "Playlist không tên"}
-                </p>
-                <p class="text-xs text-gray-400">
-                  Playlist • ${p.owner?.display_name || "Bạn"}
-                </p>
-              </div>
-            </div>
-          `,
-        )
+          const image =
+            p.image_url ||
+            p.cover_image_url ||
+            p.imageUrl ||
+            p.images?.[0]?.url ||
+            p.cover?.url ||
+            `${import.meta.env.BASE_URL}playlist.png`;
+
+          const playlistName = p.name || p.title || "Playlist không tên";
+          const owner = p.owner?.display_name || p.subtitle || "Bạn";
+
+          return `
+      <div
+        class="sidebar-item flex items-center gap-3 p-2
+               hover:bg-neutral-800 rounded cursor-pointer"
+        data-type="playlist"
+        data-id="${escapeHTML(playlistId)}"
+      >
+        <img
+          src="${escapeHTML(image)}"
+          alt=""
+          class="w-10 h-10 rounded object-cover shrink-0"
+          onerror="this.onerror=null;this.src='${import.meta.env.BASE_URL}playlist.png'"
+        />
+
+        <div class="min-w-0 flex-1">
+          <p class="truncate text-white text-sm">
+            ${escapeHTML(playlistName)}
+          </p>
+
+          <p class="truncate text-xs text-gray-400">
+            ${escapeHTML(owner)}
+          </p>
+        </div>
+      </div>
+    `;
+        })
         .join("");
     } else {
       sidebarList.innerHTML = "";
@@ -161,40 +178,79 @@ async function loadSidebarPlaylists() {
   }
 }
 
-// Hiển thị kết quả tìm kiếm
+// Hiển thị kết quả tìm kiếm playlist
 function renderSidebarSearchResults(playlists) {
   const sidebarList = document.getElementById("sidebarList");
   if (!sidebarList) return;
 
+  if (!Array.isArray(playlists) || playlists.length === 0) {
+    sidebarList.innerHTML = `
+      <p class="px-3 py-4 text-sm text-neutral-400">
+        Không tìm thấy playlist.
+      </p>
+    `;
+    return;
+  }
+
   sidebarList.innerHTML = playlists
-    .map(
-      (p) => `
+    .map((p) => {
+      const playlistId = p.id || p._id || p.playlistId || "";
+
+      const image =
+        p.image_url ||
+        p.cover_image_url ||
+        p.images?.[0]?.url ||
+        `${import.meta.env.BASE_URL}playlist.png`;
+
+      const trackCount =
+        p.track_count ??
+        p.tracks_count ??
+        p.total_tracks ??
+        p.tracks?.total ??
+        p.tracks?.length;
+
+      const playlistName = p.title || p.name || "Playlist không tên";
+      const owner = p.subtitle || p.owner?.display_name || "Playlist";
+
+      return `
         <div
-          class="sidebar-item flex items-center space-x-3 p-2
+          class="sidebar-item flex items-center gap-3 p-2
                  hover:bg-neutral-800 rounded cursor-pointer"
           data-type="playlist"
-          data-id="${p.id || p._id || p.playlistId || ""}"
+          data-id="${escapeHTML(playlistId)}"
         >
           <img
-            src="${
-              p.image_url ||
-              p.images?.[0]?.url ||
-              `${import.meta.env.BASE_URL}playlist.png`
-            }"
+            src="${escapeHTML(image)}"
             alt=""
-            class="w-10 h-10 rounded object-cover"
+            class="w-10 h-10 rounded object-cover shrink-0"
+            onerror="this.onerror=null;this.src='${import.meta.env.BASE_URL}playlist.png'"
           />
 
-          <div class="min-w-0">
+          <div class="min-w-0 flex-1">
             <p class="truncate text-white text-sm">
-              ${p.title || p.name || "Playlist không tên"}
+              ${escapeHTML(playlistName)}
             </p>
+
             <p class="truncate text-xs text-gray-400">
-              ${p.subtitle || p.owner?.display_name || "Playlist"}
+              ${escapeHTML(owner)}
+              ${trackCount != null ? ` • ${trackCount} bài hát` : ""}
             </p>
           </div>
         </div>
-      `,
-    )
+      `;
+    })
     .join("");
+}
+function escapeHTML(value = "") {
+  return String(value).replace(/[&<>"']/g, (char) => {
+    const entities = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;",
+    };
+
+    return entities[char];
+  });
 }

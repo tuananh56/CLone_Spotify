@@ -8,7 +8,7 @@ import { initAlbumPage } from "./playlists/album.js";
 import { initPlaylistPage } from "./playlists/playlist.js";
 
 import { handleRegister } from "./auth/register.js";
-import { handleLogin } from "./auth/login.js";
+import { handleLogin } from "./auth./login.js";
 import { handleLogout } from "./auth/logout.js";
 
 import { navigate } from "./app/router.js";

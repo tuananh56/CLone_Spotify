@@ -329,7 +329,7 @@ if (user) {
 }
 
 loginBtn.addEventListener("click", () => {
-  window.location.href = "/login.html";
+  window.location.href = "./login.html";
 });
 
 signupBtn.addEventListener("click", () => {

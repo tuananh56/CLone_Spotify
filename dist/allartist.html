@@ -10,14 +10,14 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     />
     <title>Document</title>
-    <script type="module" crossorigin src="/CLone_Spotify/assets/allartist-D_J1NEI3.js"></script>
+    <script type="module" crossorigin src="/CLone_Spotify/assets/allartist-CYwZyspW.js"></script>
     <link rel="modulepreload" crossorigin href="/CLone_Spotify/assets/header-Dh-pTS38.js">
     <link rel="modulepreload" crossorigin href="/CLone_Spotify/assets/player-B77JGl4t.js">
     <link rel="modulepreload" crossorigin href="/CLone_Spotify/assets/track-Q0vWDO3O.js">
     <link rel="modulepreload" crossorigin href="/CLone_Spotify/assets/artist-KCVOnXfN.js">
-    <link rel="modulepreload" crossorigin href="/CLone_Spotify/assets/album-BJPWN5VY.js">
+    <link rel="modulepreload" crossorigin href="/CLone_Spotify/assets/album-HhKs-w2e.js">
     <link rel="modulepreload" crossorigin href="/CLone_Spotify/assets/playlist-5joP2Sx8.js">
-    <link rel="modulepreload" crossorigin href="/CLone_Spotify/assets/main-BdqjAeM5.js">
+    <link rel="modulepreload" crossorigin href="/CLone_Spotify/assets/main-BZjr6fch.js">
   </head>
   <body class="bg-black min-h-screen text-white">
     <!-- Header cố định trên cùng -->
@@ -284,31 +284,9 @@
             </p>
           </div>
 
-          <div class="flex items-center gap-2">
-            <button
-              id="btnGoHome"
-              type="button"
-              class="flex items-center gap-2 bg-neutral-800 hover:bg-neutral-700 px-4 py-2 rounded-full font-semibold text-white text-sm transition"
-            >
-              <i class="fa-solid fa-house"></i>
-              <span>Trang chủ</span>
-            </button>
-
-            <button
-              id="btnReloadArtists"
-              type="button"
-              class="flex items-center gap-2 bg-green-500 hover:bg-green-400 px-4 py-2 rounded-full font-semibold text-black text-sm transition"
-            >
-              <i class="fa-solid fa-rotate"></i>
-              <span>Tải lại</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Search -->
-        <div class="mb-6">
+          <!-- Search -->
           <div
-            class="flex items-center gap-3 bg-neutral-800 px-4 py-3 border border-neutral-700 focus-within:border-white rounded-full max-w-xl transition"
+            class="flex flex-1 items-center gap-3 bg-neutral-800 px-4 py-3 border border-neutral-700 focus-within:border-white rounded-full min-w-[220px] max-w-xl transition"
           >
             <i class="text-neutral-400 fa-solid fa-magnifying-glass"></i>
 
@@ -335,7 +313,30 @@
               <i class="fa-solid fa-xmark"></i>
             </button>
           </div>
+
+          <!-- Actions -->
+          <div class="flex items-center gap-2">
+            <button
+              id="btnGoHome"
+              type="button"
+              class="flex items-center gap-2 bg-neutral-800 hover:bg-neutral-700 px-4 py-2 rounded-full font-semibold text-white text-sm transition"
+            >
+              <i class="fa-solid fa-house"></i>
+              <span>Trang chủ</span>
+            </button>
+
+            <button
+              id="btnReloadArtists"
+              type="button"
+              class="flex items-center gap-2 bg-green-500 hover:bg-green-400 px-4 py-2 rounded-full font-semibold text-black text-sm transition"
+            >
+              <i class="fa-solid fa-rotate"></i>
+              <span>Tải lại</span>
+            </button>
+          </div>
         </div>
+
+        <!-- Search -->
 
         <section>
           <div class="flex justify-between items-center mb-4">
