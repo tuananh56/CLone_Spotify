@@ -1,4 +1,3 @@
-
 import { api } from "../../app/api.js";
 import { navigate } from "../../app/router.js";
 
@@ -60,9 +59,7 @@ export function initAllPlaylistPage() {
 
     const page = Number(button.dataset.page);
     const filteredPlaylists = getFilteredPlaylists();
-    const totalPages = Math.ceil(
-      filteredPlaylists.length / PLAYLISTS_PER_PAGE,
-    );
+    const totalPages = Math.ceil(filteredPlaylists.length / PLAYLISTS_PER_PAGE);
 
     if (
       !Number.isInteger(page) ||
@@ -97,9 +94,7 @@ export function initAllPlaylistPage() {
 
   // Hỗ trợ bàn phím
   playlistList.addEventListener("keydown", (event) => {
-    const card = event.target.closest(
-      "[data-playlist-id][role='link']",
-    );
+    const card = event.target.closest("[data-playlist-id][role='link']");
 
     if (!card || !playlistList.contains(card)) return;
 
@@ -143,13 +138,12 @@ async function loadPlaylists() {
   `;
 
   try {
-    const res = await api.get(
-      `/api/playlists?limit=${API_LIMIT}&offset=0`,
-    );
+    const res = await api.get(`/api/playlists?limit=${API_LIMIT}&offset=0`);
 
     if (currentRequest !== requestId) return;
 
     const data = res.data;
+    // console.log("API tất cả playlist:", JSON.stringify(data, null, 2));
 
     // Hỗ trợ một số cấu trúc response phổ biến.
     const playlists = Array.isArray(data)
@@ -173,8 +167,7 @@ async function loadPlaylists() {
     renderFilteredPlaylists();
 
     if (playlistCount) {
-      playlistCount.textContent =
-        `Có ${allPlaylists.length} playlist trong thư viện`;
+      playlistCount.textContent = `Có ${allPlaylists.length} playlist trong thư viện`;
     }
 
     console.log("Đã tải playlist:", allPlaylists.length);
@@ -209,10 +202,7 @@ async function loadPlaylists() {
 
       if (reloadBtn) {
         reloadBtn.disabled = false;
-        reloadBtn.classList.remove(
-          "opacity-50",
-          "cursor-not-allowed",
-        );
+        reloadBtn.classList.remove("opacity-50", "cursor-not-allowed");
       }
 
       renderPagination();
@@ -249,9 +239,7 @@ function getFilteredPlaylists() {
 function renderFilteredPlaylists() {
   const filteredPlaylists = getFilteredPlaylists();
 
-  const totalPages = Math.ceil(
-    filteredPlaylists.length / PLAYLISTS_PER_PAGE,
-  );
+  const totalPages = Math.ceil(filteredPlaylists.length / PLAYLISTS_PER_PAGE);
 
   if (totalPages === 0) {
     currentPage = 0;
@@ -306,15 +294,9 @@ function renderPlaylists(playlists) {
 
   playlistList.innerHTML = playlists
     .map((playlist) => {
-      const id =
-        playlist.id ??
-        playlist._id ??
-        playlist.playlist_id;
+      const id = playlist.id ?? playlist._id ?? playlist.playlist_id;
 
-      const name =
-        playlist.name ||
-        playlist.title ||
-        "Playlist chưa có tên";
+      const name = playlist.name || playlist.title || "Playlist chưa có tên";
 
       const description =
         playlist.description ||
@@ -324,9 +306,14 @@ function renderPlaylists(playlists) {
 
       const image =
         playlist.image_url ||
+        playlist.cover_image_url ||
         playlist.cover_url ||
         playlist.thumbnail_url ||
+        playlist.imageUrl ||
         playlist.image ||
+        playlist.cover?.url ||
+        playlist.images?.[0]?.url ||
+        playlist.images?.[0] ||
         fallbackImage;
 
       const safeId = escapeHTML(id ?? "");
@@ -334,10 +321,7 @@ function renderPlaylists(playlists) {
       const safeDescription = escapeHTML(description);
       const safeImage = escapeHTML(image);
 
-      const hasId =
-        id !== null &&
-        id !== undefined &&
-        id !== "";
+      const hasId = id !== null && id !== undefined && id !== "";
 
       return `
         <article
@@ -404,10 +388,7 @@ function renderPagination() {
     return;
   }
 
-  const pages = Array.from(
-    { length: totalPages },
-    (_, index) => index,
-  );
+  const pages = Array.from({ length: totalPages }, (_, index) => index);
 
   pagination.innerHTML = `
     <div class="flex flex-wrap items-center justify-center gap-2">

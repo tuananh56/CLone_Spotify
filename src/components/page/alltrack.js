@@ -338,6 +338,7 @@ function renderAllTracks(tracks) {
       ? `Tìm thấy ${tracks.length} bài hát`
       : `${tracks.length} bài hát`;
   }
+  renderTrackPagination();
 }
 
 /**
@@ -429,40 +430,38 @@ function renderTrackPagination() {
 
   if (!list || !pagination) return;
 
-  // Lấy các hàng bài hát đã được render
   const rows = Array.from(list.querySelectorAll(".track-row"));
-
   const totalTracks = rows.length;
-  const totalPages = Math.ceil(totalTracks / TRACKS_PER_PAGE);
 
-  if (totalPages <= 1) {
-    rows.forEach((row) => {
-      row.classList.remove("hidden");
-    });
-
+  // Không quá 10 bài thì hiển thị tất cả, không phân trang
+  if (totalTracks <= TRACKS_PER_PAGE) {
+    rows.forEach((row) => row.classList.remove("hidden"));
     pagination.innerHTML = "";
+    currentTrackPage = 1;
     return;
   }
 
-  // Giữ trang hiện tại trong giới hạn hợp lệ
+  const totalPages = Math.ceil(totalTracks / TRACKS_PER_PAGE);
+
   currentTrackPage = Math.min(Math.max(currentTrackPage, 1), totalPages);
 
   const startIndex = (currentTrackPage - 1) * TRACKS_PER_PAGE;
   const endIndex = startIndex + TRACKS_PER_PAGE;
 
-  // Chỉ hiển thị 10 bài thuộc trang hiện tại
+  // Chỉ hiển thị 10 bài của trang hiện tại
   rows.forEach((row, index) => {
     row.classList.toggle("hidden", index < startIndex || index >= endIndex);
   });
 
-  // Tạo các nút chuyển trang
+  // Render nút phân trang
   pagination.innerHTML = `
     <button
       type="button"
       data-page="${currentTrackPage - 1}"
       ${currentTrackPage === 1 ? "disabled" : ""}
-      class="px-4 py-2 rounded-full bg-neutral-800 hover:bg-neutral-700
-             disabled:opacity-40 disabled:cursor-not-allowed"
+      class="rounded-full bg-neutral-800 px-4 py-2 transition
+             hover:bg-neutral-700 disabled:cursor-not-allowed
+             disabled:opacity-40"
     >
       <i class="fa-solid fa-chevron-left"></i>
     </button>
@@ -476,11 +475,11 @@ function renderTrackPagination() {
           type="button"
           data-page="${page}"
           aria-current="${active ? "page" : "false"}"
-          class="w-10 h-10 rounded-full font-semibold transition
+          class="h-10 w-10 rounded-full font-semibold transition
                  ${
                    active
                      ? "bg-green-500 text-black"
-                     : "bg-neutral-800 hover:bg-neutral-700 text-white"
+                     : "bg-neutral-800 text-white hover:bg-neutral-700"
                  }"
         >
           ${page}
@@ -492,8 +491,9 @@ function renderTrackPagination() {
       type="button"
       data-page="${currentTrackPage + 1}"
       ${currentTrackPage === totalPages ? "disabled" : ""}
-      class="px-4 py-2 rounded-full bg-neutral-800 hover:bg-neutral-700
-             disabled:opacity-40 disabled:cursor-not-allowed"
+      class="rounded-full bg-neutral-800 px-4 py-2 transition
+             hover:bg-neutral-700 disabled:cursor-not-allowed
+             disabled:opacity-40"
     >
       <i class="fa-solid fa-chevron-right"></i>
     </button>

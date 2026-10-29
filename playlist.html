@@ -98,26 +98,28 @@
       </div>
     </header>
     <div id="page-content">
-      <main class="p-6 overflow-y-auto">
+      <main class="p-6 pb-32 overflow-y-auto">
         <!-- Header Playlist -->
         <section class="flex sm:flex-row flex-col items-start gap-6 mb-10">
           <div class="group relative shrink-0">
+            <!-- Ảnh luôn hiển thị với mọi người -->
+            <img
+              id="detailImage"
+              src="./src/assets/placeholder.png"
+              alt="Ảnh playlist"
+              class="bg-neutral-800 shadow-lg rounded-lg w-60 h-60 object-cover"
+            />
+
+            <!-- Chỉ chủ playlist mới được hiển thị nút chỉnh sửa -->
             <button
               id="changeImageBtn"
               type="button"
               aria-label="Chỉnh sửa playlist"
               title="Chỉnh sửa playlist"
-              class="block relative rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+              class="hidden absolute inset-0 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 w-full h-full"
             >
-              <img
-                id="detailImage"
-                src="./src/assets/placeholder.png"
-                alt="Ảnh playlist"
-                class="bg-neutral-800 shadow-lg rounded-lg w-60 h-60 object-cover"
-              />
-
               <span
-                class="absolute inset-0 flex flex-col justify-center items-center bg-black/60 opacity-0 group-hover:opacity-100 rounded-lg transition-opacity"
+                class="absolute inset-0 flex flex-col justify-center items-center bg-black/60 rounded-lg"
               >
                 <i class="mb-2 text-3xl fa-solid fa-pen"></i>
                 <span class="font-semibold text-sm">Chỉnh sửa playlist</span>
@@ -132,6 +134,7 @@
             />
           </div>
 
+          <!-- Giữ nguyên phần thông tin playlist bên dưới -->
           <div class="flex-1 min-w-0">
             <p class="mb-2 text-gray-400 text-sm uppercase">Danh sách phát</p>
 
@@ -142,9 +145,8 @@
               Tên playlist
             </h1>
 
-            <p id="detailDesc" class="mb-3 text-gray-300">Mô tả playlist...</p>
+            <p id="detailDesc" class="mb-3 text-gray-300"></p>
 
-            <!-- Thông tin số bài hát -->
             <p class="text-gray-400 text-sm">
               <i class="mr-2 fa-solid fa-music"></i>
               <span id="trackCount">0 bài hát</span>
@@ -160,11 +162,14 @@
               </button>
 
               <button
-                id="editPlaylistBtn"
+                id="toggleLibraryBtn"
                 type="button"
-                class="hidden bg-neutral-700 hover:bg-neutral-600 px-5 py-2 rounded-full font-semibold text-white"
+                class="hidden bg-neutral-700 hover:bg-neutral-600 hover:shadow-lg px-5 py-2 rounded-full font-semibold text-white hover:scale-105 active:scale-95 transition-all duration-300 ease-in-out"
               >
-                <i class="mr-2 fa-solid fa-pen"></i>Chỉnh sửa
+                <i
+                  class="mr-2 transition-transform duration-300 fa-solid fa-plus"
+                ></i>
+                <span id="followButtonText">Theo dõi</span>
               </button>
 
               <button
@@ -286,6 +291,11 @@
 
         <!-- Danh sách bài hát -->
         <section id="trackList" class="space-y-2 mb-10"></section>
+        <!-- Phân trang playlist -->
+        <div
+          id="trackPagination"
+          class="flex flex-wrap justify-center items-center gap-2 mt-3 mb-10"
+        ></div>
       </main>
     </div>
 

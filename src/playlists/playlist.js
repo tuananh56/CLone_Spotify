@@ -1,6 +1,8 @@
 import { playTrack } from "../player.js";
 import { api } from "../app/api.js";
 
+let isFollowingPlaylist = false;
+let followRequestPending = false;
 let currentPlaylist = null;
 let currentPlaylistTracks = [];
 let activePlaylistId = null;
@@ -8,7 +10,8 @@ let searchRequestId = 0;
 let detailRequestId = 0;
 
 const fallbackImage = `${import.meta.env.BASE_URL}playlist.png`;
-
+const TRACKS_PER_PAGE = 10;
+let currentTrackPage = 1;
 // =========================
 // Khởi tạo trang Playlist
 // =========================
@@ -29,6 +32,10 @@ export async function initPlaylistPage(id) {
   activePlaylistId = String(resolvedId);
   currentPlaylist = null;
   currentPlaylistTracks = [];
+
+  // Reset trạng thái khi mở playlist khác
+  isFollowingPlaylist = false;
+  updateFollowButton();
 
   const requestId = ++detailRequestId;
   searchRequestId++;
@@ -58,7 +65,28 @@ async function loadPlaylistDetail(id, requestId = ++detailRequestId) {
     const desc = document.querySelector("#detailDesc");
 
     if (image) {
-      image.src = playlist.image_url || fallbackImage;
+      const imageUrl =
+        playlist.image_url ||
+        playlist.cover_image_url ||
+        playlist.cover_url ||
+        playlist.thumbnail_url ||
+        playlist.imageUrl ||
+        playlist.image ||
+        playlist.cover?.url ||
+        playlist.images?.[0]?.url ||
+        playlist.images?.[0] ||
+        fallbackImage;
+
+      image.onerror = () => {
+        console.error("Không tải được ảnh playlist:", image.src);
+        image.onerror = null;
+        image.src = fallbackImage;
+      };
+
+      image.src = imageUrl;
+
+      // console.log("Playlist detail:", playlist);
+      // console.log("Ảnh playlist được chọn:", imageUrl);
     }
 
     if (name) {
@@ -92,6 +120,14 @@ async function loadPlaylistDetail(id, requestId = ++detailRequestId) {
           (ownerId) =>
             ownerId != null && String(ownerId) === String(currentUserId),
         ));
+    // Hiển thị nút Theo dõi nếu đã đăng nhập và không phải chủ playlist
+    const followBtn = document.querySelector("#toggleLibraryBtn");
+
+    if (followBtn) {
+      followBtn.classList.toggle("hidden", currentUserId == null || isOwner);
+    }
+
+    updateFollowButton();
     const deleteBtn = document.querySelector("#deleteBtn");
 
     if (deleteBtn) {
@@ -147,7 +183,13 @@ async function loadPlaylistDetail(id, requestId = ++detailRequestId) {
       trackCount.textContent = `${count} bài hát`;
     }
 
+    // Reset về trang đầu khi tải lại danh sách bài hát
+    currentTrackPage = 1;
+
     renderTrackList(currentPlaylistTracks, isOwner);
+
+    // Khởi tạo sự kiện phân trang
+    initPlaylistPaginationEvents();
 
     // Khởi tạo các nút chỉnh sửa
     initPlaylistEditUI(isOwner);
@@ -226,10 +268,13 @@ function renderTrackList(tracks, isOwner = false) {
 
   if (!tracks.length) {
     trackList.innerHTML = `
-      <p class="px-3 py-5 text-sm text-gray-400">
-        Playlist này chưa có bài hát nào.
-      </p>
-    `;
+    <p class="px-3 py-5 text-sm text-gray-400">
+      Playlist này chưa có bài hát nào.
+    </p>
+  `;
+
+    document.querySelector("#trackPagination")?.replaceChildren();
+    currentTrackPage = 1;
     return;
   }
 
@@ -356,6 +401,7 @@ function renderTrackList(tracks, isOwner = false) {
       }
     });
   });
+  renderPlaylistPagination();
 }
 
 // =========================
@@ -367,6 +413,9 @@ function initButtons(isOwner) {
   const toggleLibraryBtn = document.querySelector("#toggleLibraryBtn");
   const deleteBtn = document.querySelector("#deleteBtn");
 
+  // =========================
+  // Phát playlist
+  // =========================
   if (playBtn && playBtn.dataset.initialized !== "true") {
     playBtn.dataset.initialized = "true";
 
@@ -392,38 +441,60 @@ function initButtons(isOwner) {
     });
   }
 
+  // =========================
+  // Theo dõi / Bỏ theo dõi
+  // =========================
   if (toggleLibraryBtn && toggleLibraryBtn.dataset.initialized !== "true") {
     toggleLibraryBtn.dataset.initialized = "true";
 
     toggleLibraryBtn.addEventListener("click", async () => {
       const playlistId = activePlaylistId;
-      if (!playlistId) return;
+
+      if (!playlistId || followRequestPending) return;
+
+      const previousState = isFollowingPlaylist;
+
+      followRequestPending = true;
+      toggleLibraryBtn.disabled = true;
 
       try {
-        if (toggleLibraryBtn.textContent.includes("Save")) {
-          await api.post(
-            `/api/playlists/${encodeURIComponent(playlistId)}/followers`,
-          );
-
-          if (playlistId === activePlaylistId) {
-            toggleLibraryBtn.textContent = "Remove from Your Library";
-          }
-        } else {
+        if (previousState) {
+          // Bỏ theo dõi
           await api.delete(
-            `/api/playlists/${encodeURIComponent(playlistId)}/followers`,
+            `/api/playlists/${encodeURIComponent(playlistId)}/follow`,
           );
 
-          if (playlistId === activePlaylistId) {
-            toggleLibraryBtn.textContent = "Save to Your Library";
-          }
+          isFollowingPlaylist = false;
+        } else {
+          // Theo dõi
+          await api.post(
+            `/api/playlists/${encodeURIComponent(playlistId)}/follow`,
+          );
+
+          isFollowingPlaylist = true;
         }
+
+        updateFollowButton();
       } catch (err) {
-        console.error("Lỗi cập nhật thư viện:", err);
+        isFollowingPlaylist = previousState;
+
+        console.error("Lỗi theo dõi playlist:", err);
         console.error("Backend response:", err.response?.data);
+
+        window.alert(
+          err.response?.data?.message ||
+            "Không thể cập nhật trạng thái theo dõi playlist.",
+        );
+      } finally {
+        followRequestPending = false;
+        toggleLibraryBtn.disabled = false;
       }
     });
   }
 
+  // =========================
+  // Xóa playlist
+  // =========================
   if (deleteBtn && deleteBtn.dataset.initialized !== "true") {
     deleteBtn.dataset.initialized = "true";
 
@@ -444,9 +515,7 @@ function initButtons(isOwner) {
       try {
         await api.delete(`/api/playlists/${encodeURIComponent(playlistId)}`);
 
-        // Xóa thành công thì chuyển về trang chủ
         const homeUrl = `${import.meta.env.BASE_URL}home.html`;
-
         window.location.assign(homeUrl);
       } catch (err) {
         console.error("Lỗi xóa playlist:", err);
@@ -699,6 +768,13 @@ function initPlaylistEditUI(isOwner) {
     return (
       currentPlaylist?.image_url ||
       currentPlaylist?.cover_image_url ||
+      currentPlaylist?.cover_url ||
+      currentPlaylist?.thumbnail_url ||
+      currentPlaylist?.imageUrl ||
+      currentPlaylist?.image ||
+      currentPlaylist?.cover?.url ||
+      currentPlaylist?.images?.[0]?.url ||
+      currentPlaylist?.images?.[0] ||
       fallbackImage
     );
   }
@@ -948,4 +1024,145 @@ function updatePlaylistCover(imageUrl) {
     currentPlaylist.image_url = imageUrl;
     currentPlaylist.imageUrl = imageUrl;
   }
+}
+function updateFollowButton() {
+  const button = document.querySelector("#toggleLibraryBtn");
+  const text = document.querySelector("#followButtonText");
+  const icon = button?.querySelector("i");
+
+  if (!button || !text) return;
+
+  text.textContent = isFollowingPlaylist ? "Bỏ theo dõi" : "Theo dõi";
+
+  if (icon) {
+    icon.className = isFollowingPlaylist
+      ? "fa-solid fa-check mr-2"
+      : "fa-solid fa-plus mr-2";
+  }
+
+  // Xóa màu của trạng thái trước
+  button.classList.remove(
+    "bg-neutral-700",
+    "hover:bg-neutral-600",
+    "text-white",
+    "bg-green-500",
+    "hover:bg-green-400",
+    "text-black",
+  );
+
+  // Thêm màu theo trạng thái
+  if (isFollowingPlaylist) {
+    button.classList.add("bg-green-500", "hover:bg-green-400", "text-black");
+  } else {
+    button.classList.add(
+      "bg-neutral-700",
+      "hover:bg-neutral-600",
+      "text-white",
+    );
+  }
+}
+// =========================
+// Phân trang playlist
+// =========================
+
+function renderPlaylistPagination() {
+  const trackList = document.querySelector("#trackList");
+  const pagination = document.querySelector("#trackPagination");
+
+  if (!trackList || !pagination) return;
+
+  const rows = Array.from(trackList.querySelectorAll(".track-row"));
+  const totalTracks = rows.length;
+  const totalPages = Math.ceil(totalTracks / TRACKS_PER_PAGE);
+
+  // Không quá 10 bài thì hiển thị tất cả
+  if (totalTracks <= TRACKS_PER_PAGE) {
+    rows.forEach((row) => row.classList.remove("hidden"));
+    pagination.innerHTML = "";
+    currentTrackPage = 1;
+    return;
+  }
+
+  // Đảm bảo trang hiện tại hợp lệ
+  currentTrackPage = Math.min(Math.max(currentTrackPage, 1), totalPages);
+
+  const startIndex = (currentTrackPage - 1) * TRACKS_PER_PAGE;
+  const endIndex = startIndex + TRACKS_PER_PAGE;
+
+  // Chỉ hiển thị 10 bài của trang hiện tại
+  rows.forEach((row, index) => {
+    row.classList.toggle("hidden", index < startIndex || index >= endIndex);
+  });
+
+  // Render nút phân trang bằng Tailwind
+  pagination.innerHTML = `
+    <button
+      type="button"
+      data-page="${currentTrackPage - 1}"
+      ${currentTrackPage === 1 ? "disabled" : ""}
+      aria-label="Trang trước"
+      class="rounded-full bg-neutral-800 px-4 py-2 transition
+             hover:bg-neutral-700 disabled:cursor-not-allowed
+             disabled:opacity-40"
+    >
+      <i class="fa-solid fa-chevron-left"></i>
+    </button>
+
+    ${Array.from({ length: totalPages }, (_, index) => {
+      const page = index + 1;
+      const active = page === currentTrackPage;
+
+      return `
+        <button
+          type="button"
+          data-page="${page}"
+          aria-current="${active ? "page" : "false"}"
+          class="h-10 w-10 rounded-full font-semibold transition
+            ${
+              active
+                ? "bg-green-500 text-black"
+                : "bg-neutral-800 text-white hover:bg-neutral-700"
+            }"
+        >
+          ${page}
+        </button>
+      `;
+    }).join("")}
+
+    <button
+      type="button"
+      data-page="${currentTrackPage + 1}"
+      ${currentTrackPage === totalPages ? "disabled" : ""}
+      aria-label="Trang tiếp theo"
+      class="rounded-full bg-neutral-800 px-4 py-2 transition
+             hover:bg-neutral-700 disabled:cursor-not-allowed
+             disabled:opacity-40"
+    >
+      <i class="fa-solid fa-chevron-right"></i>
+    </button>
+  `;
+}
+
+// Đăng ký sự kiện chuyển trang một lần
+function initPlaylistPaginationEvents() {
+  const pagination = document.querySelector("#trackPagination");
+
+  if (!pagination || pagination.dataset.initialized === "true") return;
+
+  pagination.dataset.initialized = "true";
+
+  pagination.addEventListener("click", (event) => {
+    const button = event.target.closest("button[data-page]");
+
+    if (!button || button.disabled) return;
+
+    currentTrackPage = Number(button.dataset.page);
+
+    renderPlaylistPagination();
+
+    document.querySelector("#trackList")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  });
 }
