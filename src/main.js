@@ -439,3 +439,28 @@ openSearchPageBtn?.addEventListener("click", (event) => {
   event.preventDefault();
   navigate("search");
 });
+
+const mobileMenuBtn = document.getElementById("mobileMenuBtn");
+const mobileMenu = document.getElementById("mobileMenu");
+
+mobileMenuBtn?.addEventListener("click", () => {
+  const isOpening = mobileMenu.classList.contains("hidden");
+
+  mobileMenu.classList.toggle("hidden");
+  mobileMenuBtn.setAttribute("aria-expanded", String(isOpening));
+
+  mobileMenuBtn.innerHTML = isOpening
+    ? '<i class="fa-solid fa-xmark"></i>'
+    : '<i class="fa-solid fa-bars"></i>';
+});
+
+// Đóng menu khi chọn một mục
+mobileMenu?.querySelectorAll("a, button").forEach((item) => {
+  item.addEventListener("click", () => {
+    mobileMenu.classList.add("hidden");
+    mobileMenuBtn?.setAttribute("aria-expanded", "false");
+    if (mobileMenuBtn) {
+      mobileMenuBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
+    }
+  });
+});

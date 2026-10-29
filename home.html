@@ -13,11 +13,12 @@
   </head>
   <body class="bg-black min-h-screen overflow-x-hidden text-white">
     <!-- Header cố định trên cùng -->
+
     <header
       class="top-0 z-50 sticky flex justify-between items-center gap-2 bg-neutral-900 shadow-md px-3 sm:px-6 py-3"
     >
-      <!-- Logo + Search -->
-      <div class="flex items-center space-x-4">
+      <!-- Bên trái: Spotify + Home -->
+      <div class="flex items-center gap-3 shrink-0">
         <!-- Logo Spotify -->
         <button
           type="button"
@@ -33,89 +34,86 @@
           type="button"
           onclick="window.goHome()"
           aria-label="Trang chủ"
-          class="bg-neutral-800 hover:bg-green-500 p-3 rounded-full text-white transition-colors"
+          class="bg-neutral-800 hover:bg-green-500 p-2 sm:p-3 rounded-full text-white transition-colors"
         >
           <i class="fa-solid fa-house"></i>
         </button>
-
-        <div class="relative ml-6">
-          <!-- Ô search -->
-
-          <div
-            class="group flex items-center bg-neutral-800 px-4 py-2 rounded-full hover:ring-2 hover:ring-green-500 w-96 transition-all duration-200"
-          >
-            <i
-              class="mr-2 text-neutral-400 group-hover:text-green-500 fa-solid fa-magnifying-glass"
-            ></i>
-
-            <input
-              id="searchInput"
-              type="text"
-              placeholder="Bạn muốn phát nội dung gì?"
-              class="bg-transparent focus:outline-none w-full text-neutral-200 text-sm"
-            />
-
-            <div
-              class="flex items-center gap-1 ml-2 text-neutral-400 text-xs shrink-0"
-            >
-              <span class="px-1.5 py-1 border border-neutral-600 rounded"
-                >Ctrl</span
-              >
-              <span>+</span>
-              <span class="px-1.5 py-1 border border-neutral-600 rounded"
-                >Shift</span
-              >
-              <span>+</span>
-              <span class="px-1.5 py-1 border border-neutral-600 rounded"
-                >L</span
-              >
-            </div>
-            <!-- Thanh phân cách dọc -->
-            <div class="ml-3 border-neutral-400 border-l-2 h-4"></div>
-            <button
-              id="openSearchPageBtn"
-              type="button"
-              aria-label="Mở trang tìm kiếm"
-              title="Tìm kiếm"
-              class="ml-3 text-neutral-400 hover:text-white transition shrink-0"
-            >
-              <i class="fa-solid fa-box-archive"></i>
-            </button>
-          </div>
-
-          <!-- Khung kết quả -->
-          <div
-            id="searchResults"
-            class="hidden top-full absolute bg-neutral-950 shadow-lg mt-2 rounded-lg w-96 max-h-96 overflow-y-auto"
-          ></div>
-        </div>
       </div>
 
-      <!-- Menu bên phải -->
+      <!-- Ở giữa: Search -->
+      <div class="relative flex-1 mx-2 sm:mx-6 min-w-0 max-w-96">
+        <div
+          class="group flex items-center bg-neutral-800 px-3 sm:px-4 py-2 rounded-full hover:ring-2 hover:ring-green-500 w-full transition-all duration-200"
+        >
+          <i
+            class="mr-2 text-neutral-400 group-hover:text-green-500 fa-solid fa-magnifying-glass"
+          ></i>
 
+          <input
+            id="searchInput"
+            type="text"
+            placeholder="Bạn muốn nghe gì?"
+            class="bg-transparent focus:outline-none w-full min-w-0 text-neutral-200 text-sm"
+          />
+
+          <!-- Phím tắt: chỉ hiện trên desktop -->
+          <div
+            class="hidden lg:flex items-center gap-1 ml-2 text-neutral-400 text-xs shrink-0"
+          >
+            <span class="px-1.5 py-1 border border-neutral-600 rounded"
+              >Ctrl</span
+            >
+            <span>+</span>
+            <span class="px-1.5 py-1 border border-neutral-600 rounded"
+              >Shift</span
+            >
+            <span>+</span>
+            <span class="px-1.5 py-1 border border-neutral-600 rounded">L</span>
+          </div>
+
+          <div
+            class="hidden sm:block ml-3 border-neutral-400 border-l-2 h-4"
+          ></div>
+
+          <button
+            id="openSearchPageBtn"
+            type="button"
+            aria-label="Mở trang tìm kiếm"
+            title="Tìm kiếm"
+            class="hidden sm:block ml-3 text-neutral-400 hover:text-white transition shrink-0"
+          >
+            <i class="fa-solid fa-box-archive"></i>
+          </button>
+        </div>
+
+        <!-- Khung kết quả tìm kiếm -->
+        <div
+          id="searchResults"
+          class="hidden top-full left-0 z-50 absolute bg-neutral-950 shadow-lg mt-2 rounded-lg w-full min-w-48 max-h-96 overflow-y-auto"
+        ></div>
+      </div>
+
+      <!-- Menu desktop -->
       <div
-        class="flex items-center space-x-6 font-semibold text-gray-400 text-sm"
+        id="desktopMenu"
+        class="hidden lg:flex items-center gap-5 font-semibold text-gray-400 text-sm shrink-0"
       >
         <a
           id="premiumLink"
           href="#"
-          class="inline-block bg-white hover:bg-gray-200 px-4 py-2 rounded-2xl font-semibold text-black hover:scale-105 transition-all duration-200 transform"
+          class="inline-block bg-white hover:bg-gray-200 px-4 py-2 rounded-2xl font-semibold text-black hover:scale-105 transition-all duration-200"
         >
           Khám phá Premium
         </a>
 
-        <a
-          id="supportLink"
-          href="#"
-          class="hover:text-white transition-colors duration-200"
-        >
+        <a id="supportLink" href="#" class="hover:text-white transition-colors">
           Hỗ trợ
         </a>
 
         <a
           id="downloadLink"
           href="#"
-          class="hover:text-white transition-colors duration-200"
+          class="hover:text-white transition-colors"
         >
           Tải xuống
         </a>
@@ -123,24 +121,20 @@
         <a
           id="appInstallLink"
           href="#"
-          class="inline-flex items-center gap-2 hover:text-white transition-colors duration-200"
+          class="inline-flex items-center gap-2 hover:text-white transition-colors"
         >
           <i class="leading-none fa-regular fa-circle-down"></i>
           <span>Cài đặt ứng dụng</span>
         </a>
 
-        <a
-          id="signupLink"
-          href="#"
-          class="hover:text-white transition-colors duration-200"
-        >
+        <a id="signupLink" href="#" class="hover:text-white transition-colors">
           Đăng ký
         </a>
 
         <button
           id="loginBtn"
           type="button"
-          class="bg-white hover:bg-gray-200 px-4 py-1 rounded-full text-black hover:scale-105 transition duration-200 transform"
+          class="bg-white hover:bg-gray-200 px-4 py-1 rounded-full text-black hover:scale-105 transition"
         >
           Đăng nhập
         </button>
@@ -148,14 +142,14 @@
         <button
           id="signupBtn"
           type="button"
-          class="hover:text-white hover:scale-105 transition duration-200 transform"
+          class="hover:text-white hover:scale-105 transition"
         >
           Đăng ký
         </button>
 
         <div
           id="userAvatar"
-          class="hidden relative flex justify-center items-center bg-purple-400 rounded-full w-8 h-8 font-bold text-black cursor-pointer"
+          class="hidden relative justify-center items-center bg-purple-400 rounded-full w-8 h-8 font-bold text-black cursor-pointer"
           title="Nhấn để đăng xuất"
         >
           <span id="avatarLetter"></span>
@@ -164,7 +158,63 @@
           ></div>
         </div>
       </div>
+
+      <!-- Hamburger: chỉ hiện trên điện thoại và tablet nhỏ -->
+      <button
+        id="mobileMenuBtn"
+        type="button"
+        aria-label="Mở menu"
+        aria-expanded="false"
+        class="lg:hidden hover:bg-neutral-800 p-2 rounded-full text-white text-xl shrink-0"
+      >
+        <i class="fa-solid fa-bars"></i>
+      </button>
     </header>
+
+    <!-- Menu mobile -->
+    <div
+      id="mobileMenu"
+      class="hidden top-[64px] right-3 z-[60] fixed bg-neutral-900 shadow-xl p-4 border border-neutral-700 rounded-xl w-64"
+    >
+      <nav class="flex flex-col gap-4 font-semibold text-sm">
+        <a
+          href="#"
+          id="mobilePremiumLink"
+          class="text-white hover:text-green-500"
+        >
+          Khám phá Premium
+        </a>
+        <a
+          href="#"
+          id="mobileSupportLink"
+          class="text-gray-300 hover:text-white"
+        >
+          Hỗ trợ
+        </a>
+        <a
+          href="#"
+          id="mobileDownloadLink"
+          class="text-gray-300 hover:text-white"
+        >
+          Tải xuống
+        </a>
+        <a
+          href="#"
+          id="mobileAppInstallLink"
+          class="text-gray-300 hover:text-white"
+        >
+          Cài đặt ứng dụng
+        </a>
+        <hr class="border-neutral-700" />
+        <button id="mobileLoginBtn" type="button" class="text-white text-left">
+          Đăng nhập
+        </button>
+        <button id="mobileSignupBtn" type="button" class="text-white text-left">
+          Đăng ký
+        </button>
+      </nav>
+    </div>
+
     <!-- Nội dung chính chia ngang -->
     <div id="page-content" class="flex gap-4 mt-3 w-full">
       <!-- Sidebar -->
