@@ -116,7 +116,7 @@ async function loadAlbums() {
   const albumCount = document.querySelector("#albumCount");
   const reloadBtn = document.querySelector("#btnReloadAlbums");
 
-  if (!albumsList || isLoading) return;
+  if (!albumsList ) return;
 
   isLoading = true;
 

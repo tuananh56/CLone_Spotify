@@ -13,14 +13,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     />
-    <script type="module" crossorigin src="/CLone_Spotify/assets/allalbum-KhFxxBNY.js"></script>
-    <link rel="modulepreload" crossorigin href="/CLone_Spotify/assets/header-Dh-pTS38.js">
-    <link rel="modulepreload" crossorigin href="/CLone_Spotify/assets/player-B77JGl4t.js">
-    <link rel="modulepreload" crossorigin href="/CLone_Spotify/assets/track-Q0vWDO3O.js">
-    <link rel="modulepreload" crossorigin href="/CLone_Spotify/assets/artist-KCVOnXfN.js">
-    <link rel="modulepreload" crossorigin href="/CLone_Spotify/assets/album-HhKs-w2e.js">
-    <link rel="modulepreload" crossorigin href="/CLone_Spotify/assets/playlist-DdNyV6f8.js">
-    <link rel="modulepreload" crossorigin href="/CLone_Spotify/assets/main-DfyOE0N9.js">
+    <script type="module" crossorigin src="/CLone_Spotify/assets/main-DOxjUTav.js"></script>
   </head>
 
   <body class="bg-black min-h-screen text-white">
@@ -384,6 +377,36 @@
     <div id="player-container"></div>
     <div id="footer-container"></div>
 
-
+
+    <!-- <script type="module">
+      import { initAllAlbumPage } from "./src/components/page/allalbum.js";
+      import { initPlayer } from "./src/player.js";
+
+      async function loadPlayer() {
+        try {
+          const playerContainer = document.getElementById("player-container");
+
+          if (playerContainer && playerContainer.dataset.loaded !== "true") {
+            const response = await fetch("/CLone_Spotify/player.html");
+
+            if (!response.ok) {
+              throw new Error("Không tải được player.html");
+            }
+
+            playerContainer.innerHTML = await response.text();
+            playerContainer.dataset.loaded = "true";
+
+            initPlayer();
+            document.dispatchEvent(new Event("playerloaded"));
+          }
+        } catch (error) {
+          console.error("Lỗi tải player:", error);
+        }
+
+        await initAllAlbumPage();
+      }
+
+      loadPlayer();
+    </script> -->
   </body>
 </html>

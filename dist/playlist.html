@@ -9,11 +9,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     />
-    <script type="module" crossorigin src="/CLone_Spotify/assets/playlist-ga9SNY5s.js"></script>
-    <link rel="modulepreload" crossorigin href="/CLone_Spotify/assets/header-Dh-pTS38.js">
-    <link rel="modulepreload" crossorigin href="/CLone_Spotify/assets/player-B77JGl4t.js">
-    <link rel="modulepreload" crossorigin href="/CLone_Spotify/assets/playlist-DdNyV6f8.js">
-    <link rel="modulepreload" crossorigin href="/CLone_Spotify/assets/preload-helper-BTchmaPh.js">
+    <script type="module" crossorigin src="/CLone_Spotify/assets/main-DOxjUTav.js"></script>
   </head>
   <body class="bg-neutral-900 min-h-screen text-white">
     <header
@@ -306,7 +302,40 @@
 
     <!-- Player -->
     <div id="player-container"></div>
-    <div id="footer-container"></div>
-    <!-- Header + Player initialization -->
+    <div id="footer-container"></div>
+    <!-- Header + Player initialization -->
+    <!-- <script type="module">
+      import { initHeader, updateHeaderUI } from "./src/components/header.js";
+      import { initPlaylistPage } from "./src/playlists/playlist.js";
+
+      initHeader();
+      updateHeaderUI();
+
+      const playerContainer = document.getElementById("player-container");
+
+      try {
+        if (!playerContainer) {
+          throw new Error("Không tìm thấy player-container");
+        }
+
+        const response = await fetch(`${import.meta.env.BASE_URL}player.html`);
+
+        if (!response.ok) {
+          throw new Error("Không tải được player.html");
+        }
+
+        playerContainer.innerHTML = await response.text();
+
+        const { initPlayer } = await import("./src/player.js");
+        initPlayer();
+
+        document.dispatchEvent(new CustomEvent("playerloaded"));
+
+        const params = new URLSearchParams(window.location.search);
+        await initPlaylistPage(params.get("id"));
+      } catch (error) {
+        console.error("Lỗi khởi tạo trang Playlist:", error);
+      }
+    </script> -->
   </body>
 </html>

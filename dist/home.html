@@ -10,14 +10,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     />
     <title>Document</title>
-    <script type="module" crossorigin src="/CLone_Spotify/assets/home-jBLUQKxv.js"></script>
-    <link rel="modulepreload" crossorigin href="/CLone_Spotify/assets/header-Dh-pTS38.js">
-    <link rel="modulepreload" crossorigin href="/CLone_Spotify/assets/player-B77JGl4t.js">
-    <link rel="modulepreload" crossorigin href="/CLone_Spotify/assets/track-Q0vWDO3O.js">
-    <link rel="modulepreload" crossorigin href="/CLone_Spotify/assets/artist-KCVOnXfN.js">
-    <link rel="modulepreload" crossorigin href="/CLone_Spotify/assets/album-HhKs-w2e.js">
-    <link rel="modulepreload" crossorigin href="/CLone_Spotify/assets/playlist-DdNyV6f8.js">
-    <link rel="modulepreload" crossorigin href="/CLone_Spotify/assets/main-DfyOE0N9.js">
+    <script type="module" crossorigin src="/CLone_Spotify/assets/main-DOxjUTav.js"></script>
   </head>
   <body class="bg-black min-h-screen overflow-x-hidden text-white">
     <!-- Header cố định trên cùng -->
@@ -280,7 +273,7 @@
             <h3 class="font-bold text-lg">Today’s biggest hits</h3>
             <button
               type="button"
-              onclick="window.location.href = '/CLone_Spotify/alltrack.html'"
+              onclick="window.navigate('alltrack')"
               class="font-semibold text-gray-300 hover:text-green-500 text-sm transition-colors"
             >
               Hiển thị tất cả
@@ -310,7 +303,7 @@
             <h3 class="font-bold text-lg">Trending artists</h3>
             <button
               type="button"
-              onclick="window.location.href = '/CLone_Spotify/allartist.html'"
+              onclick="window.navigate('allartist')"
               class="font-semibold text-gray-300 hover:text-green-500 text-sm transition-colors"
             >
               Hiển thị tất cả
@@ -340,7 +333,7 @@
             <h3 class="font-bold text-lg">Popular albums</h3>
             <button
               type="button"
-              onclick="window.location.href = '/CLone_Spotify/allalbum.html'"
+              onclick="window.navigate('allalbum')"
               class="font-semibold text-gray-300 hover:text-green-500 text-sm transition-colors"
             >
               Hiển thị tất cả
@@ -370,7 +363,7 @@
             <h3 class="font-bold text-lg">All Playlists</h3>
             <button
               type="button"
-              onclick="window.location.href = '/CLone_Spotify/allplaylist.html'"
+              onclick="window.navigate('allplaylist')"
               class="font-semibold text-gray-300 hover:text-green-500 text-sm transition-colors"
             >
               Hiển thị tất cả
@@ -409,6 +402,31 @@
     </button>
     <div id="player-container"></div>
     <div id="footer-container"></div>
-
+
+    <!-- <script type="module">
+      import { initPlayer } from "./src/player.js";
+
+      async function loadPlayer() {
+        try {
+          const res = await fetch(`${import.meta.env.BASE_URL}player.html`); /////////////////
+
+          if (!res.ok) {
+            throw new Error("Không tải được player.html");
+          }
+
+          const html = await res.text();
+
+          document.getElementById("player-container").innerHTML = html;
+
+          initPlayer();
+
+          document.dispatchEvent(new Event("playerloaded"));
+        } catch (error) {
+          console.error("Lỗi tải player:", error);
+        }
+      }
+
+      loadPlayer();
+    </script> -->
   </body>
 </html>

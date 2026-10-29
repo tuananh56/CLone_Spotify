@@ -13,10 +13,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     />
-    <script type="module" crossorigin src="/CLone_Spotify/assets/track-ckATGKBi.js"></script>
-    <link rel="modulepreload" crossorigin href="/CLone_Spotify/assets/header-Dh-pTS38.js">
-    <link rel="modulepreload" crossorigin href="/CLone_Spotify/assets/player-B77JGl4t.js">
-    <link rel="modulepreload" crossorigin href="/CLone_Spotify/assets/track-Q0vWDO3O.js">
+    <script type="module" crossorigin src="/CLone_Spotify/assets/main-DOxjUTav.js"></script>
   </head>
   <body class="bg-black min-h-screen text-white antialiased">
     <header
@@ -168,20 +165,71 @@
             </div>
           </section>
 
-          <!-- Player -->
+          <!-- Player
           <section class="pt-6 border-white/10 border-t">
            
-              <!-- player.html được tải vào đây -->
-            </div>
-          </section>
+              player.html được tải vào đây -->
+            <!-- </div>
+          </section> --> 
         
       </main>
     </div>
      <div id="player-container" class="min-w-0"></div>
-      <div id="footer-container"></div>
-      
+      <div id="footer-container"></div>
+<!-- <script type="module">
+  import { initHeader, updateHeaderUI } from "./src/components/header.js";
+  import { initPlayer } from "./src/player.js";
+  import { initTrackPage } from "./src/playlists/track.js";
+  import { navigate } from "./src/app/router.js";
 
+  document.getElementById("btnGoHome")?.addEventListener("click", () => {
+    navigate("home");
+  });
 
-    
+  async function loadPlayer() {
+    try {
+      initHeader();
+      updateHeaderUI();
+
+      const container = document.getElementById("player-container");
+
+      if (!container) {
+        throw new Error("Không tìm thấy phần tử #player-container");
+      }
+
+      // Tạo đường dẫn dựa trên cấu hình base của Vite.
+      const playerUrl = `${import.meta.env.BASE_URL}player.html`;
+
+      console.log("Đang tải player:", playerUrl);
+
+      const res = await fetch(playerUrl);
+
+      if (!res.ok) {
+        throw new Error(
+          `Không tải được player.html: HTTP ${res.status} (${playerUrl})`,
+        );
+      }
+
+      container.innerHTML = await res.text();
+
+      initPlayer();
+      document.dispatchEvent(new Event("playerloaded"));
+
+      const params = new URLSearchParams(window.location.search);
+      const trackId = params.get("id");
+
+      if (!trackId) {
+        console.error("URL không có ID bài hát.");
+        return;
+      }
+
+      await initTrackPage(trackId);
+    } catch (error) {
+      console.error("Lỗi khởi tạo trang Track:", error);
+    }
+  }
+
+  loadPlayer();
+</script> -->
   </body>
 </html>

@@ -40,7 +40,10 @@ export function initSidebar() {
         throw new Error("Không tìm thấy ID trong phản hồi API");
       }
 
-      window.location.href = `${import.meta.env.BASE_URL}playlist.html?id=${encodeURIComponent(newPlaylistId)}`;
+      // window.location.href = `${import.meta.env.BASE_URL}playlist.html?id=${encodeURIComponent(newPlaylistId)}`;
+      navigate("playlist", {
+        id: String(newPlaylistId),
+      });
     } catch (err) {
       console.error("Lỗi tạo playlist:", err);
     }
@@ -67,10 +70,12 @@ export function initSidebar() {
     }
 
     const item = event.target.closest("#sidebarList .sidebar-item");
+
     if (item) {
       const id = item.dataset.id;
+
       if (id) {
-        window.location.href = `${import.meta.env.BASE_URL}playlist.html?id=${encodeURIComponent(id)}`;
+        navigate("playlist", { id: String(id) });
       }
     }
   });

@@ -134,7 +134,7 @@ window.addEventListener("popstate", async (event) => {
 export function getCurrentPage() {
   return currentPage;
 }
-
+window.navigate = navigate;
 window.goHome = () => {
   navigate("home");
 };

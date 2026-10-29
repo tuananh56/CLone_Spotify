@@ -151,7 +151,8 @@ export function playTrack(index) {
 
   const headerImage = document.getElementById("trackImageHeader");
   if (headerImage) {
-    headerImage.src = track.image_url || `${import.meta.env.BASE_URL}playlist.png`;
+    headerImage.src =
+      track.image_url || `${import.meta.env.BASE_URL}playlist.png`;
   }
 
   audio

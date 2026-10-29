@@ -1,3 +1,4 @@
+import { navigate } from "../../app/router.js";
 import { playTrack } from "../../player.js";
 import { api } from "../../app/api.js";
 
@@ -47,7 +48,6 @@ export async function initAllTrackPage() {
     renderAllTracks(getFilteredTracks());
 
     initTrackPaginationEvents();
-    renderTrackPagination();
   } catch (error) {
     if (requestId !== currentRequestId) return;
 
@@ -213,10 +213,7 @@ function initAllTrackEvents() {
         return;
       }
 
-      const trackUrl = new URL("track.html", window.location.href);
-      trackUrl.searchParams.set("id", trackId);
-
-      window.location.href = trackUrl.href;
+      navigate("track", { id: trackId });
     }
   });
 
@@ -424,6 +421,37 @@ function formatDuration(seconds) {
 const TRACKS_PER_PAGE = 10;
 let currentTrackPage = 1;
 
+function getVisiblePages(currentPage, totalPages) {
+  if (totalPages <= 7) {
+    return Array.from({ length: totalPages }, (_, i) => i + 1);
+  }
+
+  if (currentPage <= 4) {
+    return [1, 2, 3, 4, 5, "...", totalPages];
+  }
+
+  if (currentPage >= totalPages - 3) {
+    return [
+      1,
+      "...",
+      totalPages - 4,
+      totalPages - 3,
+      totalPages - 2,
+      totalPages - 1,
+      totalPages,
+    ];
+  }
+
+  return [
+    1,
+    "...",
+    currentPage - 1,
+    currentPage,
+    currentPage + 1,
+    "...",
+    totalPages,
+  ];
+}
 function renderTrackPagination() {
   const list = document.getElementById("allTracksList");
   const pagination = document.getElementById("tracksPagination");
@@ -466,26 +494,33 @@ function renderTrackPagination() {
       <i class="fa-solid fa-chevron-left"></i>
     </button>
 
-    ${Array.from({ length: totalPages }, (_, index) => {
-      const page = index + 1;
+  ${getVisiblePages(currentTrackPage, totalPages)
+    .map((page) => {
+      if (page === "...") {
+        return `
+        <span class="px-2 text-neutral-400 select-none">...</span>
+      `;
+      }
+
       const active = page === currentTrackPage;
 
       return `
-        <button
-          type="button"
-          data-page="${page}"
-          aria-current="${active ? "page" : "false"}"
-          class="h-10 w-10 rounded-full font-semibold transition
-                 ${
-                   active
-                     ? "bg-green-500 text-black"
-                     : "bg-neutral-800 text-white hover:bg-neutral-700"
-                 }"
-        >
-          ${page}
-        </button>
-      `;
-    }).join("")}
+      <button
+        type="button"
+        data-page="${page}"
+        aria-current="${active ? "page" : "false"}"
+        class="h-10 w-10 rounded-full font-semibold transition
+          ${
+            active
+              ? "bg-green-500 text-black"
+              : "bg-neutral-800 text-white hover:bg-neutral-700"
+          }"
+      >
+        ${page}
+      </button>
+    `;
+    })
+    .join("")}
 
     <button
       type="button"

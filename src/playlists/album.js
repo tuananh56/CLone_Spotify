@@ -9,7 +9,19 @@ export async function initAlbumPage(id) {
 
   await loadAlbumDetail(id);
 }
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (char) => {
+    const entities = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;",
+    };
 
+    return entities[char];
+  });
+}
 // === Load chi tiết Album ===
 async function loadAlbumDetail(id) {
   try {
@@ -40,7 +52,7 @@ async function loadAlbumDetail(id) {
         </p>`;
     } else {
       trackList.innerHTML = tracks
-        .map((t) => {
+        .map((t, index) => {
           const artistNames = t.artist_name || "Không rõ nghệ sĩ";
           const trackTitle = t.title || "Không rõ tên bài hát";
           const duration = t.duration ? formatDuration(t.duration) : "0:00";
@@ -53,22 +65,48 @@ async function loadAlbumDetail(id) {
 
           return `
         <div
-          class="flex items-center gap-3 p-2 hover:bg-neutral-800 rounded cursor-pointer"
-          onclick="window.openTrack('${t.id}')"
+          class="track-row group grid grid-cols-[40px_minmax(0,1fr)_60px] items-center gap-3 rounded-md px-3 py-2 text-sm text-neutral-400 hover:bg-neutral-800 transition"
         >
-          <img
-            src="${trackImage}"
-            alt="${trackTitle}"
-            class="w-12 h-12 rounded object-cover shrink-0"
-            onerror="this.onerror=null;this.src='./src/assets/placeholder.png'"
-          />
+          <div class="flex items-center justify-center">
+            <span class="track-number group-hover:hidden">
+              ${index + 1}
+            </span>
 
-          <div class="flex-1 min-w-0">
-            <p class="text-white truncate">${trackTitle}</p>
-            <p class="text-gray-400 text-sm truncate">${artistNames}</p>
+            <button
+              type="button"
+              class="play-track-btn hidden text-white group-hover:block"
+              data-index="${index}"
+              aria-label="Phát ${escapeHTML(trackTitle)}"
+              title="Phát bài hát"
+            >
+              <i class="fa-solid fa-play"></i>
+            </button>
           </div>
 
-          <span class="text-xs text-gray-400 shrink-0">
+          <button
+            type="button"
+            class="open-track-btn flex min-w-0 items-center gap-3 text-left"
+            data-id="${escapeHTML(t.id || "")}"
+            title="Xem chi tiết bài hát"
+          >
+            <img
+              src="${escapeHTML(trackImage)}"
+              alt=""
+              class="h-12 w-12 shrink-0 rounded object-cover"
+              onerror="this.onerror=null;this.src='./src/assets/placeholder.png'"
+            />
+
+            <span class="min-w-0">
+              <span class="block truncate font-medium text-white hover:underline">
+                ${escapeHTML(trackTitle)}
+              </span>
+              <span class="block truncate text-xs text-neutral-400">
+                ${escapeHTML(artistNames)}
+              </span>
+            </span>
+          </button>
+
+          <span class="text-right text-xs tabular-nums text-neutral-400">
             ${duration}
           </span>
         </div>
@@ -76,6 +114,38 @@ async function loadAlbumDetail(id) {
         })
         .join("");
     }
+
+    // Gắn sự kiện cho các bài hát trong album
+    trackList.onclick = (event) => {
+      // Nút phát bài hát khi rê chuột
+      const playButton = event.target.closest(".play-track-btn");
+
+      if (playButton) {
+        event.stopPropagation();
+
+        const index = Number(playButton.dataset.index);
+
+        if (index >= 0 && index < tracks.length) {
+          window.playlist = tracks;
+          playTrack(index);
+        }
+
+        return;
+      }
+
+      // Bấm tên bài hát hoặc ảnh để mở chi tiết
+      const openButton = event.target.closest(".open-track-btn");
+
+      if (openButton) {
+        const trackId = openButton.dataset.id;
+
+        if (trackId && typeof window.openTrack === "function") {
+          window.openTrack(trackId);
+        } else if (trackId) {
+          console.error("Không tìm thấy hàm window.openTrack()");
+        }
+      }
+    };
 
     initButtons(id);
   } catch (err) {

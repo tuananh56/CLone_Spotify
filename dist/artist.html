@@ -12,10 +12,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     />
-    <script type="module" crossorigin src="/CLone_Spotify/assets/artist-D7NqJ5Nm.js"></script>
-    <link rel="modulepreload" crossorigin href="/CLone_Spotify/assets/header-Dh-pTS38.js">
-    <link rel="modulepreload" crossorigin href="/CLone_Spotify/assets/player-B77JGl4t.js">
-    <link rel="modulepreload" crossorigin href="/CLone_Spotify/assets/artist-KCVOnXfN.js">
+    <script type="module" crossorigin src="/CLone_Spotify/assets/main-DOxjUTav.js"></script>
   </head>
 
   <body class="bg-black min-h-screen text-white">
@@ -236,8 +233,41 @@
     <!-- Player -->
     <div id="player-container"></div>
     <div id="footer-container"></div>
-    <!-- Artist script -->
+    <!-- Artist script -->
 
-    <!-- Header + Player initialization -->
+    <!-- Header + Player initialization -->
+    <!-- <script type="module">
+      import { initPlayer } from "./src/player.js";
+      import { initHeader, updateHeaderUI } from "./src/components/header.js";
+
+      async function initArtistPage() {
+        initHeader();
+        updateHeaderUI();
+
+        try {
+          const res = await fetch("/player.html");
+
+          if (!res.ok) {
+            throw new Error("Không tải được player.html");
+          }
+
+          const playerContainer = document.getElementById("player-container");
+
+          if (!playerContainer) {
+            throw new Error("Không tìm thấy player-container");
+          }
+
+          playerContainer.innerHTML = await res.text();
+
+          initPlayer();
+
+          document.dispatchEvent(new Event("playerloaded"));
+        } catch (error) {
+          console.error("Lỗi khởi tạo Player:", error);
+        }
+      }
+
+      initArtistPage();
+    </script> -->
   </body>
 </html>

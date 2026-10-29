@@ -268,10 +268,10 @@ function renderTrackList(tracks, isOwner = false) {
 
   if (!tracks.length) {
     trackList.innerHTML = `
-    <p class="px-3 py-5 text-sm text-gray-400">
-      Playlist này chưa có bài hát nào.
-    </p>
-  `;
+      <p class="px-3 py-5 text-sm text-gray-400">
+        Playlist này chưa có bài hát nào.
+      </p>
+    `;
 
     document.querySelector("#trackPagination")?.replaceChildren();
     currentTrackPage = 1;
@@ -282,35 +282,56 @@ function renderTrackList(tracks, isOwner = false) {
     .map(
       (track, index) => `
         <div
-          class="track-row flex w-full items-center justify-between gap-3 rounded p-3 hover:bg-neutral-800"
+          class="track-row group flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-neutral-400 transition hover:bg-neutral-800"
         >
+          <!-- Số thứ tự và nút phát -->
+          <div class="flex h-10 w-10 shrink-0 items-center justify-center">
+            <span class="track-number group-hover:hidden">
+              ${index + 1}
+            </span>
+
+            <button
+              type="button"
+              class="play-track-btn hidden text-white hover:scale-110 group-hover:block"
+              data-track-index="${index}"
+              aria-label="Phát ${escapeHTML(track.title)}"
+              title="Phát bài hát"
+            >
+              <i class="fa-solid fa-play"></i>
+            </button>
+          </div>
+
+          <!-- Ảnh, tên bài hát và nghệ sĩ -->
           <button
             type="button"
-            class="flex min-w-0 flex-1 items-center gap-3 text-left"
+            class="open-track-btn flex min-w-0 flex-1 items-center gap-3 text-left"
             data-track-index="${index}"
+            title="Phát bài hát"
           >
-            <span class="text-gray-400">${index + 1}</span>
-
             <img
-              src="${escapeHTML(track.image_url)}"
+              src="${escapeHTML(track.image_url || fallbackImage)}"
               alt=""
-              class="h-12 w-12 rounded object-cover"
+              class="h-12 w-12 shrink-0 rounded object-cover"
+              onerror="this.onerror=null;this.src='${fallbackImage}'"
             />
 
-            <span class="min-w-0">
-              <span class="block truncate text-white">
+            <span class="min-w-0 flex-1">
+              <span class="block truncate font-medium text-white hover:underline">
                 ${escapeHTML(track.title)}
               </span>
-              <span class="block truncate text-sm text-gray-400">
-                ${escapeHTML(track.artist)}
+
+              <span class="block truncate text-xs text-neutral-400">
+                ${escapeHTML(track.artist || "Không rõ nghệ sĩ")}
               </span>
             </span>
           </button>
 
-          <span class="shrink-0 text-xs text-gray-400">
+          <!-- Thời lượng -->
+          <span class="w-12 shrink-0 text-right text-xs tabular-nums text-neutral-400">
             ${formatDuration(track.duration)}
           </span>
 
+          <!-- Chỉ chủ playlist mới được xóa bài hát -->
           ${
             isOwner
               ? `
@@ -331,25 +352,29 @@ function renderTrackList(tracks, isOwner = false) {
     )
     .join("");
 
-  // Bấm vào bài hát để phát
-  trackList
-    .querySelectorAll("[data-track-index]:not(.remove-track-btn)")
-    .forEach((button) => {
-      button.addEventListener("click", () => {
-        const index = Number(button.dataset.trackIndex);
-        const track = currentPlaylistTracks[index];
+  // Bấm nút phát hoặc tên/ảnh bài hát
+  trackList.onclick = (event) => {
+    // Ưu tiên xử lý nút xóa riêng
+    const removeButton = event.target.closest(".remove-track-btn");
+    if (removeButton) return;
 
-        if (!track) return;
+    const playButton = event.target.closest(".play-track-btn, .open-track-btn");
 
-        if (!track.audio_url) {
-          console.warn("Bài hát chưa có audio_url hoặc preview_url:", track);
-          return;
-        }
+    if (!playButton) return;
 
-        window.playlist = currentPlaylistTracks;
-        playTrack(index);
-      });
-    });
+    const index = Number(playButton.dataset.trackIndex);
+
+    const track = currentPlaylistTracks[index];
+    if (!track) return;
+
+    if (!track.audio_url) {
+      console.warn("Bài hát chưa có audio_url hoặc preview_url:", track);
+      return;
+    }
+
+    window.playlist = currentPlaylistTracks;
+    playTrack(index);
+  };
 
   // Xóa bài hát khỏi playlist
   trackList.querySelectorAll(".remove-track-btn").forEach((button) => {
@@ -384,7 +409,6 @@ function renderTrackList(tracks, isOwner = false) {
           `/api/playlists/${encodeURIComponent(playlistId)}/tracks/${encodeURIComponent(track.id)}`,
         );
 
-        // Tải lại danh sách bài hát sau khi xóa thành công
         if (playlistId === activePlaylistId) {
           await loadPlaylistDetail(playlistId);
         }
@@ -394,6 +418,7 @@ function renderTrackList(tracks, isOwner = false) {
 
         button.disabled = false;
         button.innerHTML = '<i class="fa-solid fa-trash-can"></i>';
+
         window.alert(
           err.response?.data?.message ||
             "Không thể xóa bài hát. Hãy kiểm tra API backend.",
@@ -401,6 +426,7 @@ function renderTrackList(tracks, isOwner = false) {
       }
     });
   });
+
   renderPlaylistPagination();
 }
 

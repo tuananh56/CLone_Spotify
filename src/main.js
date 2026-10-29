@@ -1,3 +1,8 @@
+import { initAllAlbumPage } from "./components/page/allalbum.js";
+import { initAllArtistPage } from "./components/page/allartist.js";
+import { initAllPlaylistPage } from "./components/page/allplaylist.js";
+import { initAllTrackPage } from "./components/page/alltrack.js";
+
 import { initFooter } from "./components/footer.js";
 import { initSidebarToggle } from "./components/sidebar-toggle.js";
 import { initPlayer } from "./player.js";
@@ -137,6 +142,7 @@ function renderSection(containerId, items = [], type) {
 // ==================== PERSISTENT PLAYER ====================
 
 let playerInitialized = false;
+let playerInitPromise = null;
 
 async function initPersistentPlayer() {
   const playerContainer = document.querySelector("#player-container");
@@ -146,28 +152,39 @@ async function initPersistentPlayer() {
     return;
   }
 
-  // Không khởi tạo lại nếu player đã tồn tại.
-  if (playerInitialized || playerContainer.querySelector("audio")) {
-    playerInitialized = true;
+  if (playerInitialized && playerContainer.querySelector("audio")) {
     return;
   }
 
-  try {
-    const response = await fetch("/player.html");
-
-    if (!response.ok) {
-      throw new Error("Không tải được player.html");
-    }
-
-    playerContainer.innerHTML = await response.text();
-
-    initPlayer();
-    playerInitialized = true;
-
-    document.dispatchEvent(new Event("playerloaded"));
-  } catch (error) {
-    console.error("Lỗi khởi tạo player:", error);
+  if (playerInitPromise) {
+    return playerInitPromise;
   }
+
+  playerInitPromise = (async () => {
+    try {
+      if (!playerContainer.querySelector("audio")) {
+        const response = await fetch(`${import.meta.env.BASE_URL}player.html`);
+
+        if (!response.ok) {
+          throw new Error(`Không tải được player.html: ${response.status}`);
+        }
+
+        playerContainer.innerHTML = await response.text();
+      }
+
+      if (!playerInitialized) {
+        initPlayer();
+        playerInitialized = true;
+        document.dispatchEvent(new Event("playerloaded"));
+      }
+    } catch (error) {
+      console.error("Lỗi khởi tạo player:", error);
+    } finally {
+      playerInitPromise = null;
+    }
+  })();
+
+  return playerInitPromise;
 }
 
 // ==================== ESCAPE HELPERS ====================
@@ -289,28 +306,54 @@ function initHomePage() {
 }
 
 function initApp() {
+  initPersistentPlayer();
   initHeader();
   updateHeaderUI();
   initForms();
   initSidebarToggle();
   initFooter();
 
-  // Khởi tạo Sidebar và danh sách playlist trên mọi trang có Sidebar
   if (document.querySelector("#sidebarList")) {
     initSidebar();
     initLibrary();
     initSidebarPlaylists();
   }
 
-  // Chỉ tải nội dung trang chủ khi có các section tương ứng
-  if (document.querySelector("#trendingTracks")) {
-    loadMainView();
-  }
+  const currentPage = window.location.pathname
+    .split("/")
+    .pop()
+    .replace(/\.html$/, "");
 
-  if (document.querySelector("#trackList")) {
-    initPlaylistPage();
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("id");
+
+  switch (currentPage) {
+    case "home":
+      loadMainView();
+      break;
+
+    case "allalbum":
+      initAllAlbumPage();
+      break;
+
+    case "track":
+      if (id) initTrackPage(id);
+      break;
+
+    case "artist":
+      if (id) initArtistPage(id);
+      break;
+
+    case "album":
+      if (id) initAlbumPage(id);
+      break;
+
+    case "playlist":
+      if (id) initPlaylistPage(id);
+      break;
   }
 }
+
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initApp, {
     once: true,
@@ -324,15 +367,6 @@ document.addEventListener("pagechanged", async (event) => {
 
   const id =
     params?.id || new URLSearchParams(window.location.search).get("id");
-
-  // console.log("[pagechanged] Nhận sự kiện:", {
-  //   page,
-  //   params,
-  //   id,
-  //   url: window.location.href,
-  //   trackListExists: !!document.querySelector("#trackList"),
-  //   playlistNameExists: !!document.querySelector("#detailName"),
-  // });
 
   switch (page) {
     case "home":
@@ -355,12 +389,30 @@ document.addEventListener("pagechanged", async (event) => {
 
     case "playlist":
       if (id) {
-        // console.log("[main.js] Bắt đầu initPlaylistPage:", id);
         await initPlaylistPage(id);
-        // console.log("[main.js] Hoàn tất initPlaylistPage:", id);
       } else {
         console.error("Router không truyền ID playlist:", event.detail);
       }
+      break;
+
+    case "alltrack":
+      await initAllTrackPage();
+      break;
+
+    case "allartist":
+      await initAllArtistPage();
+      break;
+
+    case "allalbum":
+      await initAllAlbumPage();
+      break;
+
+    case "allplaylist":
+      await initAllPlaylistPage();
+      break;
+
+    case "search":
+      await initSearchPage();
       break;
   }
 });
@@ -379,6 +431,7 @@ window.openDetail = function (type, id) {
 };
 const openSearchPageBtn = document.getElementById("openSearchPageBtn");
 
-openSearchPageBtn?.addEventListener("click", () => {
-  window.location.href = "/CLone_Spotify/search.html";
+openSearchPageBtn?.addEventListener("click", (event) => {
+  event.preventDefault();
+  navigate("search");
 });

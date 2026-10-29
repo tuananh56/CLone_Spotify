@@ -1,6 +1,5 @@
-import { api } from "./src/app/api.js";
-import { navigate } from "./src/app/router.js";
-
+import { navigate } from "../app/router.js";
+import { api } from "../app/api.js";
 const input = document.getElementById("searchPageInput");
 const resultsBox = document.getElementById("searchPageResults");
 const clearBtn = document.getElementById("clearSearchBtn");
@@ -339,7 +338,7 @@ signupBtn.addEventListener("click", () => {
 // Nếu dự án có xử lý đăng xuất trong header.js, hãy dùng chung hàm đó.
 avatar.addEventListener("click", async () => {
   try {
-    const { handleLogout } = await import("./src/auth/logout.js");
+    const { handleLogout } = await import("../auth/logout.js");
     handleLogout();
   } catch (error) {
     // console.error("Không thể đăng xuất:", error);
