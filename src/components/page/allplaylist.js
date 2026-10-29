@@ -5,7 +5,7 @@ import { navigate } from "../../app/router.js";
 // Cấu hình
 // =========================
 
-const PLAYLISTS_PER_PAGE = 5;
+const PLAYLISTS_PER_PAGE = 12;
 const API_LIMIT = 20;
 
 let allPlaylists = [];
