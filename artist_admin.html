@@ -18,69 +18,68 @@
   <body class="bg-neutral-950 min-h-screen text-white">
     <div class="flex min-h-screen">
       <!-- SIDEBAR -->
-      <aside class="hidden md:flex flex-col bg-neutral-900 p-5 w-64 shrink-0">
-        <h1 class="mb-10 font-bold text-green-500 text-2xl">
-          <i class="mr-2 fa-brands fa-spotify"></i>Spotify Admin
-        </h1>
+      <aside
+        class="hidden md:flex flex-col bg-neutral-900 p-4 rounded-xl w-60 shrink-0"
+      >
+        <div class="mb-8">
+          <p class="mb-3 px-3 font-semibold text-gray-500 text-xs uppercase">
+            Quản lý
+          </p>
 
-        <p
-          class="mb-3 px-4 font-semibold text-gray-500 text-xs uppercase tracking-wider"
-        >
-          Menu chính
-        </p>
+          <nav class="space-y-2">
+            <a
+              href="./admin-dashboard.html"
+              class="flex items-center gap-3 hover:bg-neutral-800 px-4 py-3 rounded-lg text-gray-300 hover:text-white transition"
+            >
+              <i class="w-5 fa-solid fa-chart-pie"></i>
+              Dashboard
+            </a>
 
-        <nav class="space-y-2">
-          <a
-            href="./admin-dashboard.html"
-            class="block hover:bg-neutral-800 px-4 py-3 rounded-lg text-gray-300 transition"
-          >
-            <i class="mr-3 w-5 fa-solid fa-chart-line"></i>
-            Dashboard
-          </a>
+            <a
+              href="./admin-dashboard.html#users"
+              class="flex items-center gap-3 hover:bg-neutral-800 px-4 py-3 rounded-lg text-gray-300 hover:text-white transition"
+            >
+              <i class="w-5 fa-solid fa-users"></i>
+              Người dùng
+            </a>
 
-          <a
-            href="./user_admin.html"
-            class="block hover:bg-neutral-800 px-4 py-3 rounded-lg text-gray-300 transition"
-          >
-            <i class="mr-3 w-5 fa-solid fa-users"></i>
-            Quản lý người dùng
-          </a>
+            <a
+              href="./track_admin.html"
+              class="flex items-center gap-3 hover:bg-neutral-800 px-4 py-3 rounded-lg text-gray-300 hover:text-white transition"
+            >
+              <i class="w-5 fa-solid fa-music"></i>
+              Bài hát
+            </a>
 
-          <a
-            href="./track_admin.html"
-            class="block hover:bg-neutral-800 px-4 py-3 rounded-lg text-gray-300 transition"
-          >
-            <i class="mr-3 w-5 fa-solid fa-music"></i>
-            Quản lý bài hát
-          </a>
+            <a
+              href="./artist_admin.html"
+              class="flex items-center gap-3 bg-green-500 px-4 py-3 rounded-lg font-semibold text-black"
+            >
+              <i class="w-5 fa-solid fa-microphone"></i>
+              Nghệ sĩ
+            </a>
 
-          <a
-            href="./artist_admin.html"
-            class="block bg-green-600 px-4 py-3 rounded-lg font-semibold text-white"
-          >
-            <i class="mr-3 w-5 fa-solid fa-microphone-lines"></i>
-            Quản lý nghệ sĩ
-          </a>
+            <a
+              href="./album_admin.html"
+              class="flex items-center gap-3 hover:bg-neutral-800 px-4 py-3 rounded-lg text-gray-300 hover:text-white transition"
+            >
+              <i class="w-5 fa-solid fa-compact-disc"></i>
+              Album
+            </a>
 
-          <a
-            href="./album_admin.html"
-            class="block hover:bg-neutral-800 px-4 py-3 rounded-lg text-gray-300 transition"
-          >
-            <i class="mr-3 w-5 fa-solid fa-compact-disc"></i>
-            Quản lý album
-          </a>
+            <a
+              href="./admin-dashboard.html#playlists"
+              class="flex items-center gap-3 hover:bg-neutral-800 px-4 py-3 rounded-lg text-gray-300 hover:text-white transition"
+            >
+              <i class="w-5 fa-solid fa-list"></i>
+              Playlist
+            </a>
+          </nav>
+        </div>
 
-          <a
-            href="./playlist_admin.html"
-            class="block hover:bg-neutral-800 px-4 py-3 rounded-lg text-gray-300 transition"
-          >
-            <i class="mr-3 w-5 fa-list-music fa-solid"></i>
-            Quản lý playlist
-          </a>
-        </nav>
-
-        <div class="mt-auto pt-8 border-neutral-800 border-t">
-          <p class="px-4 text-gray-500 text-xs">Spotify Admin Dashboard</p>
+        <div class="mt-auto pt-5 border-neutral-800 border-t">
+          <p class="text-gray-500 text-xs">Spotify Admin Panel</p>
+          <p class="mt-1 text-gray-400 text-xs">Phiên bản quản trị</p>
         </div>
       </aside>
 
