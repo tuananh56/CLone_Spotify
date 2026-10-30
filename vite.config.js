@@ -16,6 +16,7 @@ const pages = [
   "login",
   "register",
   "player",
+  "admin-dashboard",
 ];
 
 export default defineConfig({

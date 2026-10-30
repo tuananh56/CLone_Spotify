@@ -13,6 +13,9 @@ const routes = {
   search: `${BASE_URL}search.html`,
   login: `${BASE_URL}login.html`,
   register: `${BASE_URL}register.html`,
+  admin_dashboard: `${BASE_URL}admin-dashboard.html`,
+  track_admin: `${BASE_URL}track_admin.html`,
+  artist_admin: `${BASE_URL}artist_admin.html`,
 };
 let currentPage = null;
 let navigationId = 0;

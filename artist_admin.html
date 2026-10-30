@@ -1,0 +1,181 @@
+
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    />
+    <title>Quản lý nghệ sĩ | Spotify Admin</title>
+  </head>
+
+  <body class="bg-neutral-950 min-h-screen text-white">
+    <div class="flex min-h-screen">
+      <aside class="hidden md:block bg-neutral-900 p-5 w-64 shrink-0">
+        <h1 class="mb-8 font-bold text-green-500 text-2xl">
+          <i class="mr-2 fa-brands fa-spotify"></i>Spotify Admin
+        </h1>
+
+        <nav class="space-y-2">
+          <a href="./admin-dashboard.html"
+            class="block hover:bg-neutral-800 px-4 py-3 rounded-lg text-gray-300">
+            <i class="mr-3 fa-solid fa-chart-line"></i>Dashboard
+          </a>
+          <a href="./track_admin.html"
+            class="block hover:bg-neutral-800 px-4 py-3 rounded-lg text-gray-300">
+            <i class="mr-3 fa-solid fa-music"></i>Quản lý bài hát
+          </a>
+          <a href="./artist_admin.html"
+            class="block bg-green-600 px-4 py-3 rounded-lg font-semibold">
+            <i class="mr-3 fa-solid fa-microphone-lines"></i>Quản lý nghệ sĩ
+          </a>
+        </nav>
+      </aside>
+
+      <main class="flex-1 p-4 sm:p-8 min-w-0">
+        <div class="flex flex-wrap justify-between items-center gap-4 mb-8">
+          <div>
+            <h2 class="font-bold text-2xl sm:text-3xl">Quản lý nghệ sĩ</h2>
+            <p class="mt-2 text-gray-400 text-sm">
+              Thêm, chỉnh sửa và quản lý nghệ sĩ trong hệ thống.
+            </p>
+          </div>
+
+          <button
+            id="addArtistBtn"
+            class="bg-green-500 hover:bg-green-400 px-5 py-3 rounded-lg font-semibold text-black"
+          >
+            <i class="mr-2 fa-solid fa-plus"></i>Thêm nghệ sĩ
+          </button>
+        </div>
+
+        <section class="bg-neutral-900 p-4 sm:p-6 rounded-xl">
+          <div class="flex flex-wrap justify-between items-center gap-3 mb-5">
+            <div>
+              <h3 class="font-semibold text-lg">Danh sách nghệ sĩ</h3>
+              <p id="artistTotal" class="mt-1 text-gray-400 text-sm">
+                Đang tải...
+              </p>
+            </div>
+
+            <div class="flex flex-wrap gap-2">
+              <input
+                id="artistSearchInput"
+                type="search"
+                placeholder="Tìm tên nghệ sĩ..."
+                class="bg-neutral-800 px-4 py-2 border border-neutral-700 focus:border-green-500 rounded-lg outline-none w-full sm:w-64"
+              />
+              <button
+                id="artistRefreshBtn"
+                class="bg-neutral-700 hover:bg-neutral-600 px-4 py-2 rounded-lg"
+                title="Tải lại"
+              >
+                <i class="fa-solid fa-rotate"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full min-w-[650px] text-sm text-left">
+              <thead class="bg-neutral-800 text-gray-300">
+                <tr>
+                  <th class="px-5 py-4">STT</th>
+                  <th class="px-5 py-4">Nghệ sĩ</th>
+                  <th class="px-5 py-4">Artist ID</th>
+                  <th class="px-5 py-4 text-right">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="artistTableBody">
+                <tr>
+                  <td colspan="4" class="py-10 text-gray-400 text-center">
+                    Đang tải danh sách...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="flex flex-wrap justify-between items-center gap-3 mt-5">
+            <p id="artistPaginationInfo" class="text-gray-400 text-sm"></p>
+            <div id="artistPagination" class="flex items-center gap-2"></div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Modal thêm / sửa -->
+    <div
+      id="artistModal"
+      class="hidden z-50 fixed inset-0 justify-center items-center bg-black/70 p-4 overflow-y-auto"
+    >
+      <div class="bg-neutral-900 shadow-xl my-auto p-6 rounded-xl w-full max-w-lg">
+        <div class="flex justify-between items-center mb-6">
+          <h3 id="artistModalTitle" class="font-bold text-xl">Thêm nghệ sĩ</h3>
+          <button id="closeArtistModalBtn" class="text-gray-400 hover:text-white">
+            <i class="text-xl fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <form id="artistForm" class="space-y-5">
+          <div>
+            <label for="artistName" class="block mb-2 text-gray-300 text-sm">
+              Tên nghệ sĩ <span class="text-red-400">*</span>
+            </label>
+            <input
+              id="artistName"
+              type="text"
+              required
+              maxlength="150"
+              placeholder="Nhập tên nghệ sĩ"
+              class="bg-neutral-800 px-4 py-3 border border-neutral-700 focus:border-green-500 rounded-lg outline-none w-full"
+            />
+          </div>
+
+          <div>
+            <label for="artistImageUrl" class="block mb-2 text-gray-300 text-sm">
+              URL ảnh đại diện
+            </label>
+            <input
+              id="artistImageUrl"
+              type="url"
+              placeholder="https://example.com/artist.jpg"
+              class="bg-neutral-800 px-4 py-3 border border-neutral-700 focus:border-green-500 rounded-lg outline-none w-full"
+            />
+          </div>
+
+          <div>
+            <p class="mb-2 text-gray-300 text-sm">Xem trước ảnh</p>
+            <img
+              id="artistImagePreview"
+              src=""
+              alt="Ảnh xem trước"
+              class="hidden border border-neutral-700 rounded-full w-32 h-32 object-cover"
+            />
+          </div>
+
+          <div class="flex justify-end gap-3 pt-3">
+            <button
+              id="cancelArtistBtn"
+              type="button"
+              class="bg-neutral-700 hover:bg-neutral-600 px-5 py-2 rounded-lg"
+            >
+              Hủy
+            </button>
+            <button
+              id="saveArtistBtn"
+              type="submit"
+              class="bg-green-500 hover:bg-green-400 px-5 py-2 rounded-lg font-semibold text-black"
+            >
+              Thêm nghệ sĩ
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script type="module" src="./src/admin/artist_admin.js"></script>
+  </body>
+</html>

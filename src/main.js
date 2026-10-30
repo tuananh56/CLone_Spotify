@@ -1,3 +1,4 @@
+// import { initTrackAdmin } from "./admin/admin-dashboard.js";
 import { initAllAlbumPage } from "./components/page/allalbum.js";
 import { initAllArtistPage } from "./components/page/allartist.js";
 import { initAllPlaylistPage } from "./components/page/allplaylist.js";

@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    />
+
+    <title>Quản lý bài hát | Spotify Admin</title>
+  </head>
+
+  <body class="bg-black min-h-screen text-white">
+    <!-- Header -->
+    <header
+      class="top-0 z-50 sticky flex justify-between items-center bg-neutral-900 shadow-md px-6 py-4"
+    >
+      <div class="flex items-center gap-3">
+        <i class="text-green-500 text-3xl fa-brands fa-spotify"></i>
+        <span class="font-bold text-xl">Spotify Admin</span>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <span class="hidden sm:block text-gray-400 text-sm">
+          Trang quản trị
+        </span>
+
+        <div
+          class="flex justify-center items-center bg-purple-500 rounded-full w-9 h-9 font-bold text-black"
+          title="Admin"
+        >
+          A
+        </div>
+
+        <button
+          id="adminLogoutBtn"
+          type="button"
+          class="hover:bg-red-500 px-3 py-2 rounded-lg text-gray-300 hover:text-white transition"
+        >
+          <i class="fa-right-from-bracket mr-2 fa-solid"></i>
+          <span class="hidden sm:inline">Đăng xuất</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="flex gap-3 p-3 sm:p-5 min-h-[calc(100vh-73px)]">
+      <!-- Sidebar -->
+      <aside class="flex flex-col bg-neutral-900 p-4 rounded-xl w-60 shrink-0">
+        <div class="mb-8">
+          <p class="mb-3 px-3 font-semibold text-gray-500 text-xs uppercase">
+            Quản lý
+          </p>
+
+          <nav class="space-y-2">
+            <a
+              href="./admin-dashboard.html"
+              class="flex items-center gap-3 hover:bg-neutral-800 px-4 py-3 rounded-lg text-gray-300 hover:text-white transition"
+            >
+              <i class="w-5 fa-solid fa-chart-pie"></i>
+              Dashboard
+            </a>
+
+            <a
+              href="./admin-dashboard.html#users"
+              class="flex items-center gap-3 hover:bg-neutral-800 px-4 py-3 rounded-lg text-gray-300 hover:text-white transition"
+            >
+              <i class="w-5 fa-solid fa-users"></i>
+              Người dùng
+            </a>
+
+            <a
+              href="./track_admin.html"
+              class="flex items-center gap-3 bg-green-500 px-4 py-3 rounded-lg font-semibold text-black"
+            >
+              <i class="w-5 fa-solid fa-music"></i>
+              Bài hát
+            </a>
+
+            <a
+              href="./admin-dashboard.html#artists"
+              class="flex items-center gap-3 hover:bg-neutral-800 px-4 py-3 rounded-lg text-gray-300 hover:text-white transition"
+            >
+              <i class="w-5 fa-solid fa-microphone"></i>
+              Nghệ sĩ
+            </a>
+
+            <a
+              href="./admin-dashboard.html#albums"
+              class="flex items-center gap-3 hover:bg-neutral-800 px-4 py-3 rounded-lg text-gray-300 hover:text-white transition"
+            >
+              <i class="w-5 fa-solid fa-compact-disc"></i>
+              Album
+            </a>
+
+            <a
+              href="./admin-dashboard.html#playlists"
+              class="flex items-center gap-3 hover:bg-neutral-800 px-4 py-3 rounded-lg text-gray-300 hover:text-white transition"
+            >
+              <i class="w-5 fa-solid fa-list"></i>
+              Playlist
+            </a>
+          </nav>
+        </div>
+
+        <div class="mt-auto pt-5 border-neutral-800 border-t">
+          <p class="text-gray-500 text-xs">Spotify Admin Panel</p>
+          <p class="mt-1 text-gray-400 text-xs">Phiên bản quản trị</p>
+        </div>
+      </aside>
+
+      <!-- Main content -->
+      <main
+        id="adminContent"
+        class="flex-1 bg-neutral-900 p-4 sm:p-6 rounded-xl min-w-0"
+      >
+        <!-- Page heading -->
+        <div class="flex flex-wrap justify-between items-center gap-4 mb-8">
+          <div>
+            <div class="flex items-center gap-2 mb-2 text-gray-400 text-sm">
+              <a
+                href="./admin-dashboard.html"
+                class="hover:text-green-400 transition"
+              >
+                Dashboard
+              </a>
+              <i class="fa-chevron-right text-xs fa-solid"></i>
+              <span class="text-green-400">Bài hát</span>
+            </div>
+
+            <h1 class="font-bold text-2xl sm:text-3xl">Quản lý bài hát</h1>
+
+            <p class="mt-2 text-gray-400 text-sm">
+              Quản lý kho nhạc, thêm và chỉnh sửa bài hát.
+            </p>
+          </div>
+
+          <button
+            id="addTrackBtn"
+            type="button"
+            class="bg-green-500 hover:bg-green-400 px-5 py-3 rounded-full font-semibold text-black transition"
+          >
+            <i class="mr-2 fa-solid fa-plus"></i>
+            Thêm bài hát
+          </button>
+        </div>
+
+        <!-- Search and filter -->
+        <section class="bg-neutral-800 mb-6 p-4 rounded-xl">
+          <div class="flex sm:flex-row flex-col gap-3">
+            <div class="relative flex-1">
+              <i
+                class="top-1/2 left-4 absolute text-gray-500 -translate-y-1/2 fa-solid fa-magnifying-glass"
+              ></i>
+
+              <input
+                id="trackSearchInput"
+                type="search"
+                placeholder="Tìm kiếm bài hát..."
+                class="bg-neutral-900 px-11 py-3 border border-neutral-700 focus:border-green-500 rounded-lg outline-none w-full"
+              />
+            </div>
+
+            <button
+              id="trackRefreshBtn"
+              type="button"
+              class="bg-neutral-700 hover:bg-neutral-600 px-5 py-3 rounded-lg transition"
+            >
+              <i class="mr-2 fa-solid fa-rotate"></i>
+              Làm mới
+            </button>
+          </div>
+        </section>
+
+        <!-- Track list -->
+        <section class="bg-neutral-800 rounded-xl overflow-hidden">
+          <div
+            class="flex flex-wrap justify-between items-center gap-3 p-5 border-neutral-700 border-b"
+          >
+            <div>
+              <h2 class="font-semibold text-xl">Danh sách bài hát</h2>
+              <p class="mt-1 text-gray-400 text-sm">Kho nhạc trong hệ thống</p>
+            </div>
+
+            <span
+              id="trackTotal"
+              class="bg-neutral-700 px-3 py-1 rounded-full text-gray-300 text-sm"
+            >
+              Đang tải...
+            </span>
+          </div>
+
+          <!-- Table -->
+          <div class="overflow-x-auto">
+            <table class="w-full text-left whitespace-nowrap">
+              <thead class="bg-neutral-900 text-gray-400 text-sm">
+                <tr>
+                  <th class="px-5 py-4">#</th>
+                  <th class="px-5 py-4">Bài hát</th>
+                  <th class="px-5 py-4">Nghệ sĩ</th>
+                  <th class="px-5 py-4">Album</th>
+                  <th class="px-5 py-4">Lượt nghe</th>
+                  <th class="px-5 py-4 text-right">Thao tác</th>
+                </tr>
+              </thead>
+
+              <tbody id="trackTableBody">
+                <tr>
+                  <td colspan="6" class="px-5 py-12 text-gray-400 text-center">
+                    <i class="mb-3 text-2xl fa-solid fa-spinner fa-spin"></i>
+                    <p>Đang tải danh sách bài hát...</p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination -->
+          <div
+            class="flex flex-wrap justify-between items-center gap-3 p-5 border-neutral-700 border-t"
+          >
+            <p id="trackPaginationInfo" class="text-gray-400 text-sm">
+              Hiển thị danh sách bài hát
+            </p>
+
+            <div id="trackPagination" class="flex items-center gap-2"></div>
+          </div>
+        </section>
+
+        <footer
+          class="mt-8 pt-5 border-neutral-800 border-t text-gray-500 text-xs"
+        >
+          Spotify Admin Dashboard
+        </footer>
+      </main>
+    </div>
+
+    <!-- CREATE TRACK MODAL -->
+    <div
+      id="createTrackModal"
+      class="hidden z-[100] fixed inset-0 flex justify-center items-center bg-black/70 p-4"
+    >
+      <div
+        class="bg-neutral-900 p-6 border border-neutral-700 rounded-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+      >
+        <!-- Modal header -->
+        <div class="flex justify-between items-center mb-6">
+          <div>
+            <h2 class="font-bold text-2xl">Thêm bài hát mới</h2>
+            <p class="mt-1 text-gray-400 text-sm">
+              Nhập thông tin bài hát vào hệ thống
+            </p>
+          </div>
+
+          <button
+            id="closeCreateTrackBtn"
+            type="button"
+            class="text-gray-400 hover:text-white text-xl"
+          >
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <!-- Form -->
+        <form id="createTrackForm" class="space-y-5">
+          <!-- Track title -->
+          <div>
+            <label for="newTrackTitle" class="block mb-2 font-medium text-sm">
+              Tên bài hát <span class="text-red-400">*</span>
+            </label>
+
+            <input
+              id="newTrackTitle"
+              type="text"
+              required
+              maxlength="255"
+              placeholder="Nhập tên bài hát..."
+              class="bg-neutral-800 px-4 py-3 border border-neutral-700 focus:border-green-500 rounded-lg outline-none w-full"
+            />
+          </div>
+
+          <div>
+            <label
+              for="newTrackArtist"
+              class="block mb-2 text-gray-300 text-sm"
+            >
+              Nghệ sĩ
+            </label>
+
+            <select
+              id="newTrackArtist"
+              required
+              class="bg-neutral-800 px-4 py-3 border border-neutral-700 focus:border-green-500 rounded-lg outline-none w-full text-white"
+            >
+              <option value="">Đang tải danh sách nghệ sĩ...</option>
+            </select>
+          </div>
+
+          <!-- Album -->
+          <div>
+            <label for="newTrackAlbum" class="block mb-2 font-medium text-sm">
+              Album
+            </label>
+
+            <select
+              id="newTrackAlbum"
+              class="bg-neutral-800 px-4 py-3 border border-neutral-700 focus:border-green-500 rounded-lg outline-none w-full"
+            >
+              <option value="">Chọn album</option>
+            </select>
+          </div>
+
+          <!-- Track number -->
+          <div>
+            <label for="newTrackNumber" class="block mb-2 font-medium text-sm">
+              Số thứ tự bài hát
+            </label>
+
+            <input
+              id="newTrackNumber"
+              type="number"
+              min="1"
+              value="1"
+              class="bg-neutral-800 px-4 py-3 border border-neutral-700 focus:border-green-500 rounded-lg outline-none w-full"
+            />
+          </div>
+
+          <!-- Cover image -->
+          <div>
+            <label for="newTrackImage" class="block mb-2 font-medium text-sm">
+              Ảnh bìa
+            </label>
+
+            <input
+              id="newTrackImage"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              class="bg-neutral-800 p-3 border border-neutral-700 rounded-lg w-full"
+            />
+
+            <img
+              id="newTrackImagePreview"
+              src=""
+              alt="Xem trước ảnh bìa"
+              class="hidden mt-4 border border-neutral-700 rounded-lg w-36 h-36 object-cover"
+            />
+
+            <p class="mt-2 text-gray-500 text-xs">
+              Hỗ trợ JPG, PNG, WEBP. Tối đa 5MB.
+            </p>
+          </div>
+
+          <!-- Audio -->
+          <div>
+            <label for="newTrackAudio" class="block mb-2 font-medium text-sm">
+              File nhạc <span class="text-red-400">*</span>
+            </label>
+
+            <input
+              id="newTrackAudio"
+              type="file"
+              accept="audio/*"
+              required
+              class="bg-neutral-800 p-3 border border-neutral-700 rounded-lg w-full"
+            />
+
+            <p class="mt-2 text-gray-500 text-xs">
+              Chọn file âm thanh của bài hát.
+            </p>
+          </div>
+          <!-- Upload Progress -->
+          <div id="trackUploadProgress" class="hidden space-y-3 pt-4">
+            <div class="flex justify-between items-center">
+              <div class="flex items-center gap-2">
+                <i
+                  id="trackUploadIcon"
+                  class="text-green-400 fa-solid fa-cloud-arrow-up"
+                ></i>
+
+                <span id="trackUploadStatus" class="text-gray-300 text-sm">
+                  Đang chuẩn bị upload...
+                </span>
+              </div>
+
+              <span
+                id="trackUploadPercent"
+                class="font-semibold text-green-400 text-sm"
+              >
+                0%
+              </span>
+            </div>
+
+            <div class="bg-neutral-700 rounded-full w-full h-2 overflow-hidden">
+              <div
+                id="trackUploadBar"
+                class="bg-green-500 rounded-full h-full transition-all duration-300"
+                style="width: 0%"
+              ></div>
+            </div>
+          </div>
+          <!-- Buttons -->
+          <div class="flex justify-end gap-3 pt-4 border-neutral-700 border-t">
+            <button
+              id="cancelCreateTrackBtn"
+              type="button"
+              class="bg-neutral-700 hover:bg-neutral-600 px-5 py-3 rounded-lg transition"
+            >
+              Hủy
+            </button>
+
+            <button
+              id="submitCreateTrackBtn"
+              type="submit"
+              class="bg-green-500 hover:bg-green-400 px-5 py-3 rounded-lg font-semibold text-black transition"
+            >
+              <i class="mr-2 fa-solid fa-plus"></i>
+              Thêm bài hát
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script type="module" src="./src/admin/track_admin.js"></script>
+  </body>
+</html>
