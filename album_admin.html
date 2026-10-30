@@ -321,7 +321,7 @@
 
           <!-- COVER IMAGE -->
           <div>
-            <label for="albumImage" class="block mb-2 font-medium text-sm">
+            <label class="block mb-3 font-medium text-sm">
               Ảnh bìa album
             </label>
 
@@ -329,8 +329,26 @@
               id="albumImage"
               type="file"
               accept="image/png,image/jpeg,image/webp"
-              class="bg-neutral-800 p-3 border border-neutral-700 rounded-lg w-full text-gray-300"
+              class="hidden"
             />
+
+            <label
+              for="albumImage"
+              class="group inline-flex items-center gap-3 bg-neutral-800 hover:bg-neutral-700 px-5 py-3 border border-neutral-700 hover:border-green-500 rounded-xl transition-all duration-200 cursor-pointer"
+            >
+              <div
+                class="flex justify-center items-center bg-green-500/10 group-hover:bg-green-500/20 rounded-lg w-10 h-10 transition"
+              >
+                <i
+                  class="text-green-500 text-lg fa-solid fa-cloud-arrow-up"
+                ></i>
+              </div>
+
+              <div>
+                <p class="font-semibold text-white text-sm">Chọn ảnh bìa</p>
+                <p class="mt-1 text-gray-500 text-xs">Nhấn để tải ảnh lên</p>
+              </div>
+            </label>
 
             <p class="mt-2 text-gray-500 text-xs">
               Hỗ trợ JPG, PNG, WEBP. Tối đa 5MB.

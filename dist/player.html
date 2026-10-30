@@ -1,120 +1,154 @@
+<!-- MUSIC PLAYER -->
 <div
   id="player"
-  class="bottom-0 left-0 z-50 fixed flex justify-between items-center gap-4 bg-neutral-900 px-4 py-3 border-neutral-700 border-t w-full text-white"
+  class="bottom-0 left-0 z-50 fixed bg-[#181818] shadow-2xl border-white/10 border-t w-full text-white"
 >
-  <!-- Thông tin bài hát -->
-  <div class="flex flex-1 items-center gap-3 min-w-0">
-    <img
-      id="trackImagePlayer"
-      src="/CLone_Spotify/playlist.png"
-      alt="Ảnh bài hát"
-      class="rounded w-14 h-14 object-cover shrink-0"
-    />
-
-    <div class="min-w-0">
-      <p
-        id="trackTitlePlayer"
-        class="font-semibold text-white text-sm truncate"
-      >
-        Tên bài hát
-      </p>
-      <p id="trackArtistPlayer" class="text-gray-400 text-xs truncate">
-        Nghệ sĩ
-      </p>
-    </div>
-  </div>
-
-  <!-- Điều khiển phát nhạc -->
-  <div class="flex flex-col flex-[2] items-center gap-2 min-w-0">
-    <div class="flex justify-center items-center gap-6">
-      <button
-        id="btnShuffle"
-        type="button"
-        title="Phát ngẫu nhiên"
-        aria-label="Phát ngẫu nhiên"
-        class="text-gray-400 hover:text-white transition"
-      >
-        <i class="fa-solid fa-shuffle"></i>
-      </button>
-
-      <button
-        id="btnPrev"
-        type="button"
-        title="Bài trước"
-        aria-label="Bài trước"
-        class="text-gray-300 hover:text-white transition"
-      >
-        <i class="fa-solid fa-backward-step"></i>
-      </button>
-
-      <button
-        id="btnPlay"
-        type="button"
-        title="Phát"
-        aria-label="Phát hoặc tạm dừng"
-        class="flex justify-center items-center bg-white rounded-full w-9 h-9 text-black hover:scale-105 transition"
-      >
-        <i class="fa-solid fa-play"></i>
-      </button>
-
-      <button
-        id="btnNext"
-        type="button"
-        title="Bài tiếp theo"
-        aria-label="Bài tiếp theo"
-        class="text-gray-300 hover:text-white transition"
-      >
-        <i class="fa-solid fa-forward-step"></i>
-      </button>
-
-      <button
-        id="btnRepeat"
-        type="button"
-        title="Lặp lại"
-        aria-label="Lặp lại"
-        class="text-gray-400 hover:text-white transition"
-      >
-        <i class="fa-solid fa-repeat"></i>
-      </button>
-    </div>
-
-    <!-- Thanh tiến trình -->
-    <div class="flex items-center gap-2 w-full max-w-2xl">
-      <span id="currentTime" class="w-10 text-gray-400 text-xs text-right">
-        0:00
-      </span>
-
-      <input
-        id="progressBar"
-        type="range"
-        min="0"
-        max="100"
-        step="0.1"
-        value="0"
-        aria-label="Tiến trình bài hát"
-        class="bg-gray-600 rounded-lg w-full h-1 accent-green-500 appearance-none cursor-pointer"
+  <div
+    class="items-center gap-2 sm:gap-4 grid grid-cols-[1fr_auto_1fr] px-3 sm:px-5 lg:px-6 py-3"
+  >
+    <!-- LEFT: TRACK INFORMATION -->
+    <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+      <img
+        id="trackImagePlayer"
+        src="/CLone_Spotify/playlist.png"
+        alt="Ảnh bài hát"
+        class="shadow-md rounded-md w-10 sm:w-12 lg:w-14 h-10 sm:h-12 lg:h-14 object-cover shrink-0"
       />
 
-      <span id="totalTime" class="w-10 text-gray-400 text-xs"> 0:00 </span>
+      <div class="flex-1 min-w-0">
+        <p
+          id="trackTitlePlayer"
+          class="font-semibold text-white text-xs sm:text-sm hover:underline truncate cursor-pointer"
+        >
+          Tên bài hát
+        </p>
+
+        <p
+          id="trackArtistPlayer"
+          class="mt-1 text-[10px] text-gray-400 hover:text-white sm:text-xs hover:underline truncate transition cursor-pointer"
+        >
+          Nghệ sĩ
+        </p>
+      </div>
+
+      <!-- <button
+        type="button"
+        title="Thêm vào thư viện"
+        class="hidden lg:flex justify-center items-center text-gray-400 hover:text-green-500 transition"
+      >
+        <i class="fa-regular fa-heart"></i>
+      </button> -->
+    </div>
+
+    <!-- CENTER: PLAYER CONTROLS -->
+    <div
+      class="flex flex-col items-center gap-2 w-[42vw] sm:w-[45vw] min-w-0 max-w-[650px]"
+    >
+      <!-- CONTROL BUTTONS -->
+      <div class="flex justify-center items-center gap-3 sm:gap-5 lg:gap-7">
+        <button
+          id="btnShuffle"
+          type="button"
+          title="Phát ngẫu nhiên"
+          aria-label="Phát ngẫu nhiên"
+          class="hidden sm:flex justify-center items-center text-gray-400 hover:text-green-500 hover:scale-110 transition"
+        >
+          <i class="text-xs sm:text-sm fa-solid fa-shuffle"></i>
+        </button>
+
+        <button
+          id="btnPrev"
+          type="button"
+          title="Bài trước"
+          aria-label="Bài trước"
+          class="flex justify-center items-center text-gray-300 hover:text-white hover:scale-110 transition"
+        >
+          <i class="text-base sm:text-lg fa-solid fa-backward-step"></i>
+        </button>
+
+        <button
+          id="btnPlay"
+          type="button"
+          title="Phát hoặc tạm dừng"
+          aria-label="Phát hoặc tạm dừng"
+          class="flex justify-center items-center bg-white hover:bg-green-400 shadow-lg rounded-full w-8 sm:w-10 h-8 sm:h-10 text-black hover:scale-105 active:scale-95 transition-all"
+        >
+          <i class="text-xs sm:text-sm fa-solid fa-play"></i>
+        </button>
+
+        <button
+          id="btnNext"
+          type="button"
+          title="Bài tiếp theo"
+          aria-label="Bài tiếp theo"
+          class="flex justify-center items-center text-gray-300 hover:text-white hover:scale-110 transition"
+        >
+          <i class="text-base sm:text-lg fa-solid fa-forward-step"></i>
+        </button>
+
+        <button
+          id="btnRepeat"
+          type="button"
+          title="Lặp lại"
+          aria-label="Lặp lại"
+          class="hidden sm:flex justify-center items-center text-gray-400 hover:text-green-500 hover:scale-110 transition"
+        >
+          <i class="text-xs sm:text-sm fa-solid fa-repeat"></i>
+        </button>
+      </div>
+
+      <!-- PROGRESS BAR -->
+      <div class="flex items-center gap-1.5 sm:gap-2 w-full">
+        <span
+          id="currentTime"
+          class="w-8 sm:w-10 tabular-nums text-[9px] text-gray-400 sm:text-xs text-right shrink-0"
+        >
+          0:00
+        </span>
+
+        <input
+          id="progressBar"
+          type="range"
+          min="0"
+          max="100"
+          step="0.1"
+          value="0"
+          aria-label="Tiến trình bài hát"
+          class="flex-1 bg-gray-600 rounded-full min-w-0 h-1 accent-green-500 hover:accent-green-400 appearance-none cursor-pointer"
+        />
+
+        <span
+          id="totalTime"
+          class="w-8 sm:w-10 tabular-nums text-[9px] text-gray-400 sm:text-xs shrink-0"
+        >
+          0:00
+        </span>
+      </div>
+    </div>
+
+    <!-- RIGHT: VOLUME -->
+    <div class="hidden sm:flex justify-end items-center gap-2 lg:gap-3 min-w-0">
+      <button
+        type="button"
+        title="Âm lượng"
+        class="text-gray-400 hover:text-white transition"
+      >
+        <i class="text-sm fa-solid fa-volume-high"></i>
+      </button>
+
+      <input
+        id="volumeControl"
+        type="range"
+        min="0"
+        max="1"
+        step="0.01"
+        value="1"
+        aria-label="Âm lượng"
+        class="w-16 md:w-20 lg:w-28 h-1 accent-green-500 cursor-pointer"
+      />
     </div>
   </div>
 
-  <!-- Điều khiển âm lượng -->
-  <div class="flex flex-1 justify-end items-center gap-3">
-    <i class="text-gray-400 text-sm fa-solid fa-volume-high"></i>
-
-    <input
-      id="volumeControl"
-      type="range"
-      min="0"
-      max="1"
-      step="0.01"
-      value="1"
-      aria-label="Âm lượng"
-      class="w-24 accent-green-500 cursor-pointer"
-    />
-  </div>
-
-  <!-- Chỉ dùng một audio cho trình phát -->
+  <!-- AUDIO -->
   <audio id="audio" preload="metadata"></audio>
 </div>

@@ -328,24 +328,38 @@
             />
           </div>
 
-          <!-- Cover image -->
+          <!-- TRACK IMAGE -->
           <div>
-            <label for="newTrackImage" class="block mb-2 font-medium text-sm">
-              Ảnh bìa
-            </label>
+            <label class="block mb-3 font-medium text-sm"> Ảnh bìa </label>
 
             <input
               id="newTrackImage"
               type="file"
               accept="image/jpeg,image/png,image/webp"
-              class="bg-neutral-800 p-3 border border-neutral-700 rounded-lg w-full"
+              class="hidden"
             />
+
+            <label
+              for="newTrackImage"
+              class="group inline-flex items-center gap-3 bg-neutral-800 hover:bg-neutral-700 px-5 py-3 border border-neutral-700 hover:border-green-500 rounded-xl transition-all duration-200 cursor-pointer"
+            >
+              <div
+                class="flex justify-center items-center bg-green-500/10 group-hover:bg-green-500/20 rounded-lg w-10 h-10 transition"
+              >
+                <i class="text-green-500 text-lg fa-solid fa-image"></i>
+              </div>
+
+              <div>
+                <p class="font-semibold text-white text-sm">Chọn ảnh bìa</p>
+                <p class="mt-1 text-gray-500 text-xs">JPG, PNG hoặc WEBP</p>
+              </div>
+            </label>
 
             <img
               id="newTrackImagePreview"
               src=""
               alt="Xem trước ảnh bìa"
-              class="hidden mt-4 border border-neutral-700 rounded-lg w-36 h-36 object-cover"
+              class="hidden mt-4 border border-neutral-700 rounded-xl w-36 h-36 object-cover"
             />
 
             <p class="mt-2 text-gray-500 text-xs">
@@ -353,9 +367,9 @@
             </p>
           </div>
 
-          <!-- Audio -->
+          <!-- TRACK AUDIO -->
           <div>
-            <label for="newTrackAudio" class="block mb-2 font-medium text-sm">
+            <label for="newTrackAudio" class="block mb-3 font-medium text-sm">
               File nhạc <span class="text-red-400">*</span>
             </label>
 
@@ -364,8 +378,26 @@
               type="file"
               accept="audio/*"
               required
-              class="bg-neutral-800 p-3 border border-neutral-700 rounded-lg w-full"
+              class="hidden"
             />
+
+            <label
+              for="newTrackAudio"
+              class="group inline-flex items-center gap-3 bg-neutral-800 hover:bg-neutral-700 px-5 py-3 border border-neutral-700 hover:border-green-500 rounded-xl transition-all duration-200 cursor-pointer"
+            >
+              <div
+                class="flex justify-center items-center bg-green-500/10 group-hover:bg-green-500/20 rounded-lg w-10 h-10 transition"
+              >
+                <i class="text-green-500 text-lg fa-solid fa-music"></i>
+              </div>
+
+              <div>
+                <p class="font-semibold text-white text-sm">Chọn file nhạc</p>
+                <p class="mt-1 text-gray-500 text-xs">
+                  Nhấn để tải âm thanh lên
+                </p>
+              </div>
+            </label>
 
             <p class="mt-2 text-gray-500 text-xs">
               Chọn file âm thanh của bài hát.
