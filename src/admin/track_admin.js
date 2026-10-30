@@ -2,6 +2,7 @@ import { api } from "../app/api.js";
 
 const TRACK_API = "/api/tracks";
 const ARTIST_API = "/api/artists";
+const ALBUM_API = "/api/albums";
 
 // API hỗ trợ limit = 20
 const API_LIMIT = 50;
@@ -126,6 +127,15 @@ function getArtistList(data) {
   return [];
 }
 
+function getAlbumList(data) {
+  if (Array.isArray(data?.albums)) return data.albums;
+  if (Array.isArray(data?.data?.albums)) return data.data.albums;
+  if (Array.isArray(data?.data)) return data.data;
+  if (Array.isArray(data)) return data;
+
+  return [];
+}
+
 function getTrack(data) {
   return data?.track || data?.data?.track || data?.data || data;
 }
@@ -216,6 +226,92 @@ async function loadArtistOptions(selectedArtistId = null) {
     `;
 
     showMessage("Không thể tải danh sách nghệ sĩ.");
+  }
+}
+
+// =========================
+// DANH SÁCH ALBUM
+// =========================
+
+async function loadAlbumOptions(selectedAlbumId = null) {
+  const { album } = getElements();
+
+  if (!album) return;
+
+  album.innerHTML = `
+    <option value="">Đang tải danh sách album...</option>
+  `;
+
+  try {
+    let albums = [];
+    let offset = 0;
+    let total = null;
+
+    while (true) {
+      const res = await api.get(ALBUM_API, {
+        params: {
+          limit: API_LIMIT,
+          offset,
+        },
+      });
+
+      const pageAlbums = getAlbumList(res.data);
+
+      if (total === null) {
+        total = getTotal(res.data);
+      }
+
+      if (!pageAlbums.length) break;
+
+      albums.push(...pageAlbums);
+      offset += pageAlbums.length;
+
+      if (total !== null && albums.length >= total) break;
+      if (pageAlbums.length < API_LIMIT) break;
+    }
+
+    const uniqueAlbums = [
+      ...new Map(
+        albums
+          .filter((item) => item?.id != null)
+          .map((item) => [String(item.id), item]),
+      ).values(),
+    ];
+
+    album.innerHTML = `
+      <option value="">Chọn album</option>
+
+      ${uniqueAlbums
+        .map((item) => {
+          const id = String(item.id);
+          const title = item.title || item.name || "Chưa có tên";
+
+          return `
+            <option
+              value="${escapeHTML(id)}"
+              ${String(selectedAlbumId ?? "") === id ? "selected" : ""}
+            >
+              ${escapeHTML(title)}
+            </option>
+          `;
+        })
+        .join("")}
+    `;
+
+    if (
+      selectedAlbumId &&
+      !uniqueAlbums.some((item) => String(item.id) === String(selectedAlbumId))
+    ) {
+      album.value = "";
+    }
+  } catch (error) {
+    console.error("Lỗi tải danh sách album:", error);
+
+    album.innerHTML = `
+      <option value="">Không thể tải danh sách album</option>
+    `;
+
+    showMessage("Không thể tải danh sách album.");
   }
 }
 
@@ -403,15 +499,6 @@ function renderTracks() {
           <td class="px-5 py-4 text-right whitespace-nowrap">
             <button
               type="button"
-              data-detail-track="${escapeHTML(track.id)}"
-              class="text-blue-400 hover:text-blue-300 mr-3"
-              title="Chi tiết"
-            >
-              <i class="fa-solid fa-eye"></i>
-            </button>
-
-            <button
-              type="button"
               data-edit-track="${escapeHTML(track.id)}"
               class="text-yellow-400 hover:text-yellow-300 mr-3"
               title="Chỉnh sửa"
@@ -583,7 +670,7 @@ async function openModal() {
   modal.classList.remove("hidden");
   document.body.style.overflow = "hidden";
 
-  await loadArtistOptions();
+  await Promise.all([loadArtistOptions(), loadAlbumOptions()]);
 }
 
 function closeModal() {
@@ -637,12 +724,18 @@ async function editTrack(id) {
       elements.title.value = track.title || "";
     }
 
-    if (elements.album) {
-      elements.album.value = track.album_id || "";
-    }
+    // if (elements.album) {
+    //   elements.album.value = track.album_id || "";
+    // }
 
     if (elements.trackNumber) {
       elements.trackNumber.value = track.track_number || 1;
+    }
+
+    // Không bắt buộc chọn audio mới khi chỉnh sửa.
+    if (elements.audio) {
+      elements.audio.value = "";
+      elements.audio.required = false;
     }
 
     if (elements.image) {
@@ -662,7 +755,10 @@ async function editTrack(id) {
     elements.modal?.classList.remove("hidden");
     document.body.style.overflow = "hidden";
 
-    await loadArtistOptions(track.artist_id || null);
+    await Promise.all([
+      loadArtistOptions(track.artist_id || null),
+      loadAlbumOptions(track.album_id || null),
+    ]);
 
     if (elements.submitBtn) {
       elements.submitBtn.textContent = "Lưu thay đổi";

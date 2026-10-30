@@ -239,15 +239,6 @@ function renderArtists() {
         <td class="px-5 py-4 text-right whitespace-nowrap">
           <button
             type="button"
-            data-detail-artist="${escapeHTML(id)}"
-            class="mr-3 text-blue-400 hover:text-blue-300"
-            title="Chi tiết"
-          >
-            <i class="fa-solid fa-eye"></i>
-          </button>
-
-          <button
-            type="button"
             data-edit-artist="${escapeHTML(id)}"
             class="mr-3 text-yellow-400 hover:text-yellow-300"
             title="Chỉnh sửa"
