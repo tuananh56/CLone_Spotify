@@ -10,7 +10,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     />
     <title>Document</title>
-    <script type="module" crossorigin src="/CLone_Spotify/assets/main-D9q0BjjP.js"></script>
+    <script type="module" crossorigin src="/CLone_Spotify/assets/main-uKTC3Q-N.js"></script>
   </head>
   <body class="bg-black min-h-screen overflow-x-hidden text-white">
     <!-- Header cố định trên cùng -->
@@ -42,7 +42,7 @@
       </div>
 
       <!-- Ở giữa: Search -->
-      <div class="relative flex-1 mx-2 sm:mx-6 min-w-0 max-w-96">
+      <div class="relative flex-1 mr-2 sm:mr-4. ml-2 sm:ml-3 min-w-0 max-w-[820px]">
         <div
           class="group flex items-center bg-neutral-800 px-3 sm:px-4 py-2 rounded-full hover:ring-2 hover:ring-green-500 w-full transition-all duration-200"
         >
@@ -128,13 +128,10 @@
           <span>Cài đặt ứng dụng</span>
         </a>
 
-        <a id="signupLink" href="#" class="hover:text-white transition-colors">
-          Đăng ký
-        </a>
-
         <button
           id="loginBtn"
           type="button"
+          onclick="window.navigate('login')"
           class="bg-white hover:bg-gray-200 px-4 py-1 rounded-full text-black hover:scale-105 transition"
         >
           Đăng nhập
@@ -142,18 +139,21 @@
 
         <button
           id="signupBtn"
+          onclick="window.navigate('register')"
           type="button"
           class="hover:text-white hover:scale-105 transition"
         >
           Đăng ký
         </button>
 
+        <!-- Avatar người dùng desktop -->
         <div
           id="userAvatar"
-          class="hidden relative justify-center items-center bg-purple-400 rounded-full w-8 h-8 font-bold text-black cursor-pointer"
+          class="hidden relative flex justify-center items-center bg-purple-400 rounded-full w-8 h-8 font-bold text-black cursor-pointer shrink-0"
           title="Nhấn để đăng xuất"
         >
           <span id="avatarLetter"></span>
+
           <div
             class="top-0 right-0 absolute bg-green-500 rounded-full w-2 h-2"
           ></div>
@@ -178,6 +178,30 @@
       class="hidden top-[64px] right-3 z-[60] fixed bg-neutral-900 shadow-xl p-4 border border-neutral-700 rounded-xl w-64"
     >
       <nav class="flex flex-col gap-4 font-semibold text-sm">
+        <!-- Thông tin người dùng mobile khi đã đăng nhập -->
+        <div
+          id="mobileUserInfo"
+          class="hidden items-center gap-3 pb-3 border-neutral-700 border-b"
+        >
+          <div
+            id="mobileUserAvatar"
+            class="relative flex justify-center items-center bg-purple-400 rounded-full w-8 h-8 font-bold text-black cursor-pointer shrink-0"
+            title="Nhấn để đăng xuất"
+          >
+            <span id="mobileAvatarLetter"></span>
+
+            <div
+              class="top-0 right-0 absolute bg-green-500 rounded-full w-2 h-2"
+            ></div>
+          </div>
+
+          <div class="min-w-0">
+            <p id="mobileUserEmail" class="text-white text-sm truncate"></p>
+            <p class="text-gray-400 text-xs">Đang đăng nhập</p>
+          </div>
+        </div>
+
+        <!-- Các menu -->
         <a
           href="#"
           id="mobilePremiumLink"
@@ -185,6 +209,7 @@
         >
           Khám phá Premium
         </a>
+
         <a
           href="#"
           id="mobileSupportLink"
@@ -192,6 +217,7 @@
         >
           Hỗ trợ
         </a>
+
         <a
           href="#"
           id="mobileDownloadLink"
@@ -199,6 +225,7 @@
         >
           Tải xuống
         </a>
+
         <a
           href="#"
           id="mobileAppInstallLink"
@@ -206,22 +233,36 @@
         >
           Cài đặt ứng dụng
         </a>
+
         <hr class="border-neutral-700" />
-        <button id="mobileLoginBtn" type="button" class="text-white text-left">
+
+        <!-- Khi chưa đăng nhập -->
+        <button
+          id="mobileLoginBtn"
+          onclick="window.navigate('login')"
+          type="button"
+          class="bg-white hover:bg-gray-200 px-4 py-1 rounded-full text-black hover:scale-105 transition"
+        >
           Đăng nhập
         </button>
-        <button id="mobileSignupBtn" type="button" class="text-white text-left">
+
+        <button
+          id="mobileSignupBtn"
+          onclick="window.navigate('register')"
+          type="button"
+          class="hover:text-white hover:scale-105 transition"
+        >
           Đăng ký
         </button>
       </nav>
     </div>
 
     <!-- Nội dung chính chia ngang -->
-    <div id="page-content" class="flex gap-4 mt-3 w-full">
+    <div id="page-content" class="flex gap-2 sm:gap-4 mt-2 sm:mt-3 w-full">
       <!-- Sidebar -->
       <aside
         id="sidebar"
-        class="flex flex-col bg-neutral-900 p-4 border border-gray-700 rounded-xl w-64 h-[calc(100vh-64px)] overflow-y-auto"
+        class="flex flex-col bg-neutral-900 p-3 sm:p-4 border border-gray-700 rounded-xl w-64 h-[calc(100vh-80px)] overflow-y-auto shrink-0"
       >
         <div class="flex justify-between items-center mb-4">
           <div class="flex items-center space-x-2">
@@ -313,9 +354,9 @@
 
       <main
         id="mainContent"
-        class="flex-1 bg-neutral-900 p-6 border border-neutral-800 rounded-lg min-w-0 overflow-y-auto"
+        class="flex-1 bg-neutral-900 p-3 sm:p-4 lg:p-6 border border-neutral-800 rounded-lg min-w-0 overflow-y-auto"
       >
-        <h2 class="mb-4 font-bold text-xl">Trang chủ</h2>
+        <h2 class="mb-3 sm:mb-4 font-bold text-lg sm:text-xl">Trang chủ</h2>
 
         <!-- Today’s biggest hits -->
         <section class="relative mb-8">

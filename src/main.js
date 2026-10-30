@@ -21,7 +21,12 @@ import { initLibrary, initSidebarPlaylists } from "./components/library.js";
 import { initSidebar } from "./components/sidebar.js";
 
 import { api } from "./app/api.js";
-import { initHeader, updateHeaderUI } from "./components/header.js";
+import {
+  initHeader,
+  updateHeaderUI,
+  initHeaderEvents,
+  // checkHamburgerMenu,
+} from "./components/header.js";
 
 // ==================== MAIN VIEW ====================
 
@@ -308,9 +313,13 @@ function initHomePage() {
 function initApp() {
   initPersistentPlayer();
   initHeader();
+  initHeaderEvents();
   updateHeaderUI();
+  // checkHamburgerMenu();
   initForms();
+
   initSidebarToggle();
+
   initFooter();
 
   if (document.querySelector("#sidebarList")) {

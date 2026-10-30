@@ -139,42 +139,77 @@ export function initHeader() {
 export function updateHeaderUI() {
   const user = localStorage.getItem("user");
 
+  const mobileUserInfo = document.querySelector("#mobileUserInfo");
+  const mobileUserEmail = document.querySelector("#mobileUserEmail");
+
   const signupBtn = document.querySelector("#signupBtn");
   const loginBtn = document.querySelector("#loginBtn");
   const avatar = document.querySelector("#userAvatar");
   const avatarLetter = document.querySelector("#avatarLetter");
 
-  // Các mục menu trên header
+  const mobileAvatar = document.querySelector("#mobileUserAvatar");
+  const mobileAvatarLetter = document.querySelector("#mobileAvatarLetter");
+  const mobileLoginBtn = document.querySelector("#mobileLoginBtn");
+  const mobileSignupBtn = document.querySelector("#mobileSignupBtn");
+
   const premiumLink = document.querySelector("#premiumLink");
   const supportLink = document.querySelector("#supportLink");
   const downloadLink = document.querySelector("#downloadLink");
   const appInstallLink = document.querySelector("#appInstallLink");
   const signupLink = document.querySelector("#signupLink");
 
-  if (!avatar || !avatarLetter) return;
-
-  let emailDisplay = document.querySelector("#userEmail");
-
-  if (!emailDisplay) {
-    emailDisplay = document.createElement("span");
-    emailDisplay.id = "userEmail";
-    emailDisplay.className = "ml-2 text-sm text-gray-300";
-    avatar.parentNode.insertBefore(emailDisplay, avatar.nextSibling);
-  }
+  let parsedUser = null;
 
   if (user) {
-    let parsedUser;
-
     try {
       parsedUser = JSON.parse(user);
     } catch (error) {
-      console.error("Dữ liệu user trong localStorage không hợp lệ:", error);
+      console.error("Dữ liệu user không hợp lệ:", error);
       localStorage.removeItem("user");
-      updateHeaderUI();
-      return;
+    }
+  }
+
+  if (parsedUser) {
+    const firstLetter = parsedUser.email?.charAt(0).toUpperCase() || "A";
+
+    // Desktop avatar
+    if (avatar && avatarLetter) {
+      avatarLetter.textContent = firstLetter;
+      avatar.classList.remove("hidden");
     }
 
-    // Đã đăng nhập: ẩn Đăng ký, Đăng nhập và các menu không cần thiết
+    // Desktop email
+    let emailDisplay = document.querySelector("#userEmail");
+
+    if (avatar && !emailDisplay) {
+      emailDisplay = document.createElement("span");
+      emailDisplay.id = "userEmail";
+      emailDisplay.className = "ml-2 text-sm text-gray-300";
+      avatar.parentNode.insertBefore(emailDisplay, avatar.nextSibling);
+    }
+
+    if (emailDisplay) {
+      emailDisplay.textContent = parsedUser.email || "";
+      emailDisplay.classList.toggle("hidden", !parsedUser.email);
+    }
+
+    // Mobile avatar + email
+    mobileUserInfo?.classList.remove("hidden");
+    mobileUserInfo?.classList.add("flex");
+
+    if (mobileAvatarLetter) {
+      mobileAvatarLetter.textContent = firstLetter;
+    }
+
+    if (mobileUserEmail) {
+      mobileUserEmail.textContent = parsedUser.email || "";
+    }
+
+    // Ẩn nút đăng nhập / đăng ký mobile
+    mobileLoginBtn?.classList.add("hidden");
+    mobileSignupBtn?.classList.add("hidden");
+
+    // Ẩn nút đăng nhập / đăng ký desktop
     signupBtn?.classList.add("hidden");
     loginBtn?.classList.add("hidden");
 
@@ -182,79 +217,77 @@ export function updateHeaderUI() {
     downloadLink?.classList.add("hidden");
     signupLink?.classList.add("hidden");
 
-    // Giữ lại Khám phá Premium và Cài đặt ứng dụng
     premiumLink?.classList.remove("hidden");
     appInstallLink?.classList.remove("hidden");
-
-    const firstLetter = parsedUser.email?.charAt(0).toUpperCase() || "A";
-
-    avatarLetter.textContent = firstLetter;
-    avatar.classList.remove("hidden");
-
-    emailDisplay.textContent = parsedUser.email || "";
-    emailDisplay.classList.toggle("hidden", !parsedUser.email);
   } else {
-    // Chưa đăng nhập: hiện lại các menu mặc định
+    // Desktop
+    avatar?.classList.add("hidden");
+    document.querySelector("#userEmail")?.classList.add("hidden");
+
     signupBtn?.classList.remove("hidden");
     loginBtn?.classList.remove("hidden");
 
+    // Mobile: ẩn thông tin người dùng
+    mobileUserInfo?.classList.add("hidden");
+    mobileUserInfo?.classList.remove("flex");
+
+    // Hiện nút đăng nhập / đăng ký
+    mobileLoginBtn?.classList.remove("hidden");
+    mobileSignupBtn?.classList.remove("hidden");
+
+    // Menu mặc định
     premiumLink?.classList.remove("hidden");
     supportLink?.classList.remove("hidden");
     downloadLink?.classList.remove("hidden");
     appInstallLink?.classList.remove("hidden");
     signupLink?.classList.remove("hidden");
-
-    avatar.classList.add("hidden");
-    emailDisplay.classList.add("hidden");
   }
 }
 
 // === Các sự kiện riêng cho login/register/logout ===
-document.addEventListener("DOMContentLoaded", () => {
-  const loginBtn = document.getElementById("loginBtn");
-  if (loginBtn)
-    loginBtn.addEventListener(
-      "click",
-      () => navigate("login"),
-    );
+// === Khởi tạo sự kiện Header ===
+let headerEventsInitialized = false;
 
-  const signupBtn = document.getElementById("signupBtn");
-  if (signupBtn)
-    signupBtn.addEventListener(
-      "click",
-      () => navigate("register"),
-    );
+export function initHeaderEvents() {
+  if (headerEventsInitialized) return;
 
-  const avatar = document.querySelector("#userAvatar");
-  if (avatar) avatar.addEventListener("click", () => handleLogout());
+  headerEventsInitialized = true;
+  // console.log("Header events đã khởi tạo");
 
-  const registerPassword = document.getElementById("registerPassword");
-  const toggleRegister = document.getElementById("togglePassword");
-  if (registerPassword && toggleRegister) {
-    toggleRegister.addEventListener("click", () => {
-      const type =
-        registerPassword.getAttribute("type") === "password"
-          ? "text"
-          : "password";
-      registerPassword.setAttribute("type", type);
-      toggleRegister.innerHTML =
-        type === "password"
-          ? '<i class="fa-solid fa-eye"></i>'
-          : '<i class="fa-solid fa-eye-slash"></i>';
-    });
-  }
+  document.addEventListener("click", (event) => {
+    const target = event.target;
 
-  const loginPassword = document.getElementById("loginPassword");
-  const toggleLogin = document.getElementById("toggleLoginPassword");
-  if (loginPassword && toggleLogin) {
-    toggleLogin.addEventListener("click", () => {
-      const type =
-        loginPassword.getAttribute("type") === "password" ? "text" : "password";
-      loginPassword.setAttribute("type", type);
-      toggleLogin.innerHTML =
-        type === "password"
-          ? '<i class="fa-solid fa-eye"></i>'
-          : '<i class="fa-solid fa-eye-slash"></i>';
-    });
-  }
-});
+    if (!(target instanceof Element)) return;
+
+    const btn = document.getElementById("mobileMenuBtn");
+    const menu = document.getElementById("mobileMenu");
+
+    if (target.closest("#mobileMenuBtn")) {
+      // console.log("Đã click hamburger");
+      // console.log("Menu trước khi click:", menu?.className);
+
+      event.preventDefault();
+
+      if (!menu) return;
+
+      const isOpening = menu.classList.contains("hidden");
+      menu.classList.toggle("hidden", !isOpening);
+
+      // console.log("Menu sau khi click:", menu.className);
+
+      return;
+    }
+
+    // Giữ nguyên các xử lý đăng xuất, đăng nhập, đăng ký...
+  });
+}
+// export function checkHamburgerMenu() {
+//   const menuBtn = document.getElementById("mobileMenuBtn");
+//   const menu = document.getElementById("mobileMenu");
+
+//   console.log("===== CHECK HAMBURGER =====");
+//   console.log("Nút hamburger:", menuBtn);
+//   console.log("Menu:", menu);
+//   console.log("Menu đang ẩn:", menu?.classList.contains("hidden"));
+//   console.log("Sự kiện đã khởi tạo:", headerEventsInitialized);
+// }

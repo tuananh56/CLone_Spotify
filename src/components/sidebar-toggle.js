@@ -1,27 +1,22 @@
+let sidebarToggleInitialized = false;
+let isCollapsed = false;
+let stateInitialized = false;
+
 export function initSidebarToggle() {
-  const sidebar = document.getElementById("sidebar");
-  const mainContent = document.getElementById("mainContent");
-  const openBtn = document.getElementById("openSidebarBtn");
-  const toggleBtn = document.getElementById("toggleSidebarBtn");
-
-  if (!sidebar || !openBtn || !toggleBtn) {
-    console.warn("Không tìm thấy phần tử sidebar:", {
-      sidebar: !!sidebar,
-      mainContent: !!mainContent,
-      openBtn: !!openBtn,
-      toggleBtn: !!toggleBtn,
-    });
-    return;
-  }
-
-  // Tránh đăng ký sự kiện nhiều lần
-  if (sidebar.dataset.toggleInitialized === "true") return;
-  sidebar.dataset.toggleInitialized = "true";
-
-  let isCollapsed = sidebar.classList.contains("hidden");
+  // Chỉ đăng ký sự kiện một lần
+  if (sidebarToggleInitialized) return;
+  sidebarToggleInitialized = true;
 
   function setSidebarCollapsed(collapsed) {
+    const sidebar = document.getElementById("sidebar");
+    const mainContent = document.getElementById("mainContent");
+    const openBtn = document.getElementById("openSidebarBtn");
+    const toggleBtn = document.getElementById("toggleSidebarBtn");
+
+    if (!sidebar || !openBtn || !toggleBtn) return;
+
     isCollapsed = collapsed;
+    stateInitialized = true;
 
     sidebar.classList.toggle("hidden", collapsed);
 
@@ -36,16 +31,42 @@ export function initSidebarToggle() {
     }
   }
 
-  toggleBtn.addEventListener("click", () => {
-    setSidebarCollapsed(true);
+  // Lấy trạng thái ban đầu nếu sidebar đã tồn tại
+  function initializeState() {
+    const sidebar = document.getElementById("sidebar");
+
+    if (!sidebar || stateInitialized) return;
+
+    isCollapsed = sidebar.classList.contains("hidden");
+    stateInitialized = true;
+  }
+
+  // Bắt sự kiện click trên document
+  document.addEventListener("click", (event) => {
+    const target = event.target;
+
+    if (!(target instanceof Element)) return;
+
+    initializeState();
+
+    if (target.closest("#toggleSidebarBtn")) {
+      setSidebarCollapsed(true);
+      return;
+    }
+
+    if (target.closest("#openSidebarBtn")) {
+      setSidebarCollapsed(false);
+    }
   });
 
-  openBtn.addEventListener("click", () => {
-    setSidebarCollapsed(false);
-  });
-
+  // Hiện nút mở sidebar khi rê chuột sát mép trái
   document.addEventListener("mousemove", (event) => {
+    initializeState();
+
     if (!isCollapsed) return;
+
+    const openBtn = document.getElementById("openSidebarBtn");
+    if (!openBtn) return;
 
     if (event.clientX <= 12) {
       openBtn.classList.remove("opacity-0", "pointer-events-none");
@@ -54,5 +75,9 @@ export function initSidebarToggle() {
     }
   });
 
-  setSidebarCollapsed(isCollapsed);
+  initializeState();
+
+  if (stateInitialized) {
+    setSidebarCollapsed(isCollapsed);
+  }
 }

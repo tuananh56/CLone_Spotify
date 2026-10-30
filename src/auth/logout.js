@@ -5,7 +5,7 @@ import { updateHeaderUI } from "../components/header.js";
 export async function handleLogout() {
   try {
     const res = await api.post("/api/auth/logout");
-    console.log("Logout response:", res.data);
+    // console.log("Logout response:", res.data);
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     Swal.fire({

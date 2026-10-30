@@ -1,0 +1,1 @@
+import{n as e}from"./main-uKTC3Q-N.js";async function t(){try{let t=await fetch(`/player.html`);if(!t.ok)throw Error(`Không tải được player.html`);let n=await t.text();document.getElementById(`player-container`).innerHTML=n,e(),document.dispatchEvent(new Event(`playerloaded`))}catch(e){console.error(`Lỗi tải player:`,e)}}t();
