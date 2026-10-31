@@ -17,6 +17,9 @@ const pages = [
   "register",
   "player",
   "admin-dashboard",
+  "track_admin",
+  "album_admin",
+  "artist_admin",
 ];
 
 export default defineConfig({

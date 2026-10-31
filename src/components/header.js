@@ -2,6 +2,8 @@ import { navigate } from "../app/router.js";
 import { handleLogout } from "../auth/logout.js";
 import { api } from "../app/api.js";
 
+const ADMIN_ID = "b6ea8a1b-9bc6-410b-bff3-f4780094d507";
+
 function debounce(fn, delay) {
   let timeout;
   return (...args) => {
@@ -166,6 +168,18 @@ export function updateHeaderUI() {
     } catch (error) {
       console.error("Dữ liệu user không hợp lệ:", error);
       localStorage.removeItem("user");
+    }
+  }
+  const isAdmin = parsedUser?.id === ADMIN_ID;
+
+  // Cập nhật nút Premium / Admin
+  if (premiumLink) {
+    if (isAdmin) {
+      premiumLink.textContent = "Admin";
+      premiumLink.href = `${import.meta.env.BASE_URL}admin-dashboard.html`;
+    } else {
+      premiumLink.textContent = "Khám phá Premium";
+      premiumLink.href = "#";
     }
   }
 

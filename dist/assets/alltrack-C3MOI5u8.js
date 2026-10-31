@@ -1,0 +1,1 @@
+import"./api-C91Bgm76.js";import{n as e,t}from"./main-C6BSQ5Bm.js";async function n(){try{let t=await fetch(`/CLone_Spotify/player.html`);if(!t.ok)throw Error(`Không tải được player.html`);let n=await t.text();document.getElementById(`player-container`).innerHTML=n,e(),document.dispatchEvent(new Event(`playerloaded`))}catch(e){console.error(`Lỗi tải player:`,e)}await t()}n();

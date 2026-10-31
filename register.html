@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#121212" />
     <title>Đăng ký | Spotify Clone</title>
-
+    <link rel="icon" type="image/png" href="/src/assets/avt2.jpg" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link
       rel="stylesheet"
@@ -29,7 +29,7 @@
         </span>
 
         <a
-          href="../login.html"
+          href="./login.html"
           id="loginBtn"
           class="px-5 py-2.5 border border-gray-500 hover:border-white rounded-full font-bold text-sm hover:scale-105 transition"
         >
@@ -110,8 +110,11 @@
 
               <button
                 type="button"
+                tabindex="-1"
                 id="togglePassword"
                 aria-label="Hiện mật khẩu"
+                aria-controls="registerPassword"
+                aria-pressed="false"
                 class="text-gray-400 hover:text-white transition shrink-0"
               >
                 <i class="fa-regular fa-eye"></i>

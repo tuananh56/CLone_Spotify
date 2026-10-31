@@ -1,4 +1,3 @@
-
 import Swal from "sweetalert2";
 import { api } from "../app/api.js";
 
@@ -17,7 +16,7 @@ export async function handleLogin(email, password) {
     const token =
       data.token ||
       data.access_token ||
-      data.data?.token || 
+      data.data?.token ||
       data.data?.access_token ||
       null;
 
@@ -38,7 +37,7 @@ export async function handleLogin(email, password) {
         name: user.name || user.display_name || "",
         username: user.username || "",
         avatar_url: user.avatar_url || null,
-      })
+      }),
     );
 
     // Kiểm tra tài khoản Admin
@@ -58,7 +57,6 @@ export async function handleLogin(email, password) {
     window.location.href = isAdmin
       ? `${import.meta.env.BASE_URL}admin-dashboard.html`
       : `${import.meta.env.BASE_URL}home.html`;
-
   } catch (error) {
     console.error("Login error:", error);
 
@@ -72,3 +70,34 @@ export async function handleLogin(email, password) {
     });
   }
 }
+
+function initTogglePassword() {
+  const passwordInput = document.getElementById("loginPassword");
+  const toggleButton = document.getElementById("toggleLoginPassword");
+  const eyeIcon = toggleButton?.querySelector("i");
+
+  if (!passwordInput || !toggleButton || !eyeIcon) {
+    return;
+  }
+
+  toggleButton.addEventListener("click", () => {
+    const isHidden = passwordInput.type === "password";
+
+    // Hiện hoặc ẩn mật khẩu
+    passwordInput.type = isHidden ? "text" : "password";
+
+    // Thay đổi icon
+    eyeIcon.classList.toggle("fa-eye", !isHidden);
+    eyeIcon.classList.toggle("fa-eye-slash", isHidden);
+
+    // Cập nhật trạng thái truy cập
+    toggleButton.setAttribute(
+      "aria-label",
+      isHidden ? "Ẩn mật khẩu" : "Hiện mật khẩu",
+    );
+
+    toggleButton.setAttribute("aria-pressed", String(isHidden));
+  });
+}
+
+initTogglePassword();

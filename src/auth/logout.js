@@ -12,7 +12,7 @@ export async function handleLogout() {
       icon: "success",
       title: "Đăng xuất thành công",
     });
-    window.location.href = "/home.html";
+    window.location.href = "./home.html";
   } catch (error) {
     console.error("Logout error:", error);
     Swal.fire({

@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#121212" />
     <title>Đăng ký | Spotify Clone</title>
-
+    <link rel="icon" type="image/png" href="/CLone_Spotify/assets/avt2-BRFmnsD4.jpg" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
     />
     <script type="module" crossorigin src="/CLone_Spotify/assets/api-C91Bgm76.js"></script>
-    <script type="module" crossorigin src="/CLone_Spotify/assets/main-CEdArmJ8.js"></script>
+    <script type="module" crossorigin src="/CLone_Spotify/assets/main-C6BSQ5Bm.js"></script>
   </head>
 
   <body class="bg-[#121212] min-h-screen font-sans text-white">
@@ -31,7 +31,7 @@
         </span>
 
         <a
-          href="../login.html"
+          href="./login.html"
           id="loginBtn"
           class="px-5 py-2.5 border border-gray-500 hover:border-white rounded-full font-bold text-sm hover:scale-105 transition"
         >
@@ -112,8 +112,11 @@
 
               <button
                 type="button"
+                tabindex="-1"
                 id="togglePassword"
                 aria-label="Hiện mật khẩu"
+                aria-controls="registerPassword"
+                aria-pressed="false"
                 class="text-gray-400 hover:text-white transition shrink-0"
               >
                 <i class="fa-regular fa-eye"></i>
