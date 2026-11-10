@@ -171,11 +171,11 @@
       </div>
     </header>
     <!-- Nội dung chính chia ngang -->
-    <div id="page-content" class="flex gap-4 mt-3">
+    <div id="page-content" class="block md:flex gap-4 mt-3 p-2">
       <!-- Sidebar -->
       <aside
         id="sidebar"
-        class="flex flex-col bg-neutral-900 p-4 border border-gray-700 rounded-xl w-64 h-[calc(100vh-64px)] overflow-y-auto"
+        class="hidden md:flex flex-col bg-neutral-900 p-4 border border-gray-700 rounded-xl w-64 h-[calc(100vh-64px)] overflow-y-auto shrink-0"
       >
         <div class="flex justify-between items-center mb-4">
           <div class="flex items-center space-x-2">
@@ -267,7 +267,7 @@
 
       <main
         id="mainContent"
-        class="flex-1 bg-neutral-900 ml-4 p-6 border border-neutral-800 rounded-lg overflow-y-auto"
+        class="flex-1 bg-neutral-900 p-4 md:p-6 border border-neutral-800 rounded-lg w-full min-w-0 overflow-y-auto"
       >
         <!-- Header -->
         <section
@@ -393,7 +393,7 @@
       type="button"
       aria-label="Mở thư viện"
       title="Mở thư viện"
-      class="top-24 left-0 z-[60] fixed flex justify-center items-center bg-neutral-800 hover:bg-green-500 opacity-0 rounded-r-lg w-8 h-12 text-white transition-opacity duration-200 pointer-events-none"
+     class="md:hidden top-24 left-0 z-[60] fixed flex justify-center items-center bg-neutral-800 hover:bg-green-500 opacity-100 rounded-r-lg w-8 h-12 text-white transition-opacity duration-200"
     >
       <i class="fa-angles-right fa-solid"></i>
     </button>
