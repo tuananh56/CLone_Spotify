@@ -18,7 +18,7 @@
   >
     <!-- Header cố định trên cùng -->
     <header
-      class="top-0 z-50 sticky flex flex-wrap justify-between items-center gap-3 bg-neutral-900 shadow-md px-3 sm:px-6 py-3"
+      class="top-0 z-50 sticky flex flex-nowrap justify-between items-center gap-2 bg-neutral-900 shadow-md px-2 sm:px-6 py-3"
     >
       <!-- Logo + Search -->
       <div class="flex flex-1 items-center gap-3 min-w-0">
@@ -26,10 +26,10 @@
         <button
           type="button"
           onclick="window.goHome()"
-          aria-label="Về trang chủ"
-          class="text-green-500 text-2xl hover:scale-105 transition-transform"
+          aria-label="Trang chủ"
+          class="bg-neutral-800 hover:bg-green-500 p-2 sm:p-3 rounded-full text-white transition-colors shrink-0"
         >
-          <i class="fa-brands fa-spotify"></i>
+          <i class="fa-solid fa-house"></i>
         </button>
 
         <!-- Nút Home -->
@@ -42,7 +42,7 @@
           <i class="fa-solid fa-house"></i>
         </button>
 
-        <div class="hidden sm:block relative flex-1 ml-0 min-w-0">
+        <div class="relative flex-1 min-w-0">
           <!-- Ô search -->
 
           <div
@@ -60,7 +60,7 @@
             />
 
             <div
-              class="flex items-center gap-1 ml-2 text-neutral-400 text-xs shrink-0"
+              class="hidden lg:flex items-center gap-1 ml-2 text-neutral-400 text-xs shrink-0"
             >
               <span class="px-1.5 py-1 border border-neutral-600 rounded"
                 >Ctrl</span
@@ -90,7 +90,7 @@
           <!-- Khung kết quả -->
           <div
             id="searchResults"
-            class="hidden top-full absolute bg-neutral-950 shadow-lg mt-2 rounded-lg w-96 max-h-96 overflow-y-auto"
+            class="hidden top-full left-0 z-50 absolute bg-neutral-950 shadow-lg mt-2 rounded-lg w-full sm:w-96 max-h-96 overflow-y-auto"
           ></div>
         </div>
       </div>
@@ -98,7 +98,7 @@
       <!-- Menu bên phải -->
 
       <div
-        class="flex flex-wrap justify-end items-center gap-3 sm:gap-6 font-semibold text-gray-400 text-sm"
+        class="flex flex-nowrap justify-end items-center gap-2 sm:gap-6 font-semibold text-gray-400 text-xs sm:text-sm shrink-0"
       >
         <a
           id="premiumLink"
