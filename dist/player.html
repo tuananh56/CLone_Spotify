@@ -6,7 +6,7 @@
   <div
     class="items-center gap-3 sm:gap-5 grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_minmax(260px,1.4fr)_minmax(0,1fr)] px-3 sm:px-5 lg:px-7 py-3"
   >
-    <!-- LEFT: TRACK INFO + VOLUME -->
+    <!-- LEFT: TRACK INFO -->
     <div class="flex items-center gap-3 sm:gap-4 min-w-0">
       <!-- TRACK IMAGE -->
       <img
@@ -33,8 +33,8 @@
         </p>
       </div>
 
-      <!-- VOLUME -->
-      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+      <!-- VOLUME: MOBILE -->
+      <div class="sm:hidden flex items-center gap-1.5 shrink-0">
         <button
           id="btnMute"
           type="button"
@@ -53,7 +53,7 @@
           step="0.01"
           value="1"
           aria-label="Âm lượng"
-          class="w-12 sm:w-14 lg:w-20 h-1 accent-green-500 cursor-pointer"
+          class="w-12 h-1 accent-green-500 cursor-pointer"
         />
       </div>
     </div>
@@ -144,8 +144,31 @@
       </div>
     </div>
 
-    <!-- RIGHT: EMPTY SPACE FOR DESKTOP BALANCE -->
-    <div class="hidden sm:block sm:col-start-3 sm:row-start-1"></div>
+    <!-- RIGHT: VOLUME DESKTOP -->
+    <div
+      class="hidden sm:flex justify-self-end items-center gap-2 sm:col-start-3 sm:row-start-1"
+    >
+      <button
+        id="btnMuteDesktop"
+        type="button"
+        title="Tắt tiếng"
+        aria-label="Tắt tiếng"
+        class="flex justify-center items-center hover:bg-white/10 rounded-full w-8 h-8 text-gray-400 hover:text-white transition shrink-0"
+      >
+        <i class="text-sm fa-solid fa-volume-high"></i>
+      </button>
+
+      <input
+        id="volumeControlDesktop"
+        type="range"
+        min="0"
+        max="1"
+        step="0.01"
+        value="1"
+        aria-label="Âm lượng"
+        class="w-14 lg:w-20 h-1 accent-green-500 cursor-pointer"
+      />
+    </div>
   </div>
 
   <!-- AUDIO -->
