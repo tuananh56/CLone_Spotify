@@ -5,12 +5,11 @@ let btnPrev = null;
 let progressBar = null;
 let currentTimeEl = null;
 let totalTimeEl = null;
-let volumeControl = null;
+let volumeControls = [];
+let muteButtons = [];
 let btnRepeat = null;
 let btnShuffle = null;
-let btnMute = null;
 let lastVolume = 1;
-
 let currentTrackIndex = 0;
 let isRepeat = false;
 let isShuffle = false;
@@ -26,10 +25,16 @@ export function initPlayer() {
   progressBar = document.getElementById("progressBar");
   currentTimeEl = document.getElementById("currentTime");
   totalTimeEl = document.getElementById("totalTime");
-  volumeControl = document.getElementById("volumeControl");
+  volumeControls = [
+    document.getElementById("volumeControl"),
+    document.getElementById("volumeControlDesktop"),
+  ].filter(Boolean);
   btnRepeat = document.getElementById("btnRepeat");
   btnShuffle = document.getElementById("btnShuffle");
-  btnMute = document.getElementById("btnMute");
+  muteButtons = [
+    document.getElementById("btnMute"),
+    document.getElementById("btnMuteDesktop"),
+  ].filter(Boolean);
 
   if (!audio || !btnPlay) {
     console.error("Không tìm thấy audio hoặc nút Play trong player.html");
@@ -52,7 +57,7 @@ export function initPlayer() {
     }
   });
 
-  btnMute?.addEventListener("click", toggleMute);
+  // btnMute?.addEventListener("click", toggleMute);
 
   audio.addEventListener("volumechange", updateVolumeButton);
 
@@ -85,21 +90,30 @@ export function initPlayer() {
       audio.currentTime = (Number(progressBar.value) / 100) * audio.duration;
     }
   });
-  volumeControl?.addEventListener("input", () => {
-    const volume = Number(volumeControl.value);
+  // Nút mute trên cả mobile và desktop
+  muteButtons.forEach((button) => {
+    button.addEventListener("click", toggleMute);
+  });
 
-    if (!Number.isFinite(volume)) return;
+  // Thanh âm lượng trên cả mobile và desktop
+  volumeControls.forEach((control) => {
+    control.addEventListener("input", () => {
+      const volume = Number(control.value);
 
-    if (volume > 0) {
-      lastVolume = volume;
-      audio.volume = volume;
-      audio.muted = false;
-    } else {
-      audio.volume = 0;
-      audio.muted = false;
-    }
+      if (!Number.isFinite(volume)) return;
 
-    updateVolumeButton();
+      if (volume > 0) {
+        lastVolume = volume;
+        audio.volume = volume;
+        audio.muted = false;
+      } else {
+        audio.volume = 0;
+        audio.muted = false;
+      }
+
+      syncVolumeControls();
+      updateVolumeButton();
+    });
   });
 
   btnRepeat?.addEventListener("click", () => {
@@ -232,38 +246,50 @@ function formatTime(seconds) {
   return `${minutes}:${remainder.toString().padStart(2, "0")}`;
 }
 function toggleMute() {
-  if (!audio || !volumeControl) return;
+  if (!audio) return;
 
   if (audio.muted || audio.volume === 0) {
-    // Khôi phục âm lượng trước đó
     audio.volume = lastVolume > 0 ? lastVolume : 1;
     audio.muted = false;
-    volumeControl.value = audio.volume;
   } else {
-    // Lưu âm lượng hiện tại
     lastVolume = audio.volume;
-
-    // Tắt tiếng và đưa thanh âm lượng về 0
     audio.muted = true;
-    volumeControl.value = 0;
   }
 
+  syncVolumeControls();
   updateVolumeButton();
 }
 
+function syncVolumeControls() {
+  if (!audio) return;
+
+  const volume = audio.muted ? 0 : audio.volume;
+
+  volumeControls.forEach((control) => {
+    control.value = volume;
+  });
+}
+
 function updateVolumeButton() {
-  if (!btnMute || !audio) return;
+  if (!audio) return;
 
   const muted = audio.muted || audio.volume === 0;
 
-  if (muted) {
-    btnMute.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
-    btnMute.title = "Bật tiếng";
-  } else if (audio.volume < 0.5) {
-    btnMute.innerHTML = '<i class="fa-solid fa-volume-low"></i>';
-    btnMute.title = "Tắt tiếng";
-  } else {
-    btnMute.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
-    btnMute.title = "Tắt tiếng";
-  }
+  muteButtons.forEach((button) => {
+    if (muted) {
+      button.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
+      button.title = "Bật tiếng";
+      button.setAttribute("aria-label", "Bật tiếng");
+    } else if (audio.volume < 0.5) {
+      button.innerHTML = '<i class="fa-solid fa-volume-low"></i>';
+      button.title = "Tắt tiếng";
+      button.setAttribute("aria-label", "Tắt tiếng");
+    } else {
+      button.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
+      button.title = "Tắt tiếng";
+      button.setAttribute("aria-label", "Tắt tiếng");
+    }
+  });
+
+  syncVolumeControls();
 }
